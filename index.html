@@ -688,8 +688,9 @@ function filterQuartil() {
 
 // ---- PROCESSO TABLE ----
 function populateProcFilter() {
-  const procs = [...new Set(processoData.map(r=>r.proc))].sort();
+  const procs = [...new Set(getProcessoData().map(r=>r.proc))].sort();
   const sel = document.getElementById('fp-proc');
+  sel.innerHTML = '<option value="">Todos</option>';
   procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sel.appendChild(o); });
 }
 function filterProcesso() {
@@ -715,10 +716,13 @@ function filterProcesso() {
 
 // ---- Q4 TABLE ----
 function populateQ4Filters() {
-  const procs = [...new Set(q4Data.map(r=>r.proc))].sort();
-  const reps  = [...new Set(q4Data.map(r=>r.rep))].sort();
+  const data  = getQ4Data();
+  const procs = [...new Set(data.map(r=>r.proc))].sort();
+  const reps  = [...new Set(data.map(r=>r.rep))].sort();
   const sp = document.getElementById('f4-proc');
   const sr = document.getElementById('f4-rep');
+  sp.innerHTML = '<option value="">Todos</option>';
+  sr.innerHTML = '<option value="">Todos</option>';
   procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sp.appendChild(o); });
   reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sr.appendChild(o); });
 }
@@ -989,7 +993,9 @@ function setMonth(m) {
   cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>27?'#e63946':'#2dc653');
   cLiderChart.update();
   // tabelas
-  filterQuartil(); filterProcesso(); filterQ4(); filterMulti();
+  populateProcFilter(); filterProcesso();
+  populateQ4Filters(); filterQ4();
+  filterQuartil(); filterMulti();
   // nota parcial
   document.getElementById('last-updated').textContent = k.partial ? `⚡ Dados de 01-06/05 · atualizado ${new Date().toLocaleDateString('pt-BR')}` : 'Fechamento completo';
 }
