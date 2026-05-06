@@ -485,124 +485,106 @@ tr:last-child td { border-bottom: none; }
 <!-- ===================== PÁGINA 8: PRODUTIVIDADE ===================== -->
 <div id="page-produ" class="page">
 
-  <!-- KPIs -->
-  <div class="kpi-row" style="margin-bottom:20px">
-    <div class="kpi gray">
-      <div class="kpi-lbl">Total Assigns</div>
-      <div class="kpi-val">21.503</div>
-      <div class="kpi-sub">Abril 2026</div>
-    </div>
-    <div class="kpi blue">
-      <div class="kpi-lbl">Total Casos</div>
-      <div class="kpi-val">16.455</div>
-      <div class="kpi-sub">casos únicos</div>
-    </div>
-    <div class="kpi gray">
-      <div class="kpi-lbl">Reps Ativos</div>
-      <div class="kpi-val">61</div>
-      <div class="kpi-sub">22 dias úteis</div>
+  <!-- KPIs Produtividade Geral -->
+  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px">
+    <div class="kpi blue" style="border-left-color:#1a1a2e">
+      <div class="kpi-lbl">Produtividade Geral — Fila</div>
+      <div class="kpi-val">12,3</div>
+      <div class="kpi-sub">casos/rep/dia · Abril 2026</div>
     </div>
     <div class="kpi green">
-      <div class="kpi-lbl">Média Assigns/Rep</div>
-      <div class="kpi-val">352,5</div>
-      <div class="kpi-sub">no mês</div>
+      <div class="kpi-lbl">🟢 ON — MULTICANAL CHAT</div>
+      <div class="kpi-val">13,9</div>
+      <div class="kpi-sub">casos/rep/dia · 42 reps</div>
     </div>
-    <div class="kpi yellow">
-      <div class="kpi-lbl">Média Casos/Rep/Dia</div>
-      <div class="kpi-val">12,3</div>
-      <div class="kpi-sub">casos por rep por dia</div>
+    <div class="kpi red">
+      <div class="kpi-lbl">🔴 OFF — MULTICANAL C2C</div>
+      <div class="kpi-val">10,3</div>
+      <div class="kpi-sub">casos/rep/dia · 18 reps</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-lbl">Melhor Produtividade (rep)</div>
+      <div class="kpi-val">39,0</div>
+      <div class="kpi-sub">mrmarques · CHAT</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">Menor Produtividade (rep)</div>
+      <div class="kpi-val">7,7</div>
+      <div class="kpi-sub">raisacsantos · C2C</div>
     </div>
   </div>
 
+  <!-- Por Canal / ON vs OFF -->
   <div class="charts-2" style="margin-bottom:20px">
-    <!-- Canal -->
     <div class="card">
-      <div class="card-title">📡 Por Canal</div>
+      <div class="card-title">📡 Produtividade por Canal</div>
       <div class="tbl-wrap">
         <table>
-          <thead><tr><th>Canal</th><th>Assigns</th><th>Casos</th><th>Reps</th><th>Assigns/Rep</th><th>Casos/Rep</th><th>Assigns/Dia</th></tr></thead>
-          <tbody>
-            <tr><td><span class="chat">MULTICANAL CHAT</span></td><td>17.146</td><td>12.832</td><td>42</td><td>408,2</td><td>305,5</td><td>779,4</td></tr>
-            <tr><td><span class="mc2c">MULTICANAL C2C</span></td><td>4.215</td><td>4.073</td><td>18</td><td>234,2</td><td>226,3</td><td>191,6</td></tr>
-            <tr><td><span class="c2c">C2C</span></td><td>142</td><td>139</td><td>1</td><td>142,0</td><td>139,0</td><td>6,5</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Canal ON vs OFF -->
-    <div class="card">
-      <div class="card-title">🟢 Canal ON (Chat) vs 🔴 Canal OFF (Voz)</div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Tipo</th><th>Canal</th><th>Assigns</th><th>Casos</th><th>Reps</th><th>Casos/Rep/Dia</th></tr></thead>
+          <thead><tr><th>Canal</th><th>Tipo</th><th>Reps</th><th>Produtividade (casos/rep/dia)</th><th>TMO Médio</th></tr></thead>
           <tbody>
             <tr style="background:#f0fdf4">
-              <td><span style="background:#d4edda;color:#155724;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">ON</span></td>
               <td><span class="chat">MULTICANAL CHAT</span></td>
-              <td>17.146</td><td>12.832</td><td>42</td><td><strong>13,9</strong></td>
+              <td><span style="background:#d4edda;color:#155724;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">ON</span></td>
+              <td>42</td><td><strong style="font-size:16px">13,9</strong></td><td class="pos">29,34 min</td>
             </tr>
             <tr style="background:#fff5f5">
-              <td rowspan="2"><span style="background:#f8d7da;color:#721c24;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">OFF</span></td>
               <td><span class="mc2c">MULTICANAL C2C</span></td>
-              <td>4.215</td><td>4.073</td><td>18</td><td><strong>10,3</strong></td>
+              <td><span style="background:#f8d7da;color:#721c24;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">OFF</span></td>
+              <td>18</td><td><strong style="font-size:16px">10,3</strong></td><td class="pos">28,80 min</td>
             </tr>
-            <tr style="background:#fff5f5">
+            <tr>
               <td><span class="c2c">C2C</span></td>
-              <td>142</td><td>139</td><td>1</td><td><strong>6,3</strong></td>
+              <td><span style="background:#f8d7da;color:#721c24;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">OFF</span></td>
+              <td>1</td><td><strong style="font-size:16px">6,3</strong></td><td class="neg">20,78 min</td>
             </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">👤 Produtividade por Líder</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Líder</th><th>Canal</th><th>Reps</th><th>Produtividade (casos/rep/dia)</th><th>TMO</th></tr></thead>
+          <tbody>
+            <tr><td><strong>bkaroline</strong></td><td><span class="chat">CHAT</span></td><td>12</td><td><strong>16,6</strong></td><td class="pos">29,34</td></tr>
+            <tr><td><strong>alicarvalho</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td><strong>16,6</strong></td><td class="pos">28,45</td></tr>
+            <tr><td><strong>thaidossanto</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td><strong>14,3</strong></td><td class="neg">26,78</td></tr>
+            <tr><td><strong>isabmot</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td><strong>14,0</strong></td><td class="pos">34,24</td></tr>
+            <tr><td><strong>lrossetto</strong></td><td><span class="mc2c">C2C</span></td><td>18</td><td><strong>10,3</strong></td><td class="pos">28,80</td></tr>
           </tbody>
         </table>
       </div>
     </div>
   </div>
 
-  <div class="charts-2" style="margin-bottom:20px">
-    <!-- Líder -->
-    <div class="card">
-      <div class="card-title">👤 Por Líder</div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Líder</th><th>Canal</th><th>Reps</th><th>Assigns</th><th>Casos</th><th>Assigns/Rep</th><th>Casos/Rep</th><th>TMO</th></tr></thead>
-          <tbody>
-            <tr><td><strong>bkaroline</strong></td><td><span class="chat">CHAT</span></td><td>12</td><td>5.462</td><td>4.395</td><td>455,2</td><td>366,3</td><td class="pos">29,34</td></tr>
-            <tr><td><strong>alicarvalho</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td>4.451</td><td>3.643</td><td>445,1</td><td>364,3</td><td class="pos">28,45</td></tr>
-            <tr><td><strong>lrossetto</strong></td><td><span class="mc2c">C2C</span></td><td>18</td><td>4.215</td><td>4.073</td><td>234,2</td><td>226,3</td><td class="pos">28,80</td></tr>
-            <tr><td><strong>thaidossanto</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td>3.741</td><td>3.146</td><td>374,1</td><td>314,6</td><td class="neg">26,78</td></tr>
-            <tr><td><strong>isabmot</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td>3.492</td><td>3.086</td><td>349,2</td><td>308,6</td><td class="pos">34,24</td></tr>
-            <tr><td><strong>lrossetto</strong></td><td><span class="c2c">C2C</span></td><td>1</td><td>142</td><td>139</td><td>142,0</td><td>139,0</td><td class="neg">20,78</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-    <!-- Processo -->
-    <div class="card">
-      <div class="card-title">⚙️ Por Processo</div>
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Processo</th><th>Assigns</th><th>Casos</th><th>% Vol</th><th>Assigns/Rep</th><th>TMO</th></tr></thead>
-          <tbody>
-            <tr><td>Reputación</td><td>7.198</td><td>6.273</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">33,5%</span></td><td>118,0</td><td>29,11</td></tr>
-            <tr><td>Gestión de Publicación</td><td>4.211</td><td>2.906</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">19,6%</span></td><td>69,0</td><td>31,00</td></tr>
-            <tr><td>Reputación ME</td><td>3.289</td><td>2.689</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">15,3%</span></td><td>53,9</td><td>28,24</td></tr>
-            <tr><td>Potenciar Ventas</td><td>2.016</td><td>1.316</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">9,4%</span></td><td>33,0</td><td>31,07</td></tr>
-            <tr><td>PR - Propiedad intelectual</td><td>1.823</td><td>1.429</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">8,5%</span></td><td>29,9</td><td>26,09</td></tr>
-            <tr><td>PR - Técnica prohibida</td><td>1.126</td><td>899</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">5,2%</span></td><td>18,5</td><td>28,55</td></tr>
-            <tr><td>PR - Artículos prohibidos</td><td>598</td><td>453</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">2,8%</span></td><td>10,0</td><td>31,67</td></tr>
-            <tr><td>Antes de publicar</td><td>555</td><td>413</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">2,6%</span></td><td>9,6</td><td>28,76</td></tr>
-            <tr><td>Asig. Mature Publicaciones</td><td>453</td><td>375</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">2,1%</span></td><td>7,7</td><td>31,41</td></tr>
-            <tr><td>Calidad de foto</td><td>146</td><td>107</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">0,7%</span></td><td>2,7</td><td>25,00</td></tr>
-            <tr><td>PR - Datos Personales</td><td>85</td><td>66</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">0,4%</span></td><td>1,9</td><td>33,36</td></tr>
-          </tbody>
-        </table>
-      </div>
+  <!-- Por Processo -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">⚙️ Produtividade por Processo</div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Processo</th><th>% do Volume</th><th>Produtividade (casos/rep/dia)</th><th>TMO Médio</th></tr></thead>
+        <tbody>
+          <tr><td>Reputación</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">33,5%</span></td><td><strong>4,67</strong></td><td>29,11 min</td></tr>
+          <tr><td>Gestión de Publicación</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">19,6%</span></td><td><strong>2,17</strong></td><td>31,00 min</td></tr>
+          <tr><td>Reputación ME</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">15,3%</span></td><td><strong>2,00</strong></td><td>28,24 min</td></tr>
+          <tr><td>Potenciar Ventas</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">9,4%</span></td><td><strong>0,98</strong></td><td>31,07 min</td></tr>
+          <tr><td>PR - Propiedad intelectual</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">8,5%</span></td><td><strong>1,07</strong></td><td>26,09 min</td></tr>
+          <tr><td>PR - Técnica prohibida</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">5,2%</span></td><td><strong>0,67</strong></td><td>28,55 min</td></tr>
+          <tr><td>PR - Artículos prohibidos</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">2,8%</span></td><td><strong>0,34</strong></td><td>31,67 min</td></tr>
+          <tr><td>Antes de publicar</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">2,6%</span></td><td><strong>0,32</strong></td><td>28,76 min</td></tr>
+          <tr><td>Asig. Mature Publicaciones</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">2,1%</span></td><td><strong>0,29</strong></td><td>31,41 min</td></tr>
+          <tr><td>Calidad de foto</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">0,7%</span></td><td><strong>0,09</strong></td><td>25,00 min</td></tr>
+          <tr><td>PR - Datos Personales</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">0,4%</span></td><td><strong>0,07</strong></td><td>33,36 min</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
   <!-- Por Rep -->
   <div class="card">
-    <div class="card-title">👥 Por Representante</div>
+    <div class="card-title">👥 Produtividade por Representante</div>
     <div class="filters">
       <div class="filter-group">
         <label>Canal</label>
@@ -628,7 +610,7 @@ tr:last-child td { border-bottom: none; }
     </div>
     <div class="tbl-wrap">
       <table id="tbl-produ">
-        <thead><tr><th>Rep</th><th>Líder</th><th>Canal</th><th>Assigns</th><th>Casos</th><th>Assigns/Dia</th><th>Casos/Dia</th><th>TMO</th></tr></thead>
+        <thead><tr><th>Rep</th><th>Líder</th><th>Canal</th><th>Produtividade (casos/dia)</th><th>TMO</th></tr></thead>
         <tbody id="tbody-produ"></tbody>
       </table>
     </div>
@@ -1151,21 +1133,30 @@ const MAY_q4Data = [
 function filterProdu() {
   const c = document.getElementById('fp2-canal').value;
   const l = document.getElementById('fp2-lider').value;
-  const rows = produRepData.filter(r => (!c || r.canal===c) && (!l || r.lider===l));
+  const rows = produRepData
+    .filter(r => (!c || r.canal===c) && (!l || r.lider===l))
+    .sort((a,b) => b.cpd - a.cpd);
   const tb = document.getElementById('tbody-produ');
   document.getElementById('fp2-count').textContent = `${rows.length} representante(s)`;
-  if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
-  tb.innerHTML = rows.map(r => {
+  if (!rows.length) { tb.innerHTML = emptyRow(5); return; }
+  const max = rows[0].cpd;
+  tb.innerHTML = rows.map((r,i) => {
     const tmoClass = r.tmo > 27 ? 'pos' : 'neg';
+    const bar = Math.round(r.cpd / max * 100);
+    const cor = r.cpd >= 25 ? '#2dc653' : r.cpd >= 15 ? '#457b9d' : r.cpd >= 10 ? '#f4a261' : '#e63946';
     return `<tr>
       <td><strong>${r.rep}</strong></td>
       <td>${r.lider}</td>
       <td>${canalBadge(r.canal)}</td>
-      <td>${r.assigns.toLocaleString('pt-BR')}</td>
-      <td>${r.casos.toLocaleString('pt-BR')}</td>
-      <td><strong>${r.apd}</strong></td>
-      <td><strong>${r.cpd}</strong></td>
-      <td class="${tmoClass}">${r.tmo.toFixed(2)}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="background:#f0f2f5;border-radius:4px;width:120px;height:8px;overflow:hidden">
+            <div style="background:${cor};width:${bar}%;height:100%;border-radius:4px"></div>
+          </div>
+          <strong>${r.cpd}</strong>
+        </div>
+      </td>
+      <td class="${tmoClass}">${r.tmo.toFixed(2)} min</td>
     </tr>`;
   }).join('');
 }
