@@ -758,38 +758,6 @@ function showPage(id, el) {
 }
 
 
-const topProcs = processoData.slice(0,12);
-new Chart(document.getElementById('cProcesso'),{
-  type:'bar',
-  data:{
-    labels:topProcs.map(r=>r.proc+' ('+r.canal.replace('MULTICANAL ','')+')'),
-    datasets:[
-      {label:'TMO (min)',data:topProcs.map(r=>r.tmo),backgroundColor:topProcs.map(r=>r.tmo>35?'#e63946':r.tmo>27?'#f4a261':'#2dc653'),borderRadius:4},
-      {label:'Meta',data:Array(12).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
-    ]
-  },
-  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{x:{min:0,max:60},y:{ticks:{font:{size:10}}}}}
-});
-
-const topRepsList = [
-  {rep:'adysantos',tmo:59.90},{rep:'maybalazshaz',tmo:53.51},{rep:'raisacsantos',tmo:49.66},
-  {rep:'kavalle',tmo:49.09},{rep:'linessousa',tmo:45.89},{rep:'vitnasciment',tmo:44.37},
-  {rep:'cccsousa',tmo:41.67},{rep:'gabrielaaiol',tmo:41.55},{rep:'amcandido',tmo:38.16},
-  {rep:'lecandido',tmo:35.95},{rep:'bemarques',tmo:36.07},{rep:'vfonorio',tmo:35.35},
-  {rep:'giselesosant',tmo:35.52},{rep:'albarbosa',tmo:33.87},{rep:'renataperei',tmo:32.65}
-];
-new Chart(document.getElementById('cReps'),{
-  type:'bar',
-  data:{
-    labels:topRepsList.map(r=>r.rep),
-    datasets:[
-      {label:'TMO (min)',data:topRepsList.map(r=>r.tmo),backgroundColor:'#e63946',borderRadius:4},
-      {label:'Meta',data:Array(15).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
-    ]
-  },
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:70,grid:{color:'#f0f0f0'}},x:{ticks:{font:{size:10}}}}}
-});
-
 // ---- DADOS MAIO 2026 ----
 const KPIS = {
   '2026-04': {tmo:29.34, tmoCaso:38.35, volume:16455, reps:61, desvio:2.34, pct:8.7, label:'Abril 2026', partial:false},
