@@ -124,6 +124,7 @@ tr:last-child td { border-bottom: none; }
   <div class="nav-tab" onclick="showPage('q4reps',this)">🔴 Reps Q4</div>
   <div class="nav-tab" onclick="showPage('diagnostico',this)">🔍 Diagnóstico</div>
   <div class="nav-tab" onclick="showPage('multiofensores',this)">🔥 Multi-Ofensores</div>
+  <div class="nav-tab" onclick="showPage('toque',this)">⏱️ Tempo de Toque</div>
   <div style="flex:1"></div>
   <div style="display:flex;align-items:center;gap:8px;padding:8px 0">
     <span style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;letter-spacing:.5px">Mês:</span>
@@ -368,6 +369,102 @@ tr:last-child td { border-bottom: none; }
           </tr>
         </thead>
         <tbody id="tbody-multi"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PÁGINA 7: TEMPO DE TOQUE ===================== -->
+<div id="page-toque" class="page">
+
+  <!-- KPIs toque -->
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+    <div class="kpi red">
+      <div class="kpi-lbl">Toque Médio — MC2C</div>
+      <div class="kpi-val">14,23</div>
+      <div class="kpi-sub">min · maior canal ofensor</div>
+    </div>
+    <div class="kpi yellow">
+      <div class="kpi-lbl">Toque Médio — CHAT</div>
+      <div class="kpi-val">7,45</div>
+      <div class="kpi-sub">min · Abril 2026</div>
+    </div>
+    <div class="kpi gray">
+      <div class="kpi-lbl">Casos com Toque &gt; 40 min</div>
+      <div class="kpi-val">50</div>
+      <div class="kpi-sub">Abril 2026</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">Maior Toque Registrado</div>
+      <div class="kpi-val">358 min</div>
+      <div class="kpi-sub">gabrielaaiol · 30/04</div>
+    </div>
+  </div>
+
+  <!-- Toque por rep -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">Tempo de Toque Médio por Representante — Abril 2026</div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="ft-canal" onchange="filterToque()">
+          <option value="">Todos</option>
+          <option>MULTICANAL CHAT</option>
+          <option>MULTICANAL C2C</option>
+          <option>C2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Líder</label>
+        <select id="ft-lider" onchange="filterToque()">
+          <option value="">Todos</option>
+          <option>lrossetto</option>
+          <option>isabmot</option>
+          <option>bkaroline</option>
+          <option>thaidossanto</option>
+          <option>alicarvalho</option>
+        </select>
+      </div>
+      <div class="filter-count" id="ft-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-toque">
+        <thead><tr><th>Rep</th><th>Líder</th><th>Canal</th><th>Assigns</th><th>Toque Médio</th><th>Toque Máx</th><th>TMO Médio</th><th>% Toque/TMO</th></tr></thead>
+        <tbody id="tbody-toque"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Casos exemplo -->
+  <div class="card">
+    <div class="card-title">🔍 Casos de Exemplo — Toque Alto (≥ 40 min) · Abril 2026</div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fc-canal" onchange="filterCasos()">
+          <option value="">Todos</option>
+          <option>MULTICANAL CHAT</option>
+          <option>MULTICANAL C2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Rep</label>
+        <select id="fc-rep" onchange="filterCasos()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Processo</label>
+        <select id="fc-proc" onchange="filterCasos()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-count" id="fc-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-casos">
+        <thead><tr><th>Caso</th><th>Data</th><th>Rep</th><th>Líder</th><th>Canal</th><th>Processo</th><th>Toque (min)</th><th>TMO (min)</th></tr></thead>
+        <tbody id="tbody-casos"></tbody>
       </table>
     </div>
   </div>
@@ -885,6 +982,58 @@ const MAY_q4Data = [
 ];
 
 // ---- MULTI-OFENSORES ----
+// ---- TOQUE FUNCTIONS ----
+function filterToque() {
+  const c = document.getElementById('ft-canal').value;
+  const l = document.getElementById('ft-lider').value;
+  const rows = toqueRepData.filter(r => (!c || r.canal===c) && (!l || r.lider===l));
+  const tb = document.getElementById('tbody-toque');
+  document.getElementById('ft-count').textContent = `${rows.length} representante(s)`;
+  if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
+  tb.innerHTML = rows.map(r => {
+    const pct = r.tmo > 0 ? Math.round(r.toque / r.tmo * 100) : 0;
+    const cor = r.toque > 20 ? 'pos' : r.toque > 10 ? '' : 'neg';
+    return `<tr>
+      <td><strong>${r.rep}</strong></td><td>${r.lider}</td>
+      <td>${canalBadge(r.canal)}</td><td>${r.assigns.toLocaleString('pt-BR')}</td>
+      <td class="${cor}"><strong>${r.toque.toFixed(2)} min</strong></td>
+      <td style="color:#6c757d">${r.toqueMax.toFixed(2)} min</td>
+      <td>${r.tmo.toFixed(2)} min</td>
+      <td><span style="background:${pct>60?'#f8d7da':pct>40?'#fff3cd':'#d4edda'};padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">${pct}%</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function populateCasosFilters() {
+  const reps  = [...new Set(casosAltoToque.map(r=>r.rep))].sort();
+  const procs = [...new Set(casosAltoToque.map(r=>r.proc))].sort();
+  const sr = document.getElementById('fc-rep');
+  const sp = document.getElementById('fc-proc');
+  reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sr.appendChild(o); });
+  procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sp.appendChild(o); });
+}
+
+function filterCasos() {
+  const c = document.getElementById('fc-canal').value;
+  const r = document.getElementById('fc-rep').value;
+  const p = document.getElementById('fc-proc').value;
+  const rows = casosAltoToque.filter(x =>
+    (!c || x.canal===c) && (!r || x.rep===r) && (!p || x.proc===p)
+  );
+  const tb = document.getElementById('tbody-casos');
+  document.getElementById('fc-count').textContent = `${rows.length} caso(s)`;
+  if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
+  tb.innerHTML = rows.map(x => `<tr>
+    <td><code style="font-size:11px">${x.caso}</code></td>
+    <td>${x.data}/2026</td>
+    <td><strong>${x.rep}</strong></td><td>${x.lider}</td>
+    <td>${canalBadge(x.canal)}</td>
+    <td style="font-size:12px">${x.proc}</td>
+    <td class="pos"><strong>${x.toque.toFixed(2)}</strong></td>
+    <td>${x.tmo.toFixed(2)}</td>
+  </tr>`).join('');
+}
+
 function buildMultiData() {
   const map = {};
   getQ4Data().forEach(r => {
@@ -934,6 +1083,73 @@ function filterMulti() {
     </tr>`;
   }).join('');
 }
+
+// ---- DADOS TEMPO DE TOQUE ----
+const toqueRepData = [
+  {rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:121,toque:31.78,toqueMax:318.85,tmo:59.90},
+  {rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:157,toque:27.94,toqueMax:348.73,tmo:49.09},
+  {rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:132,toque:24.62,toqueMax:344.68,tmo:49.66},
+  {rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:160,toque:23.78,toqueMax:350.43,tmo:44.37},
+  {rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:238,toque:22.60,toqueMax:269.18,tmo:53.51},
+  {rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:194,toque:22.60,toqueMax:358.22,tmo:41.55},
+  {rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:140,toque:22.21,toqueMax:326.60,tmo:45.89},
+  {rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:207,toque:17.30,toqueMax:257.33,tmo:35.52},
+  {rep:'claudoliveir',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:165,toque:17.03,toqueMax:326.80,tmo:29.70},
+  {rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:141,toque:12.92,toqueMax:355.77,tmo:33.87},
+  {rep:'cccsousa',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:397,toque:12.39,toqueMax:173.98,tmo:41.67},
+  {rep:'amarquini',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:190,toque:11.61,toqueMax:357.23,tmo:30.12},
+  {rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:364,toque:11.31,toqueMax:279.87,tmo:22.20},
+  {rep:'cdoliveira',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:291,toque:11.18,toqueMax:133.65,tmo:25.86},
+  {rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:420,toque:10.10,toqueMax:317.63,tmo:35.95},
+  {rep:'pmarinho',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:178,toque:10.06,toqueMax:225.23,tmo:20.30},
+  {rep:'luciagarcia',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:408,toque:10.06,toqueMax:155.23,tmo:23.15},
+  {rep:'amcandido',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:522,toque:9.85,toqueMax:181.75,tmo:38.16},
+  {rep:'vltrevizan',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:386,toque:9.59,toqueMax:130.72,tmo:21.22},
+  {rep:'wgomdsouza',lider:'lrossetto',canal:'C2C',assigns:142,toque:9.53,toqueMax:58.33,tmo:20.78},
+  {rep:'renataperei',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:474,toque:9.41,toqueMax:121.73,tmo:32.65},
+  {rep:'marlaraujo',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:436,toque:9.37,toqueMax:237.02,tmo:32.85},
+  {rep:'marcovenicio',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:369,toque:9.05,toqueMax:316.07,tmo:20.85},
+  {rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:566,toque:8.85,toqueMax:328.52,tmo:35.35},
+  {rep:'phegoncalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:412,toque:7.87,toqueMax:227.98,tmo:32.13},
+  {rep:'mudiniz',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:291,toque:7.59,toqueMax:86.70,tmo:19.46},
+  {rep:'bemarques',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:442,toque:7.35,toqueMax:136.23,tmo:36.07},
+  {rep:'cchimenez',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:341,toque:7.24,toqueMax:147.53,tmo:31.41},
+  {rep:'kroza',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:231,toque:7.11,toqueMax:92.72,tmo:29.99},
+  {rep:'casbarreiros',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:380,toque:6.99,toqueMax:139.97,tmo:32.61},
+  {rep:'mandoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:521,toque:6.88,toqueMax:137.87,tmo:31.51},
+  {rep:'gbmontilha',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:739,toque:6.71,toqueMax:234.50,tmo:30.26},
+  {rep:'fenunes',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:382,toque:6.64,toqueMax:79.78,tmo:29.96},
+  {rep:'uizfsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:412,toque:6.60,toqueMax:59.62,tmo:32.32},
+  {rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:522,toque:6.48,toqueMax:280.47,tmo:30.14},
+];
+
+const casosAltoToque = [
+  {caso:'453611691',data:'30/04',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'PR - Propiedad intelectual',toque:358.22,tmo:358.22},
+  {caso:'453189249',data:'28/04',rep:'amarquini',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'PR - Propiedad intelectual',toque:357.23,tmo:357.25},
+  {caso:'448780580',data:'13/04',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Reputación',toque:356.40,tmo:356.42},
+  {caso:'452253897',data:'23/04',rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Reputación ME',toque:355.77,tmo:355.78},
+  {caso:'452452052',data:'24/04',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Gestión de Publicación',toque:354.55,tmo:354.57},
+  {caso:'453147952',data:'28/04',rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Reputación',toque:350.43,tmo:350.45},
+  {caso:'453404973',data:'29/04',rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Gestión de Publicación',toque:348.73,tmo:348.73},
+  {caso:'450877110',data:'16/04',rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'PR - Propiedad intelectual',toque:344.68,tmo:344.70},
+  {caso:'452190697',data:'23/04',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Reputación',toque:328.78,tmo:328.80},
+  {caso:'451099675',data:'17/04',rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',proc:'PR - Técnica prohibida',toque:328.52,tmo:328.53},
+  {caso:'453677904',data:'30/04',rep:'claudoliveir',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Reputación',toque:326.80,tmo:326.80},
+  {caso:'448780694',data:'15/04',rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Reputación ME',toque:326.60,tmo:326.60},
+  {caso:'452038829',data:'23/04',rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Reputación',toque:326.42,tmo:326.42},
+  {caso:'453148989',data:'28/04',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Gestión de Publicación',toque:324.00,tmo:324.02},
+  {caso:'451079140',data:'17/04',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'PR - Propiedad intelectual',toque:321.57,tmo:321.57},
+  {caso:'448853541',data:'07/04',rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',proc:'PR - Artículos prohibidos',toque:317.63,tmo:317.65},
+  {caso:'449680649',data:'15/04',rep:'marcovenicio',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Potenciar Ventas',toque:316.07,tmo:316.08},
+  {caso:'452895066',data:'27/04',rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Potenciar Ventas',toque:309.70,tmo:309.72},
+  {caso:'450231422',data:'14/04',rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Reputación',toque:308.93,tmo:308.95},
+  {caso:'441334676',data:'07/04',rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',proc:'Potenciar Ventas',toque:280.47,tmo:280.47},
+  {caso:'450612177',data:'15/04',rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'Asig. Mature Publicaciones',toque:279.87,tmo:279.87},
+  {caso:'449575714',data:'10/04',rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',proc:'PR - Propiedad intelectual',toque:269.18,tmo:269.20},
+  {caso:'453019162',data:'28/04',rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'PR - Datos Personales',toque:259.30,tmo:259.30},
+  {caso:'451121045',data:'17/04',rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'PR - Propiedad intelectual',toque:257.33,tmo:257.35},
+  {caso:'451468075',data:'20/04',rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'PR - Artículos prohibidos',toque:253.48,tmo:253.50},
+];
 
 // ---- MÊS ATIVO ----
 let currentMonth = '2026-04';
@@ -1036,6 +1252,8 @@ filterQuartil();
 populateProcFilter(); filterProcesso();
 populateQ4Filters(); filterQ4();
 filterMulti();
+filterToque();
+populateCasosFilters(); filterCasos();
 document.getElementById('last-updated').textContent = 'Fechamento completo';
 </script>
 </body>
