@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard TMO — BR_Publicaciones_Sellers_Mature | Abril 2026</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a2e; }
+
+header {
+  background: linear-gradient(135deg, #1a1a2e, #16213e);
+  color: white; padding: 20px 32px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+header h1 { font-size: 18px; font-weight: 700; }
+header p { font-size: 12px; opacity: 0.65; margin-top: 3px; }
+.badge { background: #e63946; color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; white-space: nowrap; }
+
+/* NAV TABS */
+.nav { background: white; border-bottom: 2px solid #e9ecef; display: flex; padding: 0 32px; gap: 4px; }
+.nav-tab {
+  padding: 14px 20px; font-size: 13px; font-weight: 600; cursor: pointer;
+  border-bottom: 3px solid transparent; color: #6c757d;
+  transition: all 0.2s; white-space: nowrap;
+}
+.nav-tab:hover { color: #1a1a2e; }
+.nav-tab.active { color: #1a1a2e; border-bottom-color: #e63946; }
+
+/* PAGES */
+.page { display: none; max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
+.page.active { display: block; }
+
+/* KPI */
+.kpi-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 22px; }
+.kpi { background: white; border-radius: 10px; padding: 18px 20px; box-shadow: 0 1px 6px rgba(0,0,0,.07); border-left: 4px solid #ccc; }
+.kpi.red { border-left-color: #e63946; }
+.kpi.yellow { border-left-color: #f4a261; }
+.kpi.green { border-left-color: #2dc653; }
+.kpi.blue { border-left-color: #457b9d; }
+.kpi.gray { border-left-color: #adb5bd; }
+.kpi-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: #6c757d; margin-bottom: 6px; }
+.kpi-val { font-size: 26px; font-weight: 800; }
+.kpi-sub { font-size: 11px; color: #6c757d; margin-top: 3px; }
+
+/* CHARTS */
+.charts-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+.charts-1 { margin-bottom: 18px; }
+.card { background: white; border-radius: 10px; padding: 22px; box-shadow: 0 1px 6px rgba(0,0,0,.07); }
+.card-title { font-size: 13px; font-weight: 700; margin-bottom: 14px; color: #1a1a2e; }
+
+/* FILTERS */
+.filters { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; align-items: flex-end; }
+.filter-group { display: flex; flex-direction: column; gap: 4px; }
+.filter-group label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; color: #6c757d; }
+select {
+  padding: 7px 28px 7px 10px; border: 1.5px solid #dee2e6; border-radius: 7px;
+  font-size: 13px; background: white; color: #1a1a2e; cursor: pointer;
+  appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236c757d'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center;
+  outline: none; transition: border .2s;
+}
+select:focus { border-color: #457b9d; }
+.filter-count { font-size: 11px; color: #6c757d; padding: 7px 0; align-self: flex-end; }
+
+/* TABLE */
+.tbl-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  background: #f8f9fa; padding: 10px 12px; text-align: left;
+  font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px;
+  color: #6c757d; border-bottom: 2px solid #e9ecef; white-space: nowrap;
+}
+td { padding: 9px 12px; border-bottom: 1px solid #f4f4f4; white-space: nowrap; }
+tr:hover td { background: #f8f9fa; }
+tr:last-child td { border-bottom: none; }
+.empty-row td { text-align: center; color: #adb5bd; padding: 28px; font-size: 13px; }
+
+/* BADGES */
+.q1,.q2,.q3,.q4 { padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 11px; }
+.q1 { background:#d4edda; color:#155724; }
+.q2 { background:#cce5ff; color:#004085; }
+.q3 { background:#fff3cd; color:#856404; }
+.q4 { background:#f8d7da; color:#721c24; }
+.chat { background:#e8f4f8; color:#0077b6; padding:2px 7px; border-radius:4px; font-size:10px; font-weight:600; }
+.mc2c { background:#ffeaa7; color:#856404; padding:2px 7px; border-radius:4px; font-size:10px; font-weight:600; }
+.c2c  { background:#dfe6e9; color:#2d3436; padding:2px 7px; border-radius:4px; font-size:10px; font-weight:600; }
+.pos { color:#e63946; font-weight:700; }
+.neg { color:#2dc653; font-weight:700; }
+
+/* DIAGNOSTICO */
+.diag-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.diag-card { background: white; border-radius: 10px; padding: 22px; box-shadow: 0 1px 6px rgba(0,0,0,.07); }
+.diag-card h3 { font-size: 13px; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.diag-card p, .diag-card li { font-size: 13px; color: #495057; line-height: 1.6; margin-bottom: 6px; }
+.diag-card ul { padding-left: 16px; }
+.diag-card.full { grid-column: 1 / -1; }
+.tag-red { background:#f8d7da; color:#721c24; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; }
+.tag-yellow { background:#fff3cd; color:#856404; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; }
+.tag-green { background:#d4edda; color:#155724; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:700; }
+.plano-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
+.plano-table th { background:#f8f9fa; padding:9px 12px; font-size:11px; text-transform:uppercase; color:#6c757d; border-bottom:2px solid #e9ecef; }
+.plano-table td { padding:9px 12px; border-bottom:1px solid #f4f4f4; }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>📊 Dashboard TMO — BR_Publicaciones_Sellers_Mature</h1>
+    <p>Fechamento Abril 2026 · Fonte: meli-bi-data.WHOWNER.DM_CX_TMO · sem outliers · sem drop · com toque</p>
+  </div>
+  <div class="badge">META: 27 min</div>
+</header>
+
+<nav class="nav">
+  <div class="nav-tab active" onclick="showPage('resumo',this)">📈 Visão Geral</div>
+  <div class="nav-tab" onclick="showPage('quartil',this)">🔢 Quartilização</div>
+  <div class="nav-tab" onclick="showPage('processo',this)">⚙️ TMO por Processo</div>
+  <div class="nav-tab" onclick="showPage('q4reps',this)">🔴 Reps Q4</div>
+  <div class="nav-tab" onclick="showPage('diagnostico',this)">🔍 Diagnóstico</div>
+  <div class="nav-tab" onclick="showPage('multiofensores',this)">🔥 Multi-Ofensores</div>
+</nav>
+
+<!-- ===================== PÁGINA 1: VISÃO GERAL ===================== -->
+<div id="page-resumo" class="page active">
+  <div class="kpi-row">
+    <div class="kpi red">
+      <div class="kpi-lbl">TMO Médio (Assign)</div>
+      <div class="kpi-val">29,34</div>
+      <div class="kpi-sub" style="color:#e63946;font-weight:700">+8,7% vs meta</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">TMO por Caso</div>
+      <div class="kpi-val">38,35</div>
+      <div class="kpi-sub">múltiplos assigns/caso</div>
+    </div>
+    <div class="kpi gray">
+      <div class="kpi-lbl">Volume Total</div>
+      <div class="kpi-val">16.455</div>
+      <div class="kpi-sub">contatos em Abril</div>
+    </div>
+    <div class="kpi gray">
+      <div class="kpi-lbl">Reps Ativos</div>
+      <div class="kpi-val">61</div>
+      <div class="kpi-sub">30 acima da meta</div>
+    </div>
+    <div class="kpi yellow">
+      <div class="kpi-lbl">Desvio da Meta</div>
+      <div class="kpi-val">+2,34 min</div>
+      <div class="kpi-sub">+8,7% fora do objetivo</div>
+    </div>
+  </div>
+
+  <div class="charts-2">
+    <div class="card">
+      <div class="card-title">TMO por Canal vs Meta (27 min)</div>
+      <div style="height:220px"><canvas id="cCanal"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">TMO por Líder — MULTICANAL CHAT</div>
+      <div style="height:220px"><canvas id="cLider"></canvas></div>
+    </div>
+  </div>
+  <div class="charts-1">
+    <div class="card">
+      <div class="card-title">Top 12 Processos com Maior TMO</div>
+      <div style="height:300px"><canvas id="cProcesso"></canvas></div>
+    </div>
+  </div>
+  <div class="charts-1">
+    <div class="card">
+      <div class="card-title">Top 15 Reps com Maior TMO (todos os canais)</div>
+      <div style="height:260px"><canvas id="cReps"></canvas></div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PÁGINA 2: QUARTILIZAÇÃO ===================== -->
+<div id="page-quartil" class="page">
+  <div class="card">
+    <div class="card-title">Quartilização de Representantes por Canal</div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fq-canal" onchange="filterQuartil()">
+          <option value="">Todos</option>
+          <option>MULTICANAL CHAT</option>
+          <option>MULTICANAL C2C</option>
+          <option>C2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Líder</label>
+        <select id="fq-lider" onchange="filterQuartil()">
+          <option value="">Todos</option>
+          <option>thaidossanto</option>
+          <option>alicarvalho</option>
+          <option>bkaroline</option>
+          <option>isabmot</option>
+          <option>lrossetto</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Quartil</label>
+        <select id="fq-quartil" onchange="filterQuartil()">
+          <option value="">Todos</option>
+          <option value="Q1">Q1 — Melhores</option>
+          <option value="Q2">Q2</option>
+          <option value="Q3">Q3</option>
+          <option value="Q4">Q4 — Piores</option>
+        </select>
+      </div>
+      <div class="filter-count" id="fq-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-quartil">
+        <thead><tr><th>Quartil</th><th>Rep</th><th>Líder</th><th>Canal</th><th>Volume</th><th>TMO (min)</th><th>Desvio vs Meta</th></tr></thead>
+        <tbody id="tbody-quartil"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PÁGINA 3: TMO POR PROCESSO ===================== -->
+<div id="page-processo" class="page">
+  <div class="card">
+    <div class="card-title">TMO por Processo e Canal</div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fp-canal" onchange="filterProcesso()">
+          <option value="">Todos</option>
+          <option>MULTICANAL CHAT</option>
+          <option>MULTICANAL C2C</option>
+          <option>C2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Status vs Meta</label>
+        <select id="fp-status" onchange="filterProcesso()">
+          <option value="">Todos</option>
+          <option value="acima">Acima da meta</option>
+          <option value="dentro">Dentro da meta</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Processo</label>
+        <select id="fp-proc" onchange="filterProcesso()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-count" id="fp-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-processo">
+        <thead><tr><th>Processo</th><th>Canal</th><th>Volume</th><th>TMO (min)</th><th>Desvio vs Meta</th><th>TMO Mín</th><th>TMO Máx</th></tr></thead>
+        <tbody id="tbody-processo"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PÁGINA 4: REPS Q4 ===================== -->
+<div id="page-q4reps" class="page">
+  <div class="card">
+    <div class="card-title">Representantes Q4 por Processo — Candidatos Prioritários de Desenvolvimento</div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="f4-canal" onchange="filterQ4()">
+          <option value="">Todos</option>
+          <option>CHAT</option>
+          <option>MC2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Líder</label>
+        <select id="f4-lider" onchange="filterQ4()">
+          <option value="">Todos</option>
+          <option>lrossetto</option>
+          <option>isabmot</option>
+          <option>bkaroline</option>
+          <option>thaidossanto</option>
+          <option>alicarvalho</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Processo</label>
+        <select id="f4-proc" onchange="filterQ4()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Rep</label>
+        <select id="f4-rep" onchange="filterQ4()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-count" id="f4-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-q4">
+        <thead><tr><th>Processo</th><th>Canal</th><th>Rep</th><th>Líder</th><th>Volume</th><th>TMO (min)</th><th>Desvio vs Meta</th></tr></thead>
+        <tbody id="tbody-q4"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PÁGINA 6: MULTI-OFENSORES ===================== -->
+<div id="page-multiofensores" class="page">
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">🔥 Reps com Q4 em mais de 1 processo — Foco de Desenvolvimento Prioritário</div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fm-canal" onchange="filterMulti()">
+          <option value="">Todos</option>
+          <option>CHAT</option>
+          <option>MC2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Líder</label>
+        <select id="fm-lider" onchange="filterMulti()">
+          <option value="">Todos</option>
+          <option>isabmot</option>
+          <option>bkaroline</option>
+          <option>thaidossanto</option>
+          <option>alicarvalho</option>
+          <option>lrossetto</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Mín. de processos Q4</label>
+        <select id="fm-min" onchange="filterMulti()">
+          <option value="2">2+</option>
+          <option value="3">3+</option>
+          <option value="5">5+</option>
+        </select>
+      </div>
+      <div class="filter-count" id="fm-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-multi">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Rep</th>
+            <th>Líder</th>
+            <th>Canal</th>
+            <th>Processos em Q4</th>
+            <th>TMO Médio (Q4)</th>
+            <th>Processos (lista)</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-multi"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PÁGINA 5: DIAGNÓSTICO ===================== -->
+<div id="page-diagnostico" class="page">
+  <div class="diag-grid">
+
+    <div class="diag-card">
+      <h3>🔴 <span class="tag-red">CRÍTICO</span> PR via C2C — Todos os Processos</h3>
+      <ul>
+        <li><strong>PR - Art. prohibidos C2C:</strong> 51,69 min (+24,69)</li>
+        <li><strong>PR - Datos Personales C2C:</strong> 51,50 min (+24,50)</li>
+        <li><strong>PR - Prop. intelectual C2C:</strong> 37,71 min (+10,71)</li>
+      </ul>
+      <p style="margin-top:10px"><strong>Causa:</strong> Ausência de script conversacional para casos de política. No C2C (voz), o rep verbaliza URLs, números de caso e explicações completas sem apoio visual. A variação min/max extrema (ex: 1,33 → 358 min) indica ausência de padrão de condução.</p>
+      <p><strong>Reps críticos:</strong> amarquini (178 min), gabrielaaiol (154 min), kavalle (110 min), raisacsantos (94 min)</p>
+    </div>
+
+    <div class="diag-card">
+      <h3>🟡 <span class="tag-yellow">ALTO</span> Reputación — MULTICANAL CHAT</h3>
+      <ul>
+        <li><strong>Volume:</strong> 5.281 contatos (maior da fila)</li>
+        <li><strong>TMO:</strong> 30,77 min (+3,77)</li>
+      </ul>
+      <p style="margin-top:10px"><strong>Causa:</strong> Sellers Mature com queda de reputação geram alta ansiedade e múltiplas perguntas por atendimento. Ausência de macros/templates força o rep a redigir explicações completas a cada contato. Casos multiponto (mesmo seller, múltiplos assigns) elevam o TMO por caso para 38,35 min.</p>
+      <p><strong>Reps críticos:</strong> maybalazshaz (52 min), cccsousa (40 min), amcandido (39 min)</p>
+    </div>
+
+    <div class="diag-card">
+      <h3>🟡 <span class="tag-yellow">ALTO</span> Gestión de Publicación + Potenciar Ventas — CHAT</h3>
+      <ul>
+        <li><strong>Gestión Pub.:</strong> 30,68 min · 3.682 contatos</li>
+        <li><strong>Potenciar Ventas:</strong> 30,75 min · 1.719 contatos</li>
+      </ul>
+      <p style="margin-top:10px"><strong>Causa:</strong> Processos orientados a ação — o rep guia o seller em tempo real e aguarda execução. O tempo de espera entre ações do seller é computado no TMO. Sellers Mature com baixa fluência digital amplificam esse efeito.</p>
+      <p><strong>Reps críticos:</strong> maybalazshaz, cccsousa, lecandido, bemarques, vfonorio</p>
+    </div>
+
+    <div class="diag-card">
+      <h3>🟡 <span class="tag-yellow">ALTO</span> Grupo lrossetto — MULTICANAL C2C</h3>
+      <ul>
+        <li>18 reps, todos sob a mesma liderança</li>
+        <li>Q4 inteiro: adysantos, kavalle, raisacsantos, linessousa</li>
+        <li>Touch Time médio Q4: 22–32 min</li>
+      </ul>
+      <p style="margin-top:10px"><strong>Causa:</strong> Touch Time elevado indica dificuldade de condução verbal da conversa — não é só ACW. O rep permanece em atendimento ativo por longos períodos sem resolver. Padrão consistente no grupo sugere lacuna de habilidade conversacional, não problema sistêmico.</p>
+    </div>
+
+    <div class="diag-card">
+      <h3>🟢 <span class="tag-green">REFERÊNCIA</span> Grupo thaidossanto — MULTICANAL CHAT</h3>
+      <ul>
+        <li>Único líder de Chat dentro da meta: <strong>26,78 min</strong></li>
+        <li>5 dos 11 melhores reps do canal são deste grupo</li>
+        <li>Volume expressivo: 3.146 contatos</li>
+      </ul>
+      <p style="margin-top:10px"><strong>Ação:</strong> Mapear práticas de gestão, posicionamento de tela e scripts utilizados por este grupo para replicar nos grupos isabmot e bkaroline como benchmark interno.</p>
+    </div>
+
+    <div class="diag-card">
+      <h3>📊 Síntese de Causas Raiz</h3>
+      <table class="plano-table">
+        <thead><tr><th>Causa</th><th>Impacto</th></tr></thead>
+        <tbody>
+          <tr><td>Sem script para processos PR em C2C</td><td><span class="tag-red">ALTO</span></td></tr>
+          <tr><td>Espera por ação do seller (tempo morto)</td><td><span class="tag-red">ALTO</span></td></tr>
+          <tr><td>Sem macro/template no Chat</td><td><span class="tag-yellow">MÉDIO</span></td></tr>
+          <tr><td>Baixa fluência verbal (C2C)</td><td><span class="tag-red">ALTO</span></td></tr>
+          <tr><td>Casos multiponto sem contexto</td><td><span class="tag-yellow">MÉDIO</span></td></tr>
+          <tr><td>Seller Mature com alta objeção</td><td><span class="tag-yellow">MÉDIO</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="diag-card full">
+      <h3>📅 Plano de Contenção — Maio 2026</h3>
+      <table class="plano-table">
+        <thead><tr><th>Ação</th><th>Responsável</th><th>Prazo</th><th>Prioridade</th></tr></thead>
+        <tbody>
+          <tr><td>Calibração de script conversacional para PR via C2C — foco nos 4 reps Q4 do grupo lrossetto</td><td>lrossetto + Coord.</td><td>09/05</td><td><span class="tag-red">URGENTE</span></td></tr>
+          <tr><td>Criação de macros/templates para Reputación e Gestión de Publicación no Chat</td><td>isabmot + WFM</td><td>12/05</td><td><span class="tag-red">URGENTE</span></td></tr>
+          <tr><td>Benchmark grupo thaidossanto: mapear práticas para replicar nas demais lideranças</td><td>Coord. Operações</td><td>16/05</td><td><span class="tag-yellow">ALTO</span></td></tr>
+          <tr><td>Acompanhamento semanal individual: maybalazshaz, cccsousa, amcandido (Chat)</td><td>isabmot / bkaroline</td><td>Semanal</td><td><span class="tag-yellow">ALTO</span></td></tr>
+          <tr><td>Revisão da régua de atendimentos simultâneos para reps com TMO > 35 min</td><td>WFM</td><td>07/05</td><td><span class="tag-yellow">ALTO</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ---- DATA ----
+const quartilData = [
+  {q:'Q1',rep:'kperrone',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:319,tmo:18.52,dev:-8.48},
+  {q:'Q1',rep:'stdiniz',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:658,tmo:20.75,dev:-6.25},
+  {q:'Q1',rep:'amcaldeira',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:569,tmo:20.85,dev:-6.15},
+  {q:'Q1',rep:'mrmarques',lider:'isabmot',canal:'MULTICANAL CHAT',vol:96,tmo:21.18,dev:-5.82},
+  {q:'Q1',rep:'aldmelo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:759,tmo:22.21,dev:-4.79},
+  {q:'Q1',rep:'acruz',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:144,tmo:22.69,dev:-4.31},
+  {q:'Q1',rep:'marfreitas',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:472,tmo:22.71,dev:-4.29},
+  {q:'Q1',rep:'aaugustinho',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:347,tmo:24.66,dev:-2.34},
+  {q:'Q1',rep:'cafarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:443,tmo:24.99,dev:-2.01},
+  {q:'Q1',rep:'jamonteiro',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:359,tmo:25.02,dev:-1.98},
+  {q:'Q1',rep:'juslima',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:296,tmo:25.63,dev:-1.37},
+  {q:'Q2',rep:'leibarcelos',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:91,tmo:25.77,dev:-1.23},
+  {q:'Q2',rep:'blvicente',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:698,tmo:26.54,dev:-0.46},
+  {q:'Q2',rep:'czago',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:51,tmo:27.07,dev:0.07},
+  {q:'Q2',rep:'vdpiedade',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:558,tmo:27.43,dev:0.43},
+  {q:'Q2',rep:'camcsilva',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:680,tmo:27.99,dev:0.99},
+  {q:'Q2',rep:'lyalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:357,tmo:28.87,dev:1.87},
+  {q:'Q2',rep:'polivdaraujo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:615,tmo:29.65,dev:2.65},
+  {q:'Q2',rep:'fenunes',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:382,tmo:29.96,dev:2.96},
+  {q:'Q2',rep:'kroza',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:231,tmo:29.99,dev:2.99},
+  {q:'Q2',rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:522,tmo:30.14,dev:3.14},
+  {q:'Q2',rep:'gbmontilha',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:739,tmo:30.26,dev:3.26},
+  {q:'Q3',rep:'lianadsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:417,tmo:30.43,dev:3.43},
+  {q:'Q3',rep:'ulissouza',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:419,tmo:30.58,dev:3.58},
+  {q:'Q3',rep:'vfarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:447,tmo:30.78,dev:3.78},
+  {q:'Q3',rep:'mfvieira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:358,tmo:31.21,dev:4.21},
+  {q:'Q3',rep:'cchimenez',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:341,tmo:31.41,dev:4.41},
+  {q:'Q3',rep:'mandoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:521,tmo:31.51,dev:4.51},
+  {q:'Q3',rep:'elaoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:240,tmo:31.91,dev:4.91},
+  {q:'Q3',rep:'phegoncalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:412,tmo:32.13,dev:5.13},
+  {q:'Q3',rep:'mariasilva',lider:'isabmot',canal:'MULTICANAL CHAT',vol:208,tmo:32.16,dev:5.16},
+  {q:'Q3',rep:'uizfsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:412,tmo:32.32,dev:5.32},
+  {q:'Q4',rep:'casbarreiros',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:380,tmo:32.61,dev:5.61},
+  {q:'Q4',rep:'renataperei',lider:'isabmot',canal:'MULTICANAL CHAT',vol:474,tmo:32.65,dev:5.65},
+  {q:'Q4',rep:'marlaraujo',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:436,tmo:32.85,dev:5.85},
+  {q:'Q4',rep:'ccnnasciment',lider:'isabmot',canal:'MULTICANAL CHAT',vol:110,tmo:33.14,dev:6.14},
+  {q:'Q4',rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',vol:566,tmo:35.35,dev:8.35},
+  {q:'Q4',rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:420,tmo:35.95,dev:8.95},
+  {q:'Q4',rep:'bemarques',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:442,tmo:36.07,dev:9.07},
+  {q:'Q4',rep:'amcandido',lider:'isabmot',canal:'MULTICANAL CHAT',vol:522,tmo:38.16,dev:11.16},
+  {q:'Q4',rep:'cccsousa',lider:'isabmot',canal:'MULTICANAL CHAT',vol:397,tmo:41.67,dev:14.67},
+  {q:'Q4',rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:238,tmo:53.51,dev:26.51},
+  {q:'Q1',rep:'tsgarbim',lider:'lrossetto',canal:'MULTICANAL C2C',vol:321,tmo:16.64,dev:-10.36},
+  {q:'Q1',rep:'mudiniz',lider:'lrossetto',canal:'MULTICANAL C2C',vol:291,tmo:19.46,dev:-7.54},
+  {q:'Q1',rep:'pmarinho',lider:'lrossetto',canal:'MULTICANAL C2C',vol:178,tmo:20.30,dev:-6.70},
+  {q:'Q1',rep:'marcovenicio',lider:'lrossetto',canal:'MULTICANAL C2C',vol:369,tmo:20.85,dev:-6.15},
+  {q:'Q1',rep:'vltrevizan',lider:'lrossetto',canal:'MULTICANAL C2C',vol:386,tmo:21.22,dev:-5.78},
+  {q:'Q2',rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',vol:364,tmo:22.20,dev:-4.80},
+  {q:'Q2',rep:'luciagarcia',lider:'lrossetto',canal:'MULTICANAL C2C',vol:408,tmo:23.15,dev:-3.85},
+  {q:'Q2',rep:'cdoliveira',lider:'lrossetto',canal:'MULTICANAL C2C',vol:291,tmo:25.86,dev:-1.14},
+  {q:'Q2',rep:'claudoliveir',lider:'lrossetto',canal:'MULTICANAL C2C',vol:165,tmo:29.70,dev:2.70},
+  {q:'Q2',rep:'amarquini',lider:'lrossetto',canal:'MULTICANAL C2C',vol:190,tmo:30.12,dev:3.12},
+  {q:'Q3',rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:141,tmo:33.87,dev:6.87},
+  {q:'Q3',rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',vol:207,tmo:35.52,dev:8.52},
+  {q:'Q3',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',vol:194,tmo:41.55,dev:14.55},
+  {q:'Q3',rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',vol:160,tmo:44.37,dev:17.37},
+  {q:'Q4',rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:140,tmo:45.89,dev:18.89},
+  {q:'Q4',rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',vol:157,tmo:49.09,dev:22.09},
+  {q:'Q4',rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:132,tmo:49.66,dev:22.66},
+  {q:'Q4',rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:121,tmo:59.90,dev:32.90},
+  {q:'Q1',rep:'wgomdsouza',lider:'lrossetto',canal:'C2C',vol:142,tmo:20.78,dev:-6.22},
+];
+
+const processoData = [
+  {proc:'PR - Artículos prohibidos',canal:'MULTICANAL C2C',vol:81,tmo:51.69,dev:24.69,min:1.77,max:318.87},
+  {proc:'PR - Datos Personales',canal:'MULTICANAL C2C',vol:20,tmo:51.50,dev:24.50,min:1.90,max:259.30},
+  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL C2C',vol:380,tmo:37.71,dev:10.71,min:1.33,max:358.22},
+  {proc:'PR - Artículos prohibidos',canal:'C2C',vol:3,tmo:35.76,dev:8.76,min:22.60,max:57.37},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL C2C',vol:509,tmo:33.82,dev:6.82,min:0.23,max:354.57},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL C2C',vol:286,tmo:33.15,dev:6.15,min:0.28,max:316.08},
+  {proc:'Asig. Mature Publicaciones',canal:'MULTICANAL CHAT',vol:408,tmo:31.96,dev:4.96,min:0.78,max:168.62},
+  {proc:'PR - Técnica prohibida',canal:'MULTICANAL C2C',vol:184,tmo:31.52,dev:4.52,min:1.15,max:314.02},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',vol:5281,tmo:30.77,dev:3.77,min:0.02,max:193.82},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL CHAT',vol:1719,tmo:30.75,dev:3.75,min:0.03,max:280.47},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL CHAT',vol:3682,tmo:30.68,dev:3.68,min:0.07,max:237.03},
+  {proc:'Antes de publicar',canal:'MULTICANAL CHAT',vol:489,tmo:29.06,dev:2.06,min:1.73,max:124.82},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',vol:2514,tmo:28.85,dev:1.85,min:0.05,max:158.97},
+  {proc:'PR - Artículos prohibidos',canal:'MULTICANAL CHAT',vol:514,tmo:28.50,dev:1.50,min:0.57,max:317.65},
+  {proc:'PR - Datos Personales',canal:'MULTICANAL CHAT',vol:64,tmo:28.10,dev:1.10,min:3.27,max:133.03},
+  {proc:'PR - Técnica prohibida',canal:'MULTICANAL CHAT',vol:931,tmo:28.07,dev:1.07,min:0.82,max:328.53},
+  {proc:'Potenciar Ventas',canal:'C2C',vol:11,tmo:27.39,dev:0.39,min:2.05,max:56.47},
+  {proc:'Asig. Mature Publicaciones',canal:'MULTICANAL C2C',vol:43,tmo:27.17,dev:0.17,min:2.82,max:279.87},
+  {proc:'Antes de publicar',canal:'MULTICANAL C2C',vol:64,tmo:26.89,dev:-0.11,min:0.92,max:177.20},
+  {proc:'Reputación ME',canal:'MULTICANAL C2C',vol:759,tmo:26.33,dev:-0.67,min:0.03,max:355.78},
+  {proc:'Calidad de foto',canal:'MULTICANAL CHAT',vol:122,tmo:25.29,dev:-1.71,min:0.18,max:91.30},
+  {proc:'Reputación',canal:'MULTICANAL C2C',vol:1865,tmo:24.62,dev:-2.38,min:0.05,max:356.42},
+  {proc:'Reputación ME',canal:'C2C',vol:16,tmo:23.56,dev:-3.44,min:3.37,max:54.25},
+  {proc:'Calidad de foto',canal:'MULTICANAL C2C',vol:24,tmo:23.51,dev:-3.49,min:1.90,max:101.78},
+  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL CHAT',vol:1419,tmo:23.11,dev:-3.89,min:0.15,max:269.20},
+  {proc:'Reputación',canal:'C2C',vol:52,tmo:21.40,dev:-5.60,min:2.80,max:52.82},
+  {proc:'PR - Técnica prohibida',canal:'C2C',vol:11,tmo:19.95,dev:-7.05,min:2.30,max:49.33},
+  {proc:'PR - Propiedad intelectual',canal:'C2C',vol:24,tmo:17.89,dev:-9.11,min:2.67,max:55.18},
+  {proc:'Gestión de Publicación',canal:'C2C',vol:20,tmo:17.26,dev:-9.74,min:1.93,max:58.35},
+];
+
+const q4Data = [
+  {proc:'PR - Propiedad intelectual',canal:'MC2C',rep:'amarquini',lider:'lrossetto',vol:6,tmo:178.32,dev:151.32},
+  {proc:'PR - Propiedad intelectual',canal:'MC2C',rep:'gabrielaaiol',lider:'lrossetto',vol:5,tmo:154.26,dev:127.26},
+  {proc:'PR - Propiedad intelectual',canal:'MC2C',rep:'kavalle',lider:'lrossetto',vol:10,tmo:110.85,dev:83.85},
+  {proc:'Potenciar Ventas',canal:'MC2C',rep:'raisacsantos',lider:'lrossetto',vol:12,tmo:99.03,dev:72.03},
+  {proc:'PR - Propiedad intelectual',canal:'MC2C',rep:'raisacsantos',lider:'lrossetto',vol:10,tmo:94.97,dev:67.97},
+  {proc:'PR - Artículos prohibidos',canal:'CHAT',rep:'maybalazshaz',lider:'bkaroline',vol:8,tmo:89.88,dev:62.88},
+  {proc:'Potenciar Ventas',canal:'MC2C',rep:'kavalle',lider:'lrossetto',vol:6,tmo:85.22,dev:58.22},
+  {proc:'Potenciar Ventas',canal:'MC2C',rep:'adysantos',lider:'lrossetto',vol:6,tmo:78.34,dev:51.34},
+  {proc:'Gestión de Publicación',canal:'MC2C',rep:'gabrielaaiol',lider:'lrossetto',vol:21,tmo:76.96,dev:49.96},
+  {proc:'Gestión de Publicación',canal:'MC2C',rep:'kavalle',lider:'lrossetto',vol:16,tmo:74.57,dev:47.57},
+  {proc:'Gestión de Publicación',canal:'MC2C',rep:'linessousa',lider:'lrossetto',vol:13,tmo:69.08,dev:42.08},
+  {proc:'PR - Artículos prohibidos',canal:'CHAT',rep:'lecandido',lider:'bkaroline',vol:12,tmo:67.55,dev:40.55},
+  {proc:'PR - Técnica prohibida',canal:'MC2C',rep:'giselesosant',lider:'lrossetto',vol:12,tmo:67.34,dev:40.34},
+  {proc:'PR - Propiedad intelectual',canal:'CHAT',rep:'lecandido',lider:'bkaroline',vol:20,tmo:65.61,dev:38.61},
+  {proc:'PR - Propiedad intelectual',canal:'CHAT',rep:'maybalazshaz',lider:'bkaroline',vol:17,tmo:62.25,dev:35.25},
+  {proc:'PR - Artículos prohibidos',canal:'MC2C',rep:'jecosta',lider:'lrossetto',vol:6,tmo:60.60,dev:33.60},
+  {proc:'Reputación',canal:'MC2C',rep:'adysantos',lider:'lrossetto',vol:51,tmo:59.06,dev:32.06},
+  {proc:'Antes de publicar',canal:'CHAT',rep:'maybalazshaz',lider:'bkaroline',vol:5,tmo:56.56,dev:29.56},
+  {proc:'Gestión de Publicación',canal:'MC2C',rep:'adysantos',lider:'lrossetto',vol:17,tmo:55.70,dev:28.70},
+  {proc:'Calidad de foto',canal:'CHAT',rep:'maybalazshaz',lider:'bkaroline',vol:5,tmo:54.84,dev:27.84},
+  {proc:'Reputación ME',canal:'MC2C',rep:'linessousa',lider:'lrossetto',vol:28,tmo:54.91,dev:27.91},
+  {proc:'PR - Artículos prohibidos',canal:'CHAT',rep:'cccsousa',lider:'isabmot',vol:14,tmo:54.28,dev:27.28},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'maybalazshaz',lider:'bkaroline',vol:44,tmo:52.35,dev:25.35},
+  {proc:'PR - Técnica prohibida',canal:'CHAT',rep:'vfonorio',lider:'isabmot',vol:31,tmo:52.33,dev:25.33},
+  {proc:'Reputación',canal:'CHAT',rep:'maybalazshaz',lider:'bkaroline',vol:84,tmo:52.07,dev:25.07},
+  {proc:'PR - Técnica prohibida',canal:'CHAT',rep:'maybalazshaz',lider:'bkaroline',vol:13,tmo:50.68,dev:23.68},
+  {proc:'PR - Artículos prohibidos',canal:'CHAT',rep:'casbarreiros',lider:'thaidossanto',vol:14,tmo:50.26,dev:23.26},
+  {proc:'Asig. Mature Publicaciones',canal:'CHAT',rep:'mandoliveira',lider:'isabmot',vol:9,tmo:50.08,dev:23.08},
+  {proc:'Asig. Mature Publicaciones',canal:'CHAT',rep:'vfonorio',lider:'isabmot',vol:16,tmo:48.01,dev:21.01},
+  {proc:'PR - Artículos prohibidos',canal:'CHAT',rep:'amcandido',lider:'isabmot',vol:17,tmo:47.00,dev:20.00},
+  {proc:'Reputación ME',canal:'CHAT',rep:'maybalazshaz',lider:'bkaroline',vol:35,tmo:47.20,dev:20.20},
+  {proc:'Reputación',canal:'MC2C',rep:'vitnasciment',lider:'lrossetto',vol:87,tmo:46.91,dev:19.91},
+  {proc:'PR - Técnica prohibida',canal:'CHAT',rep:'cccsousa',lider:'isabmot',vol:15,tmo:46.59,dev:19.59},
+  {proc:'PR - Propiedad intelectual',canal:'CHAT',rep:'cccsousa',lider:'isabmot',vol:41,tmo:46.11,dev:19.11},
+  {proc:'Potenciar Ventas',canal:'MC2C',rep:'linessousa',lider:'lrossetto',vol:8,tmo:49.59,dev:22.59},
+  {proc:'Antes de publicar',canal:'CHAT',rep:'vfonorio',lider:'isabmot',vol:15,tmo:45.55,dev:18.55},
+  {proc:'Reputación ME',canal:'MC2C',rep:'kavalle',lider:'lrossetto',vol:37,tmo:45.55,dev:18.55},
+  {proc:'Antes de publicar',canal:'CHAT',rep:'amcandido',lider:'isabmot',vol:14,tmo:44.43,dev:17.43},
+  {proc:'Asig. Mature Publicaciones',canal:'CHAT',rep:'ccnnasciment',lider:'isabmot',vol:6,tmo:43.95,dev:16.95},
+  {proc:'Asig. Mature Publicaciones',canal:'CHAT',rep:'lianadsilva',lider:'alicarvalho',vol:7,tmo:43.84,dev:16.84},
+  {proc:'Antes de publicar',canal:'CHAT',rep:'marlaraujo',lider:'alicarvalho',vol:8,tmo:43.76,dev:16.76},
+  {proc:'Antes de publicar',canal:'CHAT',rep:'bemarques',lider:'thaidossanto',vol:13,tmo:42.77,dev:15.77},
+  {proc:'Antes de publicar',canal:'CHAT',rep:'mandoliveira',lider:'isabmot',vol:14,tmo:42.54,dev:15.54},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'cccsousa',lider:'isabmot',vol:46,tmo:42.42,dev:15.42},
+  {proc:'PR - Propiedad intelectual',canal:'CHAT',rep:'amcandido',lider:'isabmot',vol:43,tmo:36.59,dev:9.59},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'cccsousa',lider:'isabmot',vol:80,tmo:41.24,dev:14.24},
+  {proc:'Reputación',canal:'CHAT',rep:'cccsousa',lider:'isabmot',vol:127,tmo:40.81,dev:13.81},
+  {proc:'Reputación ME',canal:'MC2C',rep:'albarbosa',lider:'lrossetto',vol:25,tmo:38.90,dev:11.90},
+  {proc:'Reputación',canal:'MC2C',rep:'raisacsantos',lider:'lrossetto',vol:64,tmo:38.60,dev:11.60},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'ulissouza',lider:'thaidossanto',vol:33,tmo:38.60,dev:11.60},
+  {proc:'Reputación ME',canal:'CHAT',rep:'mandoliveira',lider:'isabmot',vol:60,tmo:40.17,dev:13.17},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'uizfsilva',lider:'alicarvalho',vol:33,tmo:39.92,dev:12.92},
+  {proc:'Asig. Mature Publicaciones',canal:'CHAT',rep:'ulissouza',lider:'thaidossanto',vol:11,tmo:40.40,dev:13.40},
+  {proc:'Asig. Mature Publicaciones',canal:'CHAT',rep:'bemarques',lider:'thaidossanto',vol:7,tmo:40.33,dev:13.33},
+  // entradas adicionais para cobertura completa
+  {proc:'Reputación ME',canal:'CHAT',rep:'cccsousa',lider:'isabmot',vol:56,tmo:39.01,dev:12.01},
+  {proc:'Reputación ME',canal:'CHAT',rep:'amcandido',lider:'isabmot',vol:74,tmo:38.92,dev:11.92},
+  {proc:'Reputación',canal:'CHAT',rep:'amcandido',lider:'isabmot',vol:162,tmo:39.16,dev:12.16},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'amcandido',lider:'isabmot',vol:51,tmo:37.84,dev:10.84},
+  {proc:'PR - Técnica prohibida',canal:'CHAT',rep:'amcandido',lider:'isabmot',vol:32,tmo:39.38,dev:12.38},
+  {proc:'Reputación',canal:'CHAT',rep:'mandoliveira',lider:'isabmot',vol:147,tmo:38.13,dev:11.13},
+  {proc:'Reputación ME',canal:'CHAT',rep:'ccnnasciment',lider:'isabmot',vol:14,tmo:38.53,dev:11.53},
+  {proc:'Reputación',canal:'CHAT',rep:'ccnnasciment',lider:'isabmot',vol:25,tmo:36.24,dev:9.24},
+  {proc:'Reputación ME',canal:'CHAT',rep:'uizfsilva',lider:'alicarvalho',vol:72,tmo:35.25,dev:8.25},
+  {proc:'Reputación ME',canal:'CHAT',rep:'bemarques',lider:'thaidossanto',vol:75,tmo:35.15,dev:8.15},
+  {proc:'Reputación',canal:'CHAT',rep:'bemarques',lider:'thaidossanto',vol:123,tmo:37.17,dev:10.17},
+  {proc:'PR - Artículos prohibidos',canal:'CHAT',rep:'bemarques',lider:'thaidossanto',vol:13,tmo:37.31,dev:10.31},
+  {proc:'PR - Técnica prohibida',canal:'CHAT',rep:'bemarques',lider:'thaidossanto',vol:25,tmo:34.79,dev:7.79},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'bemarques',lider:'thaidossanto',vol:94,tmo:36.32,dev:9.32},
+  {proc:'PR - Propiedad intelectual',canal:'CHAT',rep:'phegoncalves',lider:'alicarvalho',vol:32,tmo:37.82,dev:10.82},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'lecandido',lider:'bkaroline',vol:110,tmo:39.46,dev:12.46},
+  {proc:'PR - Técnica prohibida',canal:'CHAT',rep:'lecandido',lider:'bkaroline',vol:25,tmo:41.76,dev:14.76},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'vfonorio',lider:'isabmot',vol:46,tmo:39.45,dev:12.45},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'vfonorio',lider:'isabmot',vol:122,tmo:37.78,dev:10.78},
+  {proc:'PR - Artículos prohibidos',canal:'CHAT',rep:'kroza',lider:'bkaroline',vol:6,tmo:39.21,dev:12.21},
+  {proc:'PR - Técnica prohibida',canal:'CHAT',rep:'kroza',lider:'bkaroline',vol:18,tmo:35.48,dev:8.48},
+  {proc:'Reputación',canal:'CHAT',rep:'kroza',lider:'bkaroline',vol:56,tmo:38.03,dev:11.03},
+  {proc:'Asig. Mature Publicaciones',canal:'CHAT',rep:'jamonteiro',lider:'thaidossanto',vol:6,tmo:39.62,dev:12.62},
+  {proc:'Asig. Mature Publicaciones',canal:'CHAT',rep:'cchimenez',lider:'thaidossanto',vol:9,tmo:39.03,dev:12.03},
+  {proc:'Asig. Mature Publicaciones',canal:'CHAT',rep:'juslima',lider:'thaidossanto',vol:6,tmo:39.07,dev:12.07},
+  {proc:'Reputación ME',canal:'CHAT',rep:'elaoliveira',lider:'isabmot',vol:30,tmo:35.78,dev:8.78},
+  {proc:'Reputación',canal:'CHAT',rep:'elaoliveira',lider:'isabmot',vol:82,tmo:34.93,dev:7.93},
+  {proc:'PR - Artículos prohibidos',canal:'CHAT',rep:'elaoliveira',lider:'isabmot',vol:10,tmo:37.74,dev:10.74},
+  {proc:'PR - Artículos prohibidos',canal:'CHAT',rep:'renataperei',lider:'isabmot',vol:15,tmo:35.02,dev:8.02},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'renataperei',lider:'isabmot',vol:47,tmo:37.27,dev:10.27},
+  {proc:'Reputación ME',canal:'CHAT',rep:'renataperei',lider:'isabmot',vol:53,tmo:36.00,dev:9.00},
+  {proc:'Reputación ME',canal:'CHAT',rep:'mariasilva',lider:'isabmot',vol:19,tmo:36.73,dev:9.73},
+  {proc:'Reputación',canal:'CHAT',rep:'mariasilva',lider:'isabmot',vol:59,tmo:35.78,dev:8.78},
+  {proc:'Reputación',canal:'CHAT',rep:'polivdaraujo',lider:'bkaroline',vol:177,tmo:35.17,dev:8.17},
+  {proc:'PR - Técnica prohibida',canal:'CHAT',rep:'casbarreiros',lider:'thaidossanto',vol:23,tmo:34.84,dev:7.84},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'ulissouza',lider:'thaidossanto',vol:76,tmo:34.42,dev:7.42},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'lyalves',lider:'alicarvalho',vol:76,tmo:35.65,dev:8.65},
+  {proc:'Antes de publicar',canal:'CHAT',rep:'lyalves',lider:'alicarvalho',vol:8,tmo:35.33,dev:8.33},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'lianadsilva',lider:'alicarvalho',vol:89,tmo:35.50,dev:8.50},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'marlaraujo',lider:'alicarvalho',vol:93,tmo:37.00,dev:10.00},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'renataperei',lider:'isabmot',vol:47,tmo:37.27,dev:10.27},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'losouza',lider:'alicarvalho',vol:37,tmo:41.66,dev:14.66},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'vfarias',lider:'alicarvalho',vol:37,tmo:38.97,dev:11.97},
+  {proc:'Reputación ME',canal:'MC2C',rep:'adysantos',lider:'lrossetto',vol:25,tmo:37.94,dev:10.94},
+];
+
+// ---- RENDER HELPERS ----
+function canalBadge(c) {
+  if (c==='MULTICANAL CHAT'||c==='CHAT') return `<span class="chat">${c}</span>`;
+  if (c==='MULTICANAL C2C'||c==='MC2C') return `<span class="mc2c">${c}</span>`;
+  return `<span class="c2c">${c}</span>`;
+}
+function quartilBadge(q) { return `<span class="${q.toLowerCase()}">${q}</span>`; }
+function devFmt(d) { return d>=0 ? `<span class="pos">+${d.toFixed(2)}</span>` : `<span class="neg">${d.toFixed(2)}</span>`; }
+function emptyRow(cols) { return `<tr class="empty-row"><td colspan="${cols}">Nenhum resultado para os filtros selecionados.</td></tr>`; }
+
+// ---- QUARTIL TABLE ----
+function filterQuartil() {
+  const c = document.getElementById('fq-canal').value;
+  const l = document.getElementById('fq-lider').value;
+  const q = document.getElementById('fq-quartil').value;
+  let rows = quartilData.filter(r =>
+    (!c || r.canal===c) &&
+    (!l || r.lider===l) &&
+    (!q || r.q===q)
+  );
+  const tb = document.getElementById('tbody-quartil');
+  document.getElementById('fq-count').textContent = `${rows.length} representante(s)`;
+  if (!rows.length) { tb.innerHTML = emptyRow(7); return; }
+  tb.innerHTML = rows.map(r=>`<tr>
+    <td>${quartilBadge(r.q)}</td><td>${r.rep}</td><td>${r.lider}</td>
+    <td>${canalBadge(r.canal)}</td><td>${r.vol.toLocaleString('pt-BR')}</td>
+    <td><strong>${r.tmo.toFixed(2)}</strong></td><td>${devFmt(r.dev)}</td>
+  </tr>`).join('');
+}
+
+// ---- PROCESSO TABLE ----
+function populateProcFilter() {
+  const procs = [...new Set(processoData.map(r=>r.proc))].sort();
+  const sel = document.getElementById('fp-proc');
+  procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sel.appendChild(o); });
+}
+function filterProcesso() {
+  const c = document.getElementById('fp-canal').value;
+  const s = document.getElementById('fp-status').value;
+  const p = document.getElementById('fp-proc').value;
+  let rows = processoData.filter(r =>
+    (!c || r.canal===c) &&
+    (!s || (s==='acima' ? r.dev>0 : r.dev<=0)) &&
+    (!p || r.proc===p)
+  );
+  const tb = document.getElementById('tbody-processo');
+  document.getElementById('fp-count').textContent = `${rows.length} processo(s)`;
+  if (!rows.length) { tb.innerHTML = emptyRow(7); return; }
+  tb.innerHTML = rows.map(r=>`<tr>
+    <td>${r.proc}</td><td>${canalBadge(r.canal)}</td>
+    <td>${r.vol.toLocaleString('pt-BR')}</td>
+    <td><strong>${r.tmo.toFixed(2)}</strong></td>
+    <td>${devFmt(r.dev)}</td>
+    <td>${r.min.toFixed(2)}</td><td>${r.max.toFixed(2)}</td>
+  </tr>`).join('');
+}
+
+// ---- Q4 TABLE ----
+function populateQ4Filters() {
+  const procs = [...new Set(q4Data.map(r=>r.proc))].sort();
+  const reps  = [...new Set(q4Data.map(r=>r.rep))].sort();
+  const sp = document.getElementById('f4-proc');
+  const sr = document.getElementById('f4-rep');
+  procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sp.appendChild(o); });
+  reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sr.appendChild(o); });
+}
+function filterQ4() {
+  const c = document.getElementById('f4-canal').value;
+  const l = document.getElementById('f4-lider').value;
+  const p = document.getElementById('f4-proc').value;
+  const r = document.getElementById('f4-rep').value;
+  let rows = q4Data.filter(x =>
+    (!c || x.canal===c) &&
+    (!l || x.lider===l) &&
+    (!p || x.proc===p) &&
+    (!r || x.rep===r)
+  );
+  const tb = document.getElementById('tbody-q4');
+  document.getElementById('f4-count').textContent = `${rows.length} ocorrência(s)`;
+  if (!rows.length) { tb.innerHTML = emptyRow(7); return; }
+  tb.innerHTML = rows.map(x=>`<tr>
+    <td>${x.proc}</td><td>${canalBadge(x.canal)}</td>
+    <td><strong>${x.rep}</strong></td><td>${x.lider}</td>
+    <td>${x.vol}</td>
+    <td><strong>${x.tmo.toFixed(2)}</strong></td>
+    <td>${devFmt(x.dev)}</td>
+  </tr>`).join('');
+}
+
+// ---- NAV ----
+function showPage(id, el) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  el.classList.add('active');
+}
+
+// ---- CHARTS ----
+new Chart(document.getElementById('cCanal'),{
+  type:'bar',
+  data:{
+    labels:['MULTICANAL CHAT','MULTICANAL C2C','C2C'],
+    datasets:[
+      {label:'TMO (min)',data:[29.34,28.80,20.78],backgroundColor:['#457b9d','#e76f51','#2dc653'],borderRadius:6},
+      {label:'Meta 27 min',data:[27,27,27],type:'line',borderColor:'#e63946',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:35,grid:{color:'#f0f0f0'}}}}
+});
+
+new Chart(document.getElementById('cLider'),{
+  type:'bar',
+  data:{
+    labels:['isabmot','bkaroline','alicarvalho','thaidossanto'],
+    datasets:[
+      {label:'TMO (min)',data:[34.24,29.34,28.45,26.78],backgroundColor:d=>['#e63946','#f4a261','#f4a261','#2dc653'][d.dataIndex],borderRadius:6},
+      {label:'Meta',data:[27,27,27,27],type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:38,grid:{color:'#f0f0f0'}}}}
+});
+
+const topProcs = processoData.slice(0,12);
+new Chart(document.getElementById('cProcesso'),{
+  type:'bar',
+  data:{
+    labels:topProcs.map(r=>r.proc+' ('+r.canal.replace('MULTICANAL ','')+')'),
+    datasets:[
+      {label:'TMO (min)',data:topProcs.map(r=>r.tmo),backgroundColor:topProcs.map(r=>r.tmo>35?'#e63946':r.tmo>27?'#f4a261':'#2dc653'),borderRadius:4},
+      {label:'Meta',data:Array(12).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+    ]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{x:{min:0,max:60},y:{ticks:{font:{size:10}}}}}
+});
+
+const topRepsList = [
+  {rep:'adysantos',tmo:59.90},{rep:'maybalazshaz',tmo:53.51},{rep:'raisacsantos',tmo:49.66},
+  {rep:'kavalle',tmo:49.09},{rep:'linessousa',tmo:45.89},{rep:'vitnasciment',tmo:44.37},
+  {rep:'cccsousa',tmo:41.67},{rep:'gabrielaaiol',tmo:41.55},{rep:'amcandido',tmo:38.16},
+  {rep:'lecandido',tmo:35.95},{rep:'bemarques',tmo:36.07},{rep:'vfonorio',tmo:35.35},
+  {rep:'giselesosant',tmo:35.52},{rep:'albarbosa',tmo:33.87},{rep:'renataperei',tmo:32.65}
+];
+new Chart(document.getElementById('cReps'),{
+  type:'bar',
+  data:{
+    labels:topRepsList.map(r=>r.rep),
+    datasets:[
+      {label:'TMO (min)',data:topRepsList.map(r=>r.tmo),backgroundColor:'#e63946',borderRadius:4},
+      {label:'Meta',data:Array(15).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:70,grid:{color:'#f0f0f0'}},x:{ticks:{font:{size:10}}}}}
+});
+
+// ---- MULTI-OFENSORES ----
+function buildMultiData() {
+  const map = {};
+  q4Data.forEach(r => {
+    const key = r.rep + '|' + r.canal + '|' + r.lider;
+    if (!map[key]) map[key] = {rep:r.rep, canal:r.canal, lider:r.lider, procs:[], tmos:[]};
+    if (!map[key].procs.includes(r.proc)) {
+      map[key].procs.push(r.proc);
+      map[key].tmos.push(r.tmo);
+    }
+  });
+  return Object.values(map)
+    .filter(r => r.procs.length > 1)
+    .sort((a,b) => b.procs.length - a.procs.length);
+}
+
+function severityClass(n) {
+  if (n >= 7) return 'q4';
+  if (n >= 5) return 'q3';
+  if (n >= 3) return 'q2';
+  return 'q1';
+}
+
+function filterMulti() {
+  const c = document.getElementById('fm-canal').value;
+  const l = document.getElementById('fm-lider').value;
+  const min = parseInt(document.getElementById('fm-min').value);
+  const all = buildMultiData();
+  const rows = all.filter(r =>
+    (!c || r.canal === c) &&
+    (!l || r.lider === l) &&
+    r.procs.length >= min
+  );
+  const tb = document.getElementById('tbody-multi');
+  document.getElementById('fm-count').textContent = `${rows.length} representante(s)`;
+  if (!rows.length) { tb.innerHTML = emptyRow(7); return; }
+  tb.innerHTML = rows.map((r, i) => {
+    const avg = (r.tmos.reduce((a,b)=>a+b,0)/r.tmos.length).toFixed(2);
+    const tags = r.procs.map(p=>`<span style="display:inline-block;background:#f0f2f5;border-radius:4px;padding:1px 7px;font-size:11px;margin:2px">${p}</span>`).join(' ');
+    return `<tr>
+      <td><strong>${i+1}º</strong></td>
+      <td><strong>${r.rep}</strong></td>
+      <td>${r.lider}</td>
+      <td>${canalBadge(r.canal)}</td>
+      <td><span class="${severityClass(r.procs.length)}" style="font-size:14px;padding:3px 10px">${r.procs.length} processos</span></td>
+      <td class="pos"><strong>${avg} min</strong></td>
+      <td style="max-width:420px;white-space:normal">${tags}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ---- INIT ----
+filterQuartil();
+populateProcFilter(); filterProcesso();
+populateQ4Filters(); filterQ4();
+filterMulti();
+</script>
+</body>
+</html>
