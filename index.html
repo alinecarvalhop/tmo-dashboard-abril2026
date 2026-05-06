@@ -111,7 +111,14 @@ tr:last-child td { border-bottom: none; }
     <h1>📊 Dashboard TMO — BR_Publicaciones_Sellers_Mature</h1>
     <p>Fechamento Abril 2026 · Fonte: meli-bi-data.WHOWNER.DM_CX_TMO · sem outliers · sem drop · com toque</p>
   </div>
-  <div class="badge">META: 27 min</div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div class="badge">META: 27 min</div>
+    <div style="display:flex;gap:4px">
+      <button onclick="setMonth('2026-04')" id="btn-04" style="padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:#e63946;color:white">Abril 2026</button>
+      <button onclick="setMonth('2026-05')" id="btn-05" style="padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:rgba(255,255,255,0.2);color:white">Maio 2026 ⚡</button>
+    </div>
+    <div id="last-updated" style="font-size:11px;opacity:0.6"></div>
+  </div>
 </header>
 
 <nav class="nav">
@@ -664,7 +671,7 @@ function filterQuartil() {
   const c = document.getElementById('fq-canal').value;
   const l = document.getElementById('fq-lider').value;
   const q = document.getElementById('fq-quartil').value;
-  let rows = quartilData.filter(r =>
+  let rows = getQuartilData().filter(r =>
     (!c || r.canal===c) &&
     (!l || r.lider===l) &&
     (!q || r.q===q)
@@ -689,7 +696,7 @@ function filterProcesso() {
   const c = document.getElementById('fp-canal').value;
   const s = document.getElementById('fp-status').value;
   const p = document.getElementById('fp-proc').value;
-  let rows = processoData.filter(r =>
+  let rows = getProcessoData().filter(r =>
     (!c || r.canal===c) &&
     (!s || (s==='acima' ? r.dev>0 : r.dev<=0)) &&
     (!p || r.proc===p)
@@ -720,7 +727,7 @@ function filterQ4() {
   const l = document.getElementById('f4-lider').value;
   const p = document.getElementById('f4-proc').value;
   const r = document.getElementById('f4-rep').value;
-  let rows = q4Data.filter(x =>
+  let rows = getQ4Data().filter(x =>
     (!c || x.canal===c) &&
     (!l || x.lider===l) &&
     (!p || x.proc===p) &&
@@ -746,30 +753,6 @@ function showPage(id, el) {
   el.classList.add('active');
 }
 
-// ---- CHARTS ----
-new Chart(document.getElementById('cCanal'),{
-  type:'bar',
-  data:{
-    labels:['MULTICANAL CHAT','MULTICANAL C2C','C2C'],
-    datasets:[
-      {label:'TMO (min)',data:[29.34,28.80,20.78],backgroundColor:['#457b9d','#e76f51','#2dc653'],borderRadius:6},
-      {label:'Meta 27 min',data:[27,27,27],type:'line',borderColor:'#e63946',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
-    ]
-  },
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:35,grid:{color:'#f0f0f0'}}}}
-});
-
-new Chart(document.getElementById('cLider'),{
-  type:'bar',
-  data:{
-    labels:['isabmot','bkaroline','alicarvalho','thaidossanto'],
-    datasets:[
-      {label:'TMO (min)',data:[34.24,29.34,28.45,26.78],backgroundColor:d=>['#e63946','#f4a261','#f4a261','#2dc653'][d.dataIndex],borderRadius:6},
-      {label:'Meta',data:[27,27,27,27],type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
-    ]
-  },
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:38,grid:{color:'#f0f0f0'}}}}
-});
 
 const topProcs = processoData.slice(0,12);
 new Chart(document.getElementById('cProcesso'),{
@@ -803,10 +786,132 @@ new Chart(document.getElementById('cReps'),{
   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:70,grid:{color:'#f0f0f0'}},x:{ticks:{font:{size:10}}}}}
 });
 
+// ---- DADOS MAIO 2026 ----
+const KPIS = {
+  '2026-04': {tmo:29.34, tmoCaso:38.35, volume:16455, reps:61, desvio:2.34, pct:8.7, label:'Abril 2026', partial:false},
+  '2026-05': {tmo:27.50, tmoCaso:null,  volume:2404,  reps:51, desvio:0.50, pct:1.9, label:'Maio 2026', partial:true}
+};
+const CANAL_DATA = {
+  '2026-04': [{c:'MULTICANAL CHAT',v:12832,t:29.34,d:2.34},{c:'MULTICANAL C2C',v:4073,t:28.80,d:1.80},{c:'C2C',v:139,t:20.78,d:-6.22}],
+  '2026-05': [{c:'MULTICANAL CHAT',v:1808,t:27.81,d:0.81},{c:'MULTICANAL C2C',v:521,t:27.83,d:0.83},{c:'C2C',v:75,t:17.83,d:-9.17}]
+};
+const LIDER_DATA = {
+  '2026-04': [{l:'isabmot',t:34.24},{l:'bkaroline',t:29.34},{l:'alicarvalho',t:28.45},{l:'thaidossanto',t:26.78}],
+  '2026-05': [{l:'alicarvalho',t:29.78},{l:'bkaroline',t:28.36},{l:'isabmot',t:27.04},{l:'thaidossanto',t:24.94}]
+};
+
+const MAY_quartilData = [
+  {q:'Q1',rep:'kperrone',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:34,tmo:16.73,dev:-10.27},
+  {q:'Q1',rep:'mandoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:91,tmo:19.76,dev:-7.24},
+  {q:'Q1',rep:'amcaldeira',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:56,tmo:19.89,dev:-7.11},
+  {q:'Q1',rep:'mrmarques',lider:'isabmot',canal:'MULTICANAL CHAT',vol:94,tmo:20.00,dev:-7.00},
+  {q:'Q1',rep:'aldmelo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:91,tmo:20.94,dev:-6.06},
+  {q:'Q1',rep:'marfreitas',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:65,tmo:21.35,dev:-5.65},
+  {q:'Q1',rep:'vdpiedade',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:38,tmo:22.79,dev:-4.21},
+  {q:'Q1',rep:'stdiniz',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:60,tmo:23.29,dev:-3.71},
+  {q:'Q1',rep:'blvicente',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:84,tmo:24.57,dev:-2.43},
+  {q:'Q2',rep:'polivdaraujo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:78,tmo:26.38,dev:-0.62},
+  {q:'Q2',rep:'phegoncalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:29,tmo:26.73,dev:-0.27},
+  {q:'Q2',rep:'marlaraujo',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:54,tmo:26.84,dev:-0.16},
+  {q:'Q2',rep:'camcsilva',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:69,tmo:27.26,dev:0.26},
+  {q:'Q2',rep:'uizfsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:43,tmo:27.90,dev:0.90},
+  {q:'Q2',rep:'ulissouza',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:60,tmo:28.14,dev:1.14},
+  {q:'Q2',rep:'aaugustinho',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:38,tmo:28.72,dev:1.72},
+  {q:'Q2',rep:'kroza',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:26,tmo:29.28,dev:2.28},
+  {q:'Q3',rep:'lyalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:43,tmo:29.38,dev:2.38},
+  {q:'Q3',rep:'cchimenez',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:58,tmo:29.60,dev:2.60},
+  {q:'Q3',rep:'lianadsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:55,tmo:30.25,dev:3.25},
+  {q:'Q3',rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',vol:69,tmo:30.26,dev:3.26},
+  {q:'Q3',rep:'casbarreiros',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:27,tmo:30.39,dev:3.39},
+  {q:'Q3',rep:'amcandido',lider:'isabmot',canal:'MULTICANAL CHAT',vol:48,tmo:31.57,dev:4.57},
+  {q:'Q3',rep:'gbmontilha',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:70,tmo:32.02,dev:5.02},
+  {q:'Q3',rep:'bemarques',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:23,tmo:32.99,dev:5.99},
+  {q:'Q4',rep:'renataperei',lider:'isabmot',canal:'MULTICANAL CHAT',vol:58,tmo:33.99,dev:6.99},
+  {q:'Q4',rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:49,tmo:34.10,dev:7.10},
+  {q:'Q4',rep:'fenunes',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:53,tmo:34.49,dev:7.49},
+  {q:'Q4',rep:'cafarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:50,tmo:34.67,dev:7.67},
+  {q:'Q4',rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:54,tmo:35.31,dev:8.31},
+  {q:'Q4',rep:'cccsousa',lider:'isabmot',canal:'MULTICANAL CHAT',vol:51,tmo:36.46,dev:9.46},
+  {q:'Q4',rep:'vfarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:41,tmo:36.87,dev:9.87},
+  {q:'Q4',rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:49,tmo:37.68,dev:10.68},
+  {q:'Q1',rep:'marcovenicio',lider:'lrossetto',canal:'MULTICANAL C2C',vol:65,tmo:13.66,dev:-13.34},
+  {q:'Q1',rep:'vltrevizan',lider:'lrossetto',canal:'MULTICANAL C2C',vol:29,tmo:16.03,dev:-10.97},
+  {q:'Q1',rep:'tsgarbim',lider:'lrossetto',canal:'MULTICANAL C2C',vol:16,tmo:16.46,dev:-10.54},
+  {q:'Q1',rep:'amarquini',lider:'lrossetto',canal:'MULTICANAL C2C',vol:30,tmo:18.47,dev:-8.53},
+  {q:'Q1',rep:'pmarinho',lider:'lrossetto',canal:'MULTICANAL C2C',vol:36,tmo:18.84,dev:-8.16},
+  {q:'Q2',rep:'claudoliveir',lider:'lrossetto',canal:'MULTICANAL C2C',vol:38,tmo:18.86,dev:-8.14},
+  {q:'Q2',rep:'mudiniz',lider:'lrossetto',canal:'MULTICANAL C2C',vol:36,tmo:20.07,dev:-6.93},
+  {q:'Q2',rep:'luciagarcia',lider:'lrossetto',canal:'MULTICANAL C2C',vol:34,tmo:24.60,dev:-2.40},
+  {q:'Q2',rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',vol:35,tmo:29.49,dev:2.49},
+  {q:'Q3',rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:22,tmo:32.20,dev:5.20},
+  {q:'Q3',rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',vol:38,tmo:34.04,dev:7.04},
+  {q:'Q3',rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:22,tmo:39.27,dev:12.27},
+  {q:'Q3',rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:19,tmo:41.42,dev:14.42},
+  {q:'Q4',rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',vol:28,tmo:42.21,dev:15.21},
+  {q:'Q4',rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',vol:21,tmo:45.66,dev:18.66},
+  {q:'Q4',rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:27,tmo:46.49,dev:19.49},
+  {q:'Q4',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',vol:25,tmo:51.68,dev:24.68},
+  {q:'Q1',rep:'wgomdsouza',lider:'lrossetto',canal:'C2C',vol:75,tmo:17.83,dev:-9.17},
+];
+
+const MAY_processoData = [
+  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL C2C',vol:40,tmo:61.06,dev:34.06,min:0,max:0},
+  {proc:'PR - Artículos prohibidos',canal:'MULTICANAL C2C',vol:9,tmo:40.65,dev:13.65,min:0,max:0},
+  {proc:'PR - Técnica prohibida',canal:'MULTICANAL C2C',vol:20,tmo:34.06,dev:7.06,min:0,max:0},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL C2C',vol:56,tmo:33.91,dev:6.91,min:0,max:0},
+  {proc:'Asig. Mature Publicaciones',canal:'MULTICANAL CHAT',vol:33,tmo:30.50,dev:3.50,min:0,max:0},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',vol:610,tmo:30.25,dev:3.25,min:0,max:0},
+  {proc:'PR - Artículos prohibidos',canal:'MULTICANAL CHAT',vol:44,tmo:30.20,dev:3.20,min:0,max:0},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',vol:360,tmo:29.95,dev:2.95,min:0,max:0},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL C2C',vol:45,tmo:29.38,dev:2.38,min:0,max:0},
+  {proc:'PR - Datos Personales',canal:'MULTICANAL CHAT',vol:9,tmo:27.94,dev:0.94,min:0,max:0},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL CHAT',vol:181,tmo:27.88,dev:0.88,min:0,max:0},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL CHAT',vol:298,tmo:25.94,dev:-1.06,min:0,max:0},
+  {proc:'Reputación ME',canal:'MULTICANAL C2C',vol:120,tmo:24.17,dev:-2.83,min:0,max:0},
+  {proc:'Antes de publicar',canal:'MULTICANAL CHAT',vol:23,tmo:23.70,dev:-3.30,min:0,max:0},
+  {proc:'PR - Técnica prohibida',canal:'MULTICANAL CHAT',vol:101,tmo:22.78,dev:-4.22,min:0,max:0},
+  {proc:'Calidad de foto',canal:'MULTICANAL CHAT',vol:12,tmo:22.76,dev:-4.24,min:0,max:0},
+  {proc:'Reputación',canal:'MULTICANAL C2C',vol:221,tmo:21.28,dev:-5.72,min:0,max:0},
+  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL CHAT',vol:137,tmo:18.74,dev:-8.26,min:0,max:0},
+];
+
+const MAY_q4Data = [
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'lecandido',lider:'bkaroline',vol:5,tmo:85.57,dev:58.57},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'amcandido',lider:'isabmot',vol:6,tmo:57.69,dev:30.69},
+  {proc:'PR - Propiedad intelectual',canal:'CHAT',rep:'maybalazshaz',lider:'bkaroline',vol:5,tmo:51.60,dev:24.60},
+  {proc:'Reputación',canal:'CHAT',rep:'losouza',lider:'alicarvalho',vol:17,tmo:50.08,dev:23.08},
+  {proc:'Reputación',canal:'CHAT',rep:'vfarias',lider:'alicarvalho',vol:9,tmo:49.93,dev:22.93},
+  {proc:'Reputación ME',canal:'MC2C',rep:'giselesosant',lider:'lrossetto',vol:11,tmo:49.59,dev:22.59},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'fenunes',lider:'bkaroline',vol:9,tmo:49.05,dev:22.05},
+  {proc:'Reputación ME',canal:'CHAT',rep:'renataperei',lider:'isabmot',vol:10,tmo:47.83,dev:20.83},
+  {proc:'Reputación ME',canal:'MC2C',rep:'adysantos',lider:'lrossetto',vol:5,tmo:43.64,dev:16.64},
+  {proc:'Potenciar Ventas',canal:'CHAT',rep:'vfarias',lider:'alicarvalho',vol:6,tmo:42.51,dev:15.51},
+  {proc:'Reputación ME',canal:'CHAT',rep:'aaugustinho',lider:'alicarvalho',vol:10,tmo:40.92,dev:13.92},
+  {proc:'Reputación',canal:'MC2C',rep:'adysantos',lider:'lrossetto',vol:13,tmo:40.86,dev:13.86},
+  {proc:'Reputación',canal:'CHAT',rep:'maybalazshaz',lider:'bkaroline',vol:17,tmo:40.65,dev:13.65},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'cccsousa',lider:'isabmot',vol:13,tmo:40.31,dev:13.31},
+  {proc:'Reputación ME',canal:'CHAT',rep:'lianadsilva',lider:'alicarvalho',vol:8,tmo:40.08,dev:13.08},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'maybalazshaz',lider:'bkaroline',vol:9,tmo:38.99,dev:11.99},
+  {proc:'Reputación ME',canal:'CHAT',rep:'vfarias',lider:'alicarvalho',vol:14,tmo:38.08,dev:11.08},
+  {proc:'Reputación',canal:'CHAT',rep:'cccsousa',lider:'isabmot',vol:18,tmo:37.80,dev:10.80},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'lecandido',lider:'bkaroline',vol:12,tmo:37.80,dev:10.80},
+  {proc:'Reputación ME',canal:'CHAT',rep:'lyalves',lider:'alicarvalho',vol:11,tmo:37.48,dev:10.48},
+  {proc:'Reputación',canal:'CHAT',rep:'aaugustinho',lider:'alicarvalho',vol:11,tmo:37.05,dev:10.05},
+  {proc:'Reputación',canal:'CHAT',rep:'fenunes',lider:'bkaroline',vol:16,tmo:36.82,dev:9.82},
+  {proc:'Reputación ME',canal:'CHAT',rep:'cafarias',lider:'alicarvalho',vol:10,tmo:36.52,dev:9.52},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'ulissouza',lider:'thaidossanto',vol:5,tmo:36.45,dev:9.45},
+  {proc:'Reputación ME',canal:'CHAT',rep:'fenunes',lider:'bkaroline',vol:9,tmo:36.20,dev:9.20},
+  {proc:'Reputación',canal:'CHAT',rep:'cafarias',lider:'alicarvalho',vol:22,tmo:34.75,dev:7.75},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'fenunes',lider:'bkaroline',vol:6,tmo:34.60,dev:7.60},
+  {proc:'Reputación',canal:'MC2C',rep:'jecosta',lider:'lrossetto',vol:19,tmo:33.79,dev:6.79},
+  {proc:'Gestión de Publicación',canal:'CHAT',rep:'lyalves',lider:'alicarvalho',vol:6,tmo:32.53,dev:5.53},
+  {proc:'Gestión de Publicación',canal:'MC2C',rep:'giselesosant',lider:'lrossetto',vol:8,tmo:32.22,dev:5.22},
+];
+
 // ---- MULTI-OFENSORES ----
 function buildMultiData() {
   const map = {};
-  q4Data.forEach(r => {
+  getQ4Data().forEach(r => {
     const key = r.rep + '|' + r.canal + '|' + r.lider;
     if (!map[key]) map[key] = {rep:r.rep, canal:r.canal, lider:r.lider, procs:[], tmos:[]};
     if (!map[key].procs.includes(r.proc)) {
@@ -854,11 +959,108 @@ function filterMulti() {
   }).join('');
 }
 
+// ---- MÊS ATIVO ----
+let currentMonth = '2026-04';
+
+function setMonth(m) {
+  currentMonth = m;
+  // botões
+  document.getElementById('btn-04').style.background = m==='2026-04' ? '#e63946' : 'rgba(255,255,255,0.2)';
+  document.getElementById('btn-05').style.background = m==='2026-05' ? '#e63946' : 'rgba(255,255,255,0.2)';
+  // KPIs
+  const k = KPIS[m];
+  const kpiVals = document.querySelectorAll('.kpi-val');
+  const kpiSubs = document.querySelectorAll('.kpi-sub');
+  kpiVals[0].textContent = k.tmo.toFixed(2);
+  kpiSubs[0].innerHTML = `<strong style="color:#e63946">${k.desvio>0?'+':''}${k.pct}% vs meta</strong>`;
+  kpiVals[1].textContent = k.tmoCaso ? k.tmoCaso.toFixed(2) : 'parcial';
+  kpiVals[2].textContent = k.volume.toLocaleString('pt-BR');
+  kpiVals[3].textContent = k.reps;
+  kpiVals[4].textContent = `${k.desvio>0?'+':''}${k.desvio.toFixed(2)} min`;
+  kpiSubs[4].textContent = `${k.desvio>0?'+':''}${k.pct}% ${k.partial?'(parcial)':'fora do objetivo'}`;
+  // canal chart
+  const cd = CANAL_DATA[m];
+  cCanalChart.data.datasets[0].data = cd.map(r=>r.t);
+  cCanalChart.update();
+  // líder chart
+  const ld = LIDER_DATA[m];
+  cLiderChart.data.labels = ld.map(r=>r.l);
+  cLiderChart.data.datasets[0].data = ld.map(r=>r.t);
+  cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>27?'#e63946':'#2dc653');
+  cLiderChart.update();
+  // tabelas
+  filterQuartil(); filterProcesso(); filterQ4(); filterMulti();
+  // nota parcial
+  document.getElementById('last-updated').textContent = k.partial ? `⚡ Dados de 01-06/05 · atualizado ${new Date().toLocaleDateString('pt-BR')}` : 'Fechamento completo';
+}
+
+function getQuartilData()  { return currentMonth==='2026-04' ? quartilData  : MAY_quartilData; }
+function getProcessoData() { return currentMonth==='2026-04' ? processoData : MAY_processoData; }
+function getQ4Data()       { return currentMonth==='2026-04' ? q4Data       : MAY_q4Data; }
+
 // ---- INIT ----
+let cCanalChart, cLiderChart;
+cCanalChart = new Chart(document.getElementById('cCanal'),{
+  type:'bar',
+  data:{
+    labels:['MULTICANAL CHAT','MULTICANAL C2C','C2C'],
+    datasets:[
+      {label:'TMO (min)',data:[29.34,28.80,20.78],backgroundColor:['#457b9d','#e76f51','#2dc653'],borderRadius:6},
+      {label:'Meta 27 min',data:[27,27,27],type:'line',borderColor:'#e63946',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:35,grid:{color:'#f0f0f0'}}}}
+});
+
+cLiderChart = new Chart(document.getElementById('cLider'),{
+  type:'bar',
+  data:{
+    labels:['isabmot','bkaroline','alicarvalho','thaidossanto'],
+    datasets:[
+      {label:'TMO (min)',data:[34.24,29.34,28.45,26.78],backgroundColor:['#e63946','#f4a261','#f4a261','#2dc653'],borderRadius:6},
+      {label:'Meta',data:[27,27,27,27],type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:38,grid:{color:'#f0f0f0'}}}}
+});
+
+const topProcs = processoData.slice(0,12);
+new Chart(document.getElementById('cProcesso'),{
+  type:'bar',
+  data:{
+    labels:topProcs.map(r=>r.proc+' ('+r.canal.replace('MULTICANAL ','')+')'),
+    datasets:[
+      {label:'TMO (min)',data:topProcs.map(r=>r.tmo),backgroundColor:topProcs.map(r=>r.tmo>35?'#e63946':r.tmo>27?'#f4a261':'#2dc653'),borderRadius:4},
+      {label:'Meta',data:Array(12).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+    ]
+  },
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{x:{min:0,max:60},y:{ticks:{font:{size:10}}}}}
+});
+
+const topRepsList = [
+  {rep:'adysantos',tmo:59.90},{rep:'maybalazshaz',tmo:53.51},{rep:'raisacsantos',tmo:49.66},
+  {rep:'kavalle',tmo:49.09},{rep:'linessousa',tmo:45.89},{rep:'vitnasciment',tmo:44.37},
+  {rep:'cccsousa',tmo:41.67},{rep:'gabrielaaiol',tmo:41.55},{rep:'amcandido',tmo:38.16},
+  {rep:'lecandido',tmo:35.95},{rep:'bemarques',tmo:36.07},{rep:'vfonorio',tmo:35.35},
+  {rep:'giselesosant',tmo:35.52},{rep:'albarbosa',tmo:33.87},{rep:'renataperei',tmo:32.65}
+];
+new Chart(document.getElementById('cReps'),{
+  type:'bar',
+  data:{
+    labels:topRepsList.map(r=>r.rep),
+    datasets:[
+      {label:'TMO (min)',data:topRepsList.map(r=>r.tmo),backgroundColor:'#e63946',borderRadius:4},
+      {label:'Meta',data:Array(15).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+    ]
+  },
+  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:70,grid:{color:'#f0f0f0'}},x:{ticks:{font:{size:10}}}}}
+});
+
 filterQuartil();
 populateProcFilter(); filterProcesso();
 populateQ4Filters(); filterQ4();
 filterMulti();
+document.getElementById('last-updated').textContent = 'Fechamento completo';
 </script>
 </body>
 </html>
