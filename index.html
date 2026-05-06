@@ -125,6 +125,7 @@ tr:last-child td { border-bottom: none; }
   <div class="nav-tab" onclick="showPage('diagnostico',this)">🔍 Diagnóstico</div>
   <div class="nav-tab" onclick="showPage('multiofensores',this)">🔥 Multi-Ofensores</div>
   <div class="nav-tab" onclick="showPage('toque',this)">⏱️ Tempo de Toque</div>
+  <div class="nav-tab" onclick="showPage('produ',this)">🏆 Produtividade</div>
   <div style="flex:1"></div>
   <div style="display:flex;align-items:center;gap:8px;padding:8px 0">
     <span style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;letter-spacing:.5px">Mês:</span>
@@ -476,6 +477,159 @@ tr:last-child td { border-bottom: none; }
       <table id="tbl-casos">
         <thead><tr><th>Caso</th><th>Data</th><th>Rep</th><th>Líder</th><th>Canal</th><th>Processo</th><th>Toque (min)</th><th>TMO (min)</th></tr></thead>
         <tbody id="tbody-casos"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PÁGINA 8: PRODUTIVIDADE ===================== -->
+<div id="page-produ" class="page">
+
+  <!-- KPIs -->
+  <div class="kpi-row" style="margin-bottom:20px">
+    <div class="kpi gray">
+      <div class="kpi-lbl">Total Assigns</div>
+      <div class="kpi-val">21.503</div>
+      <div class="kpi-sub">Abril 2026</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-lbl">Total Casos</div>
+      <div class="kpi-val">16.455</div>
+      <div class="kpi-sub">casos únicos</div>
+    </div>
+    <div class="kpi gray">
+      <div class="kpi-lbl">Reps Ativos</div>
+      <div class="kpi-val">61</div>
+      <div class="kpi-sub">22 dias úteis</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-lbl">Média Assigns/Rep</div>
+      <div class="kpi-val">352,5</div>
+      <div class="kpi-sub">no mês</div>
+    </div>
+    <div class="kpi yellow">
+      <div class="kpi-lbl">Média Casos/Rep/Dia</div>
+      <div class="kpi-val">12,3</div>
+      <div class="kpi-sub">casos por rep por dia</div>
+    </div>
+  </div>
+
+  <div class="charts-2" style="margin-bottom:20px">
+    <!-- Canal -->
+    <div class="card">
+      <div class="card-title">📡 Por Canal</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Canal</th><th>Assigns</th><th>Casos</th><th>Reps</th><th>Assigns/Rep</th><th>Casos/Rep</th><th>Assigns/Dia</th></tr></thead>
+          <tbody>
+            <tr><td><span class="chat">MULTICANAL CHAT</span></td><td>17.146</td><td>12.832</td><td>42</td><td>408,2</td><td>305,5</td><td>779,4</td></tr>
+            <tr><td><span class="mc2c">MULTICANAL C2C</span></td><td>4.215</td><td>4.073</td><td>18</td><td>234,2</td><td>226,3</td><td>191,6</td></tr>
+            <tr><td><span class="c2c">C2C</span></td><td>142</td><td>139</td><td>1</td><td>142,0</td><td>139,0</td><td>6,5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Canal ON vs OFF -->
+    <div class="card">
+      <div class="card-title">🟢 Canal ON (Chat) vs 🔴 Canal OFF (Voz)</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Tipo</th><th>Canal</th><th>Assigns</th><th>Casos</th><th>Reps</th><th>Casos/Rep/Dia</th></tr></thead>
+          <tbody>
+            <tr style="background:#f0fdf4">
+              <td><span style="background:#d4edda;color:#155724;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">ON</span></td>
+              <td><span class="chat">MULTICANAL CHAT</span></td>
+              <td>17.146</td><td>12.832</td><td>42</td><td><strong>13,9</strong></td>
+            </tr>
+            <tr style="background:#fff5f5">
+              <td rowspan="2"><span style="background:#f8d7da;color:#721c24;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:700">OFF</span></td>
+              <td><span class="mc2c">MULTICANAL C2C</span></td>
+              <td>4.215</td><td>4.073</td><td>18</td><td><strong>10,3</strong></td>
+            </tr>
+            <tr style="background:#fff5f5">
+              <td><span class="c2c">C2C</span></td>
+              <td>142</td><td>139</td><td>1</td><td><strong>6,3</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="charts-2" style="margin-bottom:20px">
+    <!-- Líder -->
+    <div class="card">
+      <div class="card-title">👤 Por Líder</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Líder</th><th>Canal</th><th>Reps</th><th>Assigns</th><th>Casos</th><th>Assigns/Rep</th><th>Casos/Rep</th><th>TMO</th></tr></thead>
+          <tbody>
+            <tr><td><strong>bkaroline</strong></td><td><span class="chat">CHAT</span></td><td>12</td><td>5.462</td><td>4.395</td><td>455,2</td><td>366,3</td><td class="pos">29,34</td></tr>
+            <tr><td><strong>alicarvalho</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td>4.451</td><td>3.643</td><td>445,1</td><td>364,3</td><td class="pos">28,45</td></tr>
+            <tr><td><strong>lrossetto</strong></td><td><span class="mc2c">C2C</span></td><td>18</td><td>4.215</td><td>4.073</td><td>234,2</td><td>226,3</td><td class="pos">28,80</td></tr>
+            <tr><td><strong>thaidossanto</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td>3.741</td><td>3.146</td><td>374,1</td><td>314,6</td><td class="neg">26,78</td></tr>
+            <tr><td><strong>isabmot</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td>3.492</td><td>3.086</td><td>349,2</td><td>308,6</td><td class="pos">34,24</td></tr>
+            <tr><td><strong>lrossetto</strong></td><td><span class="c2c">C2C</span></td><td>1</td><td>142</td><td>139</td><td>142,0</td><td>139,0</td><td class="neg">20,78</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Processo -->
+    <div class="card">
+      <div class="card-title">⚙️ Por Processo</div>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Processo</th><th>Assigns</th><th>Casos</th><th>% Vol</th><th>Assigns/Rep</th><th>TMO</th></tr></thead>
+          <tbody>
+            <tr><td>Reputación</td><td>7.198</td><td>6.273</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">33,5%</span></td><td>118,0</td><td>29,11</td></tr>
+            <tr><td>Gestión de Publicación</td><td>4.211</td><td>2.906</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">19,6%</span></td><td>69,0</td><td>31,00</td></tr>
+            <tr><td>Reputación ME</td><td>3.289</td><td>2.689</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">15,3%</span></td><td>53,9</td><td>28,24</td></tr>
+            <tr><td>Potenciar Ventas</td><td>2.016</td><td>1.316</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">9,4%</span></td><td>33,0</td><td>31,07</td></tr>
+            <tr><td>PR - Propiedad intelectual</td><td>1.823</td><td>1.429</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">8,5%</span></td><td>29,9</td><td>26,09</td></tr>
+            <tr><td>PR - Técnica prohibida</td><td>1.126</td><td>899</td><td><span style="background:#e8f4f8;color:#0077b6;padding:1px 6px;border-radius:3px;font-size:11px">5,2%</span></td><td>18,5</td><td>28,55</td></tr>
+            <tr><td>PR - Artículos prohibidos</td><td>598</td><td>453</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">2,8%</span></td><td>10,0</td><td>31,67</td></tr>
+            <tr><td>Antes de publicar</td><td>555</td><td>413</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">2,6%</span></td><td>9,6</td><td>28,76</td></tr>
+            <tr><td>Asig. Mature Publicaciones</td><td>453</td><td>375</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">2,1%</span></td><td>7,7</td><td>31,41</td></tr>
+            <tr><td>Calidad de foto</td><td>146</td><td>107</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">0,7%</span></td><td>2,7</td><td>25,00</td></tr>
+            <tr><td>PR - Datos Personales</td><td>85</td><td>66</td><td><span style="background:#f8f9fa;color:#6c757d;padding:1px 6px;border-radius:3px;font-size:11px">0,4%</span></td><td>1,9</td><td>33,36</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Por Rep -->
+  <div class="card">
+    <div class="card-title">👥 Por Representante</div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fp2-canal" onchange="filterProdu()">
+          <option value="">Todos</option>
+          <option>MULTICANAL CHAT</option>
+          <option>MULTICANAL C2C</option>
+          <option>C2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Líder</label>
+        <select id="fp2-lider" onchange="filterProdu()">
+          <option value="">Todos</option>
+          <option>bkaroline</option>
+          <option>alicarvalho</option>
+          <option>lrossetto</option>
+          <option>thaidossanto</option>
+          <option>isabmot</option>
+        </select>
+      </div>
+      <div class="filter-count" id="fp2-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-produ">
+        <thead><tr><th>Rep</th><th>Líder</th><th>Canal</th><th>Assigns</th><th>Casos</th><th>Assigns/Dia</th><th>Casos/Dia</th><th>TMO</th></tr></thead>
+        <tbody id="tbody-produ"></tbody>
       </table>
     </div>
   </div>
@@ -993,6 +1147,29 @@ const MAY_q4Data = [
 ];
 
 // ---- MULTI-OFENSORES ----
+// ---- PRODUTIVIDADE FUNCTIONS ----
+function filterProdu() {
+  const c = document.getElementById('fp2-canal').value;
+  const l = document.getElementById('fp2-lider').value;
+  const rows = produRepData.filter(r => (!c || r.canal===c) && (!l || r.lider===l));
+  const tb = document.getElementById('tbody-produ');
+  document.getElementById('fp2-count').textContent = `${rows.length} representante(s)`;
+  if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
+  tb.innerHTML = rows.map(r => {
+    const tmoClass = r.tmo > 27 ? 'pos' : 'neg';
+    return `<tr>
+      <td><strong>${r.rep}</strong></td>
+      <td>${r.lider}</td>
+      <td>${canalBadge(r.canal)}</td>
+      <td>${r.assigns.toLocaleString('pt-BR')}</td>
+      <td>${r.casos.toLocaleString('pt-BR')}</td>
+      <td><strong>${r.apd}</strong></td>
+      <td><strong>${r.cpd}</strong></td>
+      <td class="${tmoClass}">${r.tmo.toFixed(2)}</td>
+    </tr>`;
+  }).join('');
+}
+
 // ---- TOQUE FUNCTIONS ----
 function filterToque() {
   const c = document.getElementById('ft-canal').value;
@@ -1095,6 +1272,71 @@ function filterMulti() {
     </tr>`;
   }).join('');
 }
+
+// ---- DADOS PRODUTIVIDADE ----
+const produRepData = [
+  {rep:'aldmelo',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:759,casos:605,apd:44.6,cpd:35.6,tmo:22.21},
+  {rep:'gbmontilha',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:739,casos:608,apd:37.0,cpd:30.4,tmo:30.26},
+  {rep:'blvicente',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:698,casos:578,apd:34.9,cpd:28.9,tmo:26.54},
+  {rep:'camcsilva',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:680,casos:597,apd:34.0,cpd:29.9,tmo:27.99},
+  {rep:'stdiniz',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:658,casos:509,apd:32.9,cpd:25.4,tmo:20.75},
+  {rep:'polivdaraujo',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:615,casos:551,apd:30.8,cpd:27.6,tmo:29.65},
+  {rep:'amcaldeira',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:569,casos:494,apd:31.6,cpd:27.4,tmo:20.85},
+  {rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:566,casos:505,apd:28.3,cpd:25.3,tmo:35.35},
+  {rep:'vdpiedade',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:558,casos:510,apd:27.9,cpd:25.5,tmo:27.43},
+  {rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:522,casos:438,apd:26.1,cpd:21.9,tmo:30.14},
+  {rep:'amcandido',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:522,casos:471,apd:26.1,cpd:23.6,tmo:38.16},
+  {rep:'mandoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:521,casos:465,apd:30.6,cpd:27.4,tmo:31.51},
+  {rep:'renataperei',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:474,casos:445,apd:23.7,cpd:22.3,tmo:32.65},
+  {rep:'marfreitas',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:472,casos:369,apd:31.5,cpd:24.6,tmo:22.71},
+  {rep:'vfarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:447,casos:390,apd:23.5,cpd:20.5,tmo:30.78},
+  {rep:'cafarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:443,casos:395,apd:24.6,cpd:21.9,tmo:24.99},
+  {rep:'bemarques',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:442,casos:423,apd:24.6,cpd:23.5,tmo:36.07},
+  {rep:'marlaraujo',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:436,casos:425,apd:21.8,cpd:21.3,tmo:32.85},
+  {rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:420,casos:357,apd:24.7,cpd:21.0,tmo:35.95},
+  {rep:'ulissouza',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:419,casos:352,apd:24.6,cpd:20.7,tmo:30.58},
+  {rep:'lianadsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:417,casos:337,apd:26.1,cpd:21.1,tmo:30.43},
+  {rep:'uizfsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:412,casos:374,apd:20.6,cpd:18.7,tmo:32.32},
+  {rep:'phegoncalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:412,casos:353,apd:22.9,cpd:19.6,tmo:32.13},
+  {rep:'luciagarcia',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:408,casos:408,apd:21.5,cpd:21.5,tmo:23.15},
+  {rep:'cccsousa',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:397,casos:385,apd:22.1,cpd:21.4,tmo:41.67},
+  {rep:'vltrevizan',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:386,casos:383,apd:20.3,cpd:20.2,tmo:21.22},
+  {rep:'fenunes',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:382,casos:343,apd:27.3,cpd:24.5,tmo:29.96},
+  {rep:'casbarreiros',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:380,casos:336,apd:22.4,cpd:19.8,tmo:32.61},
+  {rep:'marcovenicio',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:369,casos:366,apd:20.5,cpd:20.3,tmo:20.85},
+  {rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:364,casos:364,apd:20.2,cpd:20.2,tmo:22.20},
+  {rep:'jamonteiro',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:359,casos:311,apd:27.6,cpd:23.9,tmo:25.02},
+  {rep:'mfvieira',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:358,casos:330,apd:29.8,cpd:27.5,tmo:31.21},
+  {rep:'lyalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:357,casos:334,apd:22.3,cpd:20.9,tmo:28.87},
+  {rep:'aaugustinho',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:347,casos:329,apd:21.7,cpd:20.6,tmo:24.66},
+  {rep:'cchimenez',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:341,casos:306,apd:28.4,cpd:25.5,tmo:31.41},
+  {rep:'tsgarbim',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:321,casos:318,apd:24.7,cpd:24.5,tmo:16.64},
+  {rep:'kperrone',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:319,casos:277,apd:31.9,cpd:27.7,tmo:18.52},
+  {rep:'juslima',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:296,casos:263,apd:26.9,cpd:23.9,tmo:25.63},
+  {rep:'mudiniz',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:291,casos:290,apd:19.4,cpd:19.3,tmo:19.46},
+  {rep:'cdoliveira',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:291,casos:289,apd:15.3,cpd:15.2,tmo:25.86},
+  {rep:'elaoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:240,casos:221,apd:24.0,cpd:22.1,tmo:31.91},
+  {rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:238,casos:224,apd:11.9,cpd:11.2,tmo:53.51},
+  {rep:'kroza',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:231,casos:185,apd:28.9,cpd:23.1,tmo:29.99},
+  {rep:'mariasilva',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:208,casos:187,apd:20.8,cpd:18.7,tmo:32.16},
+  {rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:207,casos:206,apd:12.2,cpd:12.1,tmo:35.52},
+  {rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:194,casos:194,apd:11.4,cpd:11.4,tmo:41.55},
+  {rep:'amarquini',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:190,casos:190,apd:11.9,cpd:11.9,tmo:30.12},
+  {rep:'pmarinho',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:178,casos:178,apd:17.8,cpd:17.8,tmo:20.30},
+  {rep:'claudoliveir',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:165,casos:165,apd:13.8,cpd:13.8,tmo:29.70},
+  {rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:160,casos:159,apd:10.7,cpd:10.6,tmo:44.37},
+  {rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:157,casos:156,apd:8.7,cpd:8.7,tmo:49.09},
+  {rep:'acruz',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:144,casos:129,apd:28.8,cpd:25.8,tmo:22.69},
+  {rep:'wgomdsouza',lider:'lrossetto',canal:'C2C',assigns:142,casos:139,apd:20.3,cpd:19.9,tmo:20.78},
+  {rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:141,casos:141,apd:9.4,cpd:9.4,tmo:33.87},
+  {rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:140,casos:140,apd:8.8,cpd:8.8,tmo:45.89},
+  {rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:132,casos:131,apd:7.8,cpd:7.7,tmo:49.66},
+  {rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:121,casos:121,apd:8.1,cpd:8.1,tmo:59.90},
+  {rep:'ccnnasciment',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:110,casos:106,apd:18.3,cpd:17.7,tmo:33.14},
+  {rep:'mrmarques',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:96,casos:78,apd:48.0,cpd:39.0,tmo:21.18},
+  {rep:'leibarcelos',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:91,casos:81,apd:30.3,cpd:27.0,tmo:25.77},
+  {rep:'czago',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:51,casos:44,apd:25.5,cpd:22.0,tmo:27.07},
+];
 
 // ---- DADOS TEMPO DE TOQUE ----
 const toqueRepData = [
@@ -1264,6 +1506,7 @@ filterQuartil();
 populateProcFilter(); filterProcesso();
 populateQ4Filters(); filterQ4();
 filterMulti();
+filterProdu();
 filterToque();
 populateCasosFilters(); filterCasos();
 document.getElementById('last-updated').textContent = 'Fechamento completo';
