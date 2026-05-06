@@ -448,6 +448,17 @@ tr:last-child td { border-bottom: none; }
         </select>
       </div>
       <div class="filter-group">
+        <label>Líder</label>
+        <select id="fc-lider" onchange="filterCasos()">
+          <option value="">Todos</option>
+          <option>lrossetto</option>
+          <option>isabmot</option>
+          <option>bkaroline</option>
+          <option>thaidossanto</option>
+          <option>alicarvalho</option>
+        </select>
+      </div>
+      <div class="filter-group">
         <label>Rep</label>
         <select id="fc-rep" onchange="filterCasos()">
           <option value="">Todos</option>
@@ -1015,10 +1026,11 @@ function populateCasosFilters() {
 
 function filterCasos() {
   const c = document.getElementById('fc-canal').value;
+  const l = document.getElementById('fc-lider').value;
   const r = document.getElementById('fc-rep').value;
   const p = document.getElementById('fc-proc').value;
   const rows = casosAltoToque.filter(x =>
-    (!c || x.canal===c) && (!r || x.rep===r) && (!p || x.proc===p)
+    (!c || x.canal===c) && (!l || x.lider===l) && (!r || x.rep===r) && (!p || x.proc===p)
   );
   const tb = document.getElementById('tbody-casos');
   document.getElementById('fc-count').textContent = `${rows.length} caso(s)`;
