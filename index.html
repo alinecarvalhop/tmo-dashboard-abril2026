@@ -113,10 +113,6 @@ tr:last-child td { border-bottom: none; }
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="badge">META: 27 min</div>
-    <div style="display:flex;gap:4px">
-      <button onclick="setMonth('2026-04')" id="btn-04" style="padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:#e63946;color:white">Abril 2026</button>
-      <button onclick="setMonth('2026-05')" id="btn-05" style="padding:6px 12px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-weight:700;background:rgba(255,255,255,0.2);color:white">Maio 2026 ⚡</button>
-    </div>
     <div id="last-updated" style="font-size:11px;opacity:0.6"></div>
   </div>
 </header>
@@ -128,6 +124,14 @@ tr:last-child td { border-bottom: none; }
   <div class="nav-tab" onclick="showPage('q4reps',this)">🔴 Reps Q4</div>
   <div class="nav-tab" onclick="showPage('diagnostico',this)">🔍 Diagnóstico</div>
   <div class="nav-tab" onclick="showPage('multiofensores',this)">🔥 Multi-Ofensores</div>
+  <div style="flex:1"></div>
+  <div style="display:flex;align-items:center;gap:8px;padding:8px 0">
+    <span style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;letter-spacing:.5px">Mês:</span>
+    <select id="mes-selector" onchange="setMonth(this.value)" style="padding:5px 28px 5px 10px;border:1.5px solid #dee2e6;border-radius:7px;font-size:13px;font-weight:700;background:white;color:#1a1a2e;cursor:pointer;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236c757d'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 8px center;outline:none">
+      <option value="2026-04">Abril 2026</option>
+      <option value="2026-05">Maio 2026 ⚡</option>
+    </select>
+  </div>
 </nav>
 
 <!-- ===================== PÁGINA 1: VISÃO GERAL ===================== -->
@@ -936,9 +940,7 @@ let currentMonth = '2026-04';
 
 function setMonth(m) {
   currentMonth = m;
-  // botões
-  document.getElementById('btn-04').style.background = m==='2026-04' ? '#e63946' : 'rgba(255,255,255,0.2)';
-  document.getElementById('btn-05').style.background = m==='2026-05' ? '#e63946' : 'rgba(255,255,255,0.2)';
+  document.getElementById('mes-selector').value = m;
   // KPIs
   const k = KPIS[m];
   const kpiVals = document.querySelectorAll('.kpi-val');
