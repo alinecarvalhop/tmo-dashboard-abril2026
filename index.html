@@ -126,6 +126,7 @@ tr:last-child td { border-bottom: none; }
   <div class="nav-tab" onclick="showPage('multiofensores',this)">🔥 Multi-Ofensores</div>
   <div class="nav-tab" onclick="showPage('toque',this)">⏱️ Tempo de Toque</div>
   <div class="nav-tab" onclick="showPage('produ',this)">🏆 Produtividade</div>
+  <div class="nav-tab" onclick="showPage('evolucao',this)">📈 Evolução Semanal</div>
   <div style="flex:1"></div>
   <div style="display:flex;align-items:center;gap:8px;padding:8px 0">
     <span style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;letter-spacing:.5px">Mês:</span>
@@ -613,6 +614,59 @@ tr:last-child td { border-bottom: none; }
       <table id="tbl-produ">
         <thead><tr><th>Rep</th><th>Líder</th><th>Canal</th><th>Produtividade (casos/dia)</th><th>TMO</th></tr></thead>
         <tbody id="tbody-produ"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PÁGINA 9: EVOLUÇÃO SEMANAL ===================== -->
+<div id="page-evolucao" class="page">
+  <div class="card">
+    <div class="card-title">📈 Evolução Semanal de TMO por Representante — Abril 2026
+      <span style="font-size:11px;font-weight:400;color:#6c757d;margin-left:12px">S1=06/04 · S2=13/04 · S3=20/04 · S4=27/04 · Meta: 27 min</span>
+    </div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fe-canal" onchange="filterEvolucao()">
+          <option value="">Todos</option>
+          <option>MULTICANAL CHAT</option>
+          <option>MULTICANAL C2C</option>
+          <option>C2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Líder</label>
+        <select id="fe-lider" onchange="filterEvolucao()">
+          <option value="">Todos</option>
+          <option>bkaroline</option>
+          <option>alicarvalho</option>
+          <option>lrossetto</option>
+          <option>thaidossanto</option>
+          <option>isabmot</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Tendência</label>
+        <select id="fe-trend" onchange="filterEvolucao()">
+          <option value="">Todas</option>
+          <option value="melhorando">↓ Melhorando</option>
+          <option value="piorando">↑ Piorando</option>
+          <option value="acima">Acima da meta no fim</option>
+        </select>
+      </div>
+      <div class="filter-count" id="fe-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-evolucao">
+        <thead>
+          <tr>
+            <th>Rep</th><th>Líder</th><th>Canal</th>
+            <th>S1 (06/04)</th><th>S2 (13/04)</th><th>S3 (20/04)</th><th>S4 (27/04)</th>
+            <th>Variação S1→S4</th><th>Tendência</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-evolucao"></tbody>
       </table>
     </div>
   </div>
@@ -1130,6 +1184,85 @@ const MAY_q4Data = [
 ];
 
 // ---- MULTI-OFENSORES ----
+// ---- EVOLUÇÃO SEMANAL ----
+function buildEvolucaoData() {
+  const map = {};
+  semanalRaw.forEach(([rep,lider,canal,sem,tmo]) => {
+    if (!map[rep]) map[rep] = {rep,lider,canal,semanas:{}};
+    map[rep].semanas[sem] = tmo;
+  });
+  return Object.values(map);
+}
+
+function tmoCell(tmo) {
+  if (tmo == null) return '<td style="color:#ccc;text-align:center">—</td>';
+  const bg = tmo > 35 ? '#f8d7da' : tmo > 27 ? '#fff3cd' : '#d4edda';
+  const color = tmo > 35 ? '#721c24' : tmo > 27 ? '#856404' : '#155724';
+  return `<td style="background:${bg};color:${color};font-weight:700;text-align:center;border-radius:4px">${tmo.toFixed(1)}</td>`;
+}
+
+function sparkline(vals) {
+  const valid = vals.filter(v=>v!=null);
+  if (valid.length < 2) return '';
+  const w=60, h=24, pad=2;
+  const mn=Math.min(...valid)-2, mx=Math.max(...valid)+2;
+  const xs = vals.map(function(_,i){return pad + i*(w-2*pad)/(vals.length-1);});
+  const ys = vals.map(function(v){return v==null ? null : h-pad-(v-mn)/(mx-mn)*(h-2*pad);});
+  const pts = xs.map(function(x,i){return ys[i]!=null ? x+','+ys[i] : null;}).filter(Boolean);
+  const meta_y = h-pad-(27-mn)/(mx-mn)*(h-2*pad);
+  const color = valid[valid.length-1] > 27 ? '#e63946' : '#2dc653';
+  const circles = pts.map(function(p){
+    const parts = p.split(',');
+    return '<circle cx="'+parts[0]+'" cy="'+parts[1]+'" r="2" fill="'+color+'"/>';
+  }).join('');
+  return '<svg width="'+w+'" height="'+h+'" style="vertical-align:middle">'
+    +'<line x1="'+pad+'" y1="'+meta_y+'" x2="'+(w-pad)+'" y2="'+meta_y+'" stroke="#ccc" stroke-width="1" stroke-dasharray="3,2"/>'
+    +'<polyline points="'+pts.join(' ')+'" fill="none" stroke="'+color+'" stroke-width="1.5"/>'
+    +circles+'</svg>';
+}
+
+function filterEvolucao() {
+  const c = document.getElementById('fe-canal').value;
+  const l = document.getElementById('fe-lider').value;
+  const t = document.getElementById('fe-trend').value;
+  let rows = buildEvolucaoData().filter(r =>
+    (!c || r.canal===c) && (!l || r.lider===l)
+  );
+  rows = rows.map(r => {
+    const vals = SEMANAS.map(s => r.semanas[s] ?? null);
+    const valid = vals.filter(v=>v!=null);
+    const first = valid[0], last = valid[valid.length-1];
+    const delta = first && last ? +(last-first).toFixed(2) : null;
+    return {...r, vals, first, last, delta};
+  });
+  if (t==='melhorando') rows = rows.filter(r=>r.delta!=null && r.delta<0);
+  if (t==='piorando')   rows = rows.filter(r=>r.delta!=null && r.delta>0);
+  if (t==='acima')      rows = rows.filter(r=>r.last!=null && r.last>27);
+  rows.sort((a,b)=>(b.last??0)-(a.last??0));
+  const tb = document.getElementById('tbody-evolucao');
+  document.getElementById('fe-count').textContent = `${rows.length} representante(s)`;
+  if (!rows.length) { tb.innerHTML = emptyRow(9); return; }
+  tb.innerHTML = rows.map(r => {
+    const arrow = r.delta==null ? '—' :
+      r.delta < -2 ? `<span style="color:#2dc653;font-weight:700">↓ ${r.delta.toFixed(1)}</span>` :
+      r.delta > 2  ? `<span style="color:#e63946;font-weight:700">↑ +${r.delta.toFixed(1)}</span>` :
+                     `<span style="color:#6c757d">≈ ${r.delta>0?'+':''}${r.delta.toFixed(1)}</span>`;
+    const trend = r.delta==null ? '—' :
+      r.delta < -3 ? '📉 Melhora' : r.delta > 3 ? '📈 Piora' : '➡️ Estável';
+    return `<tr>
+      <td><strong>${r.rep}</strong></td>
+      <td>${r.lider}</td>
+      <td>${canalBadge(r.canal)}</td>
+      ${tmoCell(r.vals[0])}
+      ${tmoCell(r.vals[1])}
+      ${tmoCell(r.vals[2])}
+      ${tmoCell(r.vals[3])}
+      <td style="text-align:center">${arrow}</td>
+      <td style="text-align:center">${sparkline(r.vals)} ${trend}</td>
+    </tr>`;
+  }).join('');
+}
+
 // ---- PRODUTIVIDADE FUNCTIONS ----
 function filterProdu() {
   const c = document.getElementById('fp2-canal').value;
@@ -1264,6 +1397,224 @@ function filterMulti() {
     </tr>`;
   }).join('');
 }
+
+// ---- DADOS EVOLUÇÃO SEMANAL ----
+const semanalRaw = [
+  ['aaugustinho','alicarvalho','MULTICANAL CHAT','2026-04-06',26.78],
+  ['aaugustinho','alicarvalho','MULTICANAL CHAT','2026-04-13',24.49],
+  ['aaugustinho','alicarvalho','MULTICANAL CHAT','2026-04-20',23.85],
+  ['aaugustinho','alicarvalho','MULTICANAL CHAT','2026-04-27',23.34],
+  ['acruz','thaidossanto','MULTICANAL CHAT','2026-04-20',22.07],
+  ['acruz','thaidossanto','MULTICANAL CHAT','2026-04-27',23.50],
+  ['adysantos','lrossetto','MULTICANAL C2C','2026-04-06',39.14],
+  ['adysantos','lrossetto','MULTICANAL C2C','2026-04-13',50.61],
+  ['adysantos','lrossetto','MULTICANAL C2C','2026-04-20',60.65],
+  ['adysantos','lrossetto','MULTICANAL C2C','2026-04-27',78.09],
+  ['albarbosa','lrossetto','MULTICANAL C2C','2026-04-06',29.29],
+  ['albarbosa','lrossetto','MULTICANAL C2C','2026-04-13',31.71],
+  ['albarbosa','lrossetto','MULTICANAL C2C','2026-04-20',45.04],
+  ['albarbosa','lrossetto','MULTICANAL C2C','2026-04-27',23.64],
+  ['aldmelo','bkaroline','MULTICANAL CHAT','2026-04-06',23.68],
+  ['aldmelo','bkaroline','MULTICANAL CHAT','2026-04-13',21.71],
+  ['aldmelo','bkaroline','MULTICANAL CHAT','2026-04-20',20.85],
+  ['aldmelo','bkaroline','MULTICANAL CHAT','2026-04-27',21.50],
+  ['amarquini','lrossetto','MULTICANAL C2C','2026-04-06',40.99],
+  ['amarquini','lrossetto','MULTICANAL C2C','2026-04-13',32.34],
+  ['amarquini','lrossetto','MULTICANAL C2C','2026-04-20',25.48],
+  ['amarquini','lrossetto','MULTICANAL C2C','2026-04-27',30.30],
+  ['amcaldeira','thaidossanto','MULTICANAL CHAT','2026-04-06',24.14],
+  ['amcaldeira','thaidossanto','MULTICANAL CHAT','2026-04-13',18.39],
+  ['amcaldeira','thaidossanto','MULTICANAL CHAT','2026-04-20',19.74],
+  ['amcaldeira','thaidossanto','MULTICANAL CHAT','2026-04-27',20.51],
+  ['amcandido','isabmot','MULTICANAL CHAT','2026-04-06',40.42],
+  ['amcandido','isabmot','MULTICANAL CHAT','2026-04-13',38.61],
+  ['amcandido','isabmot','MULTICANAL CHAT','2026-04-20',37.72],
+  ['amcandido','isabmot','MULTICANAL CHAT','2026-04-27',36.11],
+  ['bemarques','thaidossanto','MULTICANAL CHAT','2026-04-06',37.15],
+  ['bemarques','thaidossanto','MULTICANAL CHAT','2026-04-13',32.48],
+  ['bemarques','thaidossanto','MULTICANAL CHAT','2026-04-20',38.12],
+  ['bemarques','thaidossanto','MULTICANAL CHAT','2026-04-27',36.89],
+  ['blvicente','bkaroline','MULTICANAL CHAT','2026-04-06',29.97],
+  ['blvicente','bkaroline','MULTICANAL CHAT','2026-04-13',23.40],
+  ['blvicente','bkaroline','MULTICANAL CHAT','2026-04-20',26.96],
+  ['blvicente','bkaroline','MULTICANAL CHAT','2026-04-27',25.15],
+  ['cafarias','alicarvalho','MULTICANAL CHAT','2026-04-06',24.11],
+  ['cafarias','alicarvalho','MULTICANAL CHAT','2026-04-13',27.26],
+  ['cafarias','alicarvalho','MULTICANAL CHAT','2026-04-20',23.25],
+  ['cafarias','alicarvalho','MULTICANAL CHAT','2026-04-27',22.76],
+  ['camcsilva','bkaroline','MULTICANAL CHAT','2026-04-06',26.10],
+  ['camcsilva','bkaroline','MULTICANAL CHAT','2026-04-13',27.73],
+  ['camcsilva','bkaroline','MULTICANAL CHAT','2026-04-20',30.44],
+  ['camcsilva','bkaroline','MULTICANAL CHAT','2026-04-27',28.46],
+  ['casbarreiros','thaidossanto','MULTICANAL CHAT','2026-04-06',35.86],
+  ['casbarreiros','thaidossanto','MULTICANAL CHAT','2026-04-13',33.40],
+  ['casbarreiros','thaidossanto','MULTICANAL CHAT','2026-04-20',28.73],
+  ['casbarreiros','thaidossanto','MULTICANAL CHAT','2026-04-27',30.46],
+  ['cccsousa','isabmot','MULTICANAL CHAT','2026-04-06',40.75],
+  ['cccsousa','isabmot','MULTICANAL CHAT','2026-04-13',45.31],
+  ['cccsousa','isabmot','MULTICANAL CHAT','2026-04-20',46.34],
+  ['cccsousa','isabmot','MULTICANAL CHAT','2026-04-27',30.20],
+  ['cchimenez','thaidossanto','MULTICANAL CHAT','2026-04-06',28.51],
+  ['cchimenez','thaidossanto','MULTICANAL CHAT','2026-04-13',33.49],
+  ['cchimenez','thaidossanto','MULTICANAL CHAT','2026-04-27',34.75],
+  ['ccnnasciment','isabmot','MULTICANAL CHAT','2026-04-06',34.71],
+  ['ccnnasciment','isabmot','MULTICANAL CHAT','2026-04-13',34.85],
+  ['cdoliveira','lrossetto','MULTICANAL C2C','2026-04-06',25.22],
+  ['cdoliveira','lrossetto','MULTICANAL C2C','2026-04-13',26.40],
+  ['cdoliveira','lrossetto','MULTICANAL C2C','2026-04-20',26.79],
+  ['cdoliveira','lrossetto','MULTICANAL C2C','2026-04-27',24.75],
+  ['claudoliveir','lrossetto','MULTICANAL C2C','2026-04-06',29.90],
+  ['claudoliveir','lrossetto','MULTICANAL C2C','2026-04-13',28.96],
+  ['claudoliveir','lrossetto','MULTICANAL C2C','2026-04-20',25.86],
+  ['czago','bkaroline','MULTICANAL CHAT','2026-04-13',27.07],
+  ['elaoliveira','isabmot','MULTICANAL CHAT','2026-04-13',30.26],
+  ['elaoliveira','isabmot','MULTICANAL CHAT','2026-04-20',32.84],
+  ['fenunes','bkaroline','MULTICANAL CHAT','2026-04-06',27.01],
+  ['fenunes','bkaroline','MULTICANAL CHAT','2026-04-20',30.19],
+  ['fenunes','bkaroline','MULTICANAL CHAT','2026-04-27',32.68],
+  ['gabrielaaiol','lrossetto','MULTICANAL C2C','2026-04-06',82.00],
+  ['gabrielaaiol','lrossetto','MULTICANAL C2C','2026-04-13',36.86],
+  ['gabrielaaiol','lrossetto','MULTICANAL C2C','2026-04-20',43.34],
+  ['gabrielaaiol','lrossetto','MULTICANAL C2C','2026-04-27',42.47],
+  ['gbmontilha','bkaroline','MULTICANAL CHAT','2026-04-06',30.75],
+  ['gbmontilha','bkaroline','MULTICANAL CHAT','2026-04-13',29.28],
+  ['gbmontilha','bkaroline','MULTICANAL CHAT','2026-04-20',30.54],
+  ['gbmontilha','bkaroline','MULTICANAL CHAT','2026-04-27',30.36],
+  ['giselesosant','lrossetto','MULTICANAL C2C','2026-04-06',17.92],
+  ['giselesosant','lrossetto','MULTICANAL C2C','2026-04-13',40.38],
+  ['giselesosant','lrossetto','MULTICANAL C2C','2026-04-20',36.46],
+  ['giselesosant','lrossetto','MULTICANAL C2C','2026-04-27',31.89],
+  ['jamonteiro','thaidossanto','MULTICANAL CHAT','2026-04-06',23.67],
+  ['jamonteiro','thaidossanto','MULTICANAL CHAT','2026-04-13',25.22],
+  ['jamonteiro','thaidossanto','MULTICANAL CHAT','2026-04-20',26.10],
+  ['jecosta','lrossetto','MULTICANAL C2C','2026-04-06',23.76],
+  ['jecosta','lrossetto','MULTICANAL C2C','2026-04-13',21.20],
+  ['jecosta','lrossetto','MULTICANAL C2C','2026-04-20',18.62],
+  ['jecosta','lrossetto','MULTICANAL C2C','2026-04-27',21.88],
+  ['juslima','thaidossanto','MULTICANAL CHAT','2026-04-06',26.59],
+  ['juslima','thaidossanto','MULTICANAL CHAT','2026-04-13',26.30],
+  ['juslima','thaidossanto','MULTICANAL CHAT','2026-04-20',24.70],
+  ['kavalle','lrossetto','MULTICANAL C2C','2026-04-06',31.33],
+  ['kavalle','lrossetto','MULTICANAL C2C','2026-04-13',53.01],
+  ['kavalle','lrossetto','MULTICANAL C2C','2026-04-20',41.25],
+  ['kavalle','lrossetto','MULTICANAL C2C','2026-04-27',56.62],
+  ['kperrone','thaidossanto','MULTICANAL CHAT','2026-04-06',18.07],
+  ['kperrone','thaidossanto','MULTICANAL CHAT','2026-04-27',17.35],
+  ['kroza','bkaroline','MULTICANAL CHAT','2026-04-20',27.70],
+  ['kroza','bkaroline','MULTICANAL CHAT','2026-04-27',33.00],
+  ['lecandido','bkaroline','MULTICANAL CHAT','2026-04-06',38.90],
+  ['lecandido','bkaroline','MULTICANAL CHAT','2026-04-13',35.73],
+  ['lecandido','bkaroline','MULTICANAL CHAT','2026-04-20',30.42],
+  ['lecandido','bkaroline','MULTICANAL CHAT','2026-04-27',33.90],
+  ['lianadsilva','alicarvalho','MULTICANAL CHAT','2026-04-06',28.60],
+  ['lianadsilva','alicarvalho','MULTICANAL CHAT','2026-04-13',27.68],
+  ['lianadsilva','alicarvalho','MULTICANAL CHAT','2026-04-20',38.13],
+  ['lianadsilva','alicarvalho','MULTICANAL CHAT','2026-04-27',28.58],
+  ['linessousa','lrossetto','MULTICANAL C2C','2026-04-06',57.81],
+  ['linessousa','lrossetto','MULTICANAL C2C','2026-04-13',41.95],
+  ['linessousa','lrossetto','MULTICANAL C2C','2026-04-20',51.54],
+  ['linessousa','lrossetto','MULTICANAL C2C','2026-04-27',45.20],
+  ['losouza','alicarvalho','MULTICANAL CHAT','2026-04-06',32.55],
+  ['losouza','alicarvalho','MULTICANAL CHAT','2026-04-13',29.22],
+  ['losouza','alicarvalho','MULTICANAL CHAT','2026-04-20',28.08],
+  ['losouza','alicarvalho','MULTICANAL CHAT','2026-04-27',31.51],
+  ['luciagarcia','lrossetto','MULTICANAL C2C','2026-04-06',23.01],
+  ['luciagarcia','lrossetto','MULTICANAL C2C','2026-04-13',26.52],
+  ['luciagarcia','lrossetto','MULTICANAL C2C','2026-04-20',22.03],
+  ['luciagarcia','lrossetto','MULTICANAL C2C','2026-04-27',20.50],
+  ['lyalves','alicarvalho','MULTICANAL CHAT','2026-04-06',31.54],
+  ['lyalves','alicarvalho','MULTICANAL CHAT','2026-04-13',27.65],
+  ['lyalves','alicarvalho','MULTICANAL CHAT','2026-04-20',30.72],
+  ['lyalves','alicarvalho','MULTICANAL CHAT','2026-04-27',28.37],
+  ['mandoliveira','isabmot','MULTICANAL CHAT','2026-04-06',34.38],
+  ['mandoliveira','isabmot','MULTICANAL CHAT','2026-04-13',32.34],
+  ['mandoliveira','isabmot','MULTICANAL CHAT','2026-04-20',30.88],
+  ['mandoliveira','isabmot','MULTICANAL CHAT','2026-04-27',27.94],
+  ['marcovenicio','lrossetto','MULTICANAL C2C','2026-04-06',19.22],
+  ['marcovenicio','lrossetto','MULTICANAL C2C','2026-04-13',25.23],
+  ['marcovenicio','lrossetto','MULTICANAL C2C','2026-04-20',21.45],
+  ['marcovenicio','lrossetto','MULTICANAL C2C','2026-04-27',19.36],
+  ['marfreitas','thaidossanto','MULTICANAL CHAT','2026-04-13',22.71],
+  ['marfreitas','thaidossanto','MULTICANAL CHAT','2026-04-20',20.30],
+  ['marfreitas','thaidossanto','MULTICANAL CHAT','2026-04-27',29.51],
+  ['mariasilva','isabmot','MULTICANAL CHAT','2026-04-06',32.58],
+  ['mariasilva','isabmot','MULTICANAL CHAT','2026-04-13',30.14],
+  ['marlaraujo','alicarvalho','MULTICANAL CHAT','2026-04-06',30.67],
+  ['marlaraujo','alicarvalho','MULTICANAL CHAT','2026-04-13',32.32],
+  ['marlaraujo','alicarvalho','MULTICANAL CHAT','2026-04-20',42.33],
+  ['marlaraujo','alicarvalho','MULTICANAL CHAT','2026-04-27',31.86],
+  ['maybalazshaz','bkaroline','MULTICANAL CHAT','2026-04-06',61.77],
+  ['maybalazshaz','bkaroline','MULTICANAL CHAT','2026-04-13',53.69],
+  ['maybalazshaz','bkaroline','MULTICANAL CHAT','2026-04-20',49.10],
+  ['maybalazshaz','bkaroline','MULTICANAL CHAT','2026-04-27',49.66],
+  ['mfvieira','isabmot','MULTICANAL CHAT','2026-04-06',28.73],
+  ['mfvieira','isabmot','MULTICANAL CHAT','2026-04-13',33.18],
+  ['mfvieira','isabmot','MULTICANAL CHAT','2026-04-20',34.73],
+  ['mrmarques','isabmot','MULTICANAL CHAT','2026-04-27',21.18],
+  ['mudiniz','lrossetto','MULTICANAL C2C','2026-04-06',23.28],
+  ['mudiniz','lrossetto','MULTICANAL C2C','2026-04-13',18.86],
+  ['mudiniz','lrossetto','MULTICANAL C2C','2026-04-20',19.41],
+  ['mudiniz','lrossetto','MULTICANAL C2C','2026-04-27',17.14],
+  ['phegoncalves','alicarvalho','MULTICANAL CHAT','2026-04-06',29.81],
+  ['phegoncalves','alicarvalho','MULTICANAL CHAT','2026-04-13',36.93],
+  ['phegoncalves','alicarvalho','MULTICANAL CHAT','2026-04-20',30.98],
+  ['phegoncalves','alicarvalho','MULTICANAL CHAT','2026-04-27',32.10],
+  ['pmarinho','lrossetto','MULTICANAL C2C','2026-04-20',19.81],
+  ['pmarinho','lrossetto','MULTICANAL C2C','2026-04-27',19.33],
+  ['polivdaraujo','bkaroline','MULTICANAL CHAT','2026-04-06',30.89],
+  ['polivdaraujo','bkaroline','MULTICANAL CHAT','2026-04-13',35.26],
+  ['polivdaraujo','bkaroline','MULTICANAL CHAT','2026-04-20',28.56],
+  ['polivdaraujo','bkaroline','MULTICANAL CHAT','2026-04-27',25.12],
+  ['raisacsantos','lrossetto','MULTICANAL C2C','2026-04-06',66.32],
+  ['raisacsantos','lrossetto','MULTICANAL C2C','2026-04-13',47.74],
+  ['raisacsantos','lrossetto','MULTICANAL C2C','2026-04-20',45.99],
+  ['raisacsantos','lrossetto','MULTICANAL C2C','2026-04-27',51.22],
+  ['renataperei','isabmot','MULTICANAL CHAT','2026-04-06',31.78],
+  ['renataperei','isabmot','MULTICANAL CHAT','2026-04-13',32.12],
+  ['renataperei','isabmot','MULTICANAL CHAT','2026-04-20',33.72],
+  ['renataperei','isabmot','MULTICANAL CHAT','2026-04-27',32.86],
+  ['stdiniz','alicarvalho','MULTICANAL CHAT','2026-04-06',22.36],
+  ['stdiniz','alicarvalho','MULTICANAL CHAT','2026-04-13',19.13],
+  ['stdiniz','alicarvalho','MULTICANAL CHAT','2026-04-20',19.73],
+  ['stdiniz','alicarvalho','MULTICANAL CHAT','2026-04-27',21.47],
+  ['tsgarbim','lrossetto','MULTICANAL C2C','2026-04-13',16.25],
+  ['tsgarbim','lrossetto','MULTICANAL C2C','2026-04-20',18.74],
+  ['tsgarbim','lrossetto','MULTICANAL C2C','2026-04-27',14.73],
+  ['uizfsilva','alicarvalho','MULTICANAL CHAT','2026-04-06',33.94],
+  ['uizfsilva','alicarvalho','MULTICANAL CHAT','2026-04-13',30.89],
+  ['uizfsilva','alicarvalho','MULTICANAL CHAT','2026-04-20',28.59],
+  ['uizfsilva','alicarvalho','MULTICANAL CHAT','2026-04-27',33.45],
+  ['ulissouza','thaidossanto','MULTICANAL CHAT','2026-04-06',30.85],
+  ['ulissouza','thaidossanto','MULTICANAL CHAT','2026-04-13',30.94],
+  ['ulissouza','thaidossanto','MULTICANAL CHAT','2026-04-20',27.50],
+  ['ulissouza','thaidossanto','MULTICANAL CHAT','2026-04-27',33.54],
+  ['vdpiedade','bkaroline','MULTICANAL CHAT','2026-04-06',27.71],
+  ['vdpiedade','bkaroline','MULTICANAL CHAT','2026-04-13',29.76],
+  ['vdpiedade','bkaroline','MULTICANAL CHAT','2026-04-20',24.45],
+  ['vdpiedade','bkaroline','MULTICANAL CHAT','2026-04-27',26.01],
+  ['vfarias','alicarvalho','MULTICANAL CHAT','2026-04-06',30.86],
+  ['vfarias','alicarvalho','MULTICANAL CHAT','2026-04-13',29.38],
+  ['vfarias','alicarvalho','MULTICANAL CHAT','2026-04-20',32.46],
+  ['vfarias','alicarvalho','MULTICANAL CHAT','2026-04-27',31.70],
+  ['vfonorio','isabmot','MULTICANAL CHAT','2026-04-06',34.92],
+  ['vfonorio','isabmot','MULTICANAL CHAT','2026-04-13',37.36],
+  ['vfonorio','isabmot','MULTICANAL CHAT','2026-04-20',33.36],
+  ['vfonorio','isabmot','MULTICANAL CHAT','2026-04-27',38.67],
+  ['vitnasciment','lrossetto','MULTICANAL C2C','2026-04-06',78.23],
+  ['vitnasciment','lrossetto','MULTICANAL C2C','2026-04-13',41.52],
+  ['vitnasciment','lrossetto','MULTICANAL C2C','2026-04-20',39.35],
+  ['vitnasciment','lrossetto','MULTICANAL C2C','2026-04-27',49.94],
+  ['vltrevizan','lrossetto','MULTICANAL C2C','2026-04-06',21.87],
+  ['vltrevizan','lrossetto','MULTICANAL C2C','2026-04-13',22.22],
+  ['vltrevizan','lrossetto','MULTICANAL C2C','2026-04-20',21.27],
+  ['vltrevizan','lrossetto','MULTICANAL C2C','2026-04-27',20.82],
+  ['wgomdsouza','lrossetto','C2C','2026-04-13',23.56],
+  ['wgomdsouza','lrossetto','C2C','2026-04-20',21.31],
+  ['wgomdsouza','lrossetto','C2C','2026-04-27',19.60],
+];
+
+const SEMANAS = ['2026-04-06','2026-04-13','2026-04-20','2026-04-27'];
+const SEMANA_LABELS = ['S1 06/04','S2 13/04','S3 20/04','S4 27/04'];
 
 // ---- DADOS PRODUTIVIDADE ----
 const produRepData = [
@@ -1498,6 +1849,7 @@ filterQuartil();
 populateProcFilter(); filterProcesso();
 populateQ4Filters(); filterQ4();
 filterMulti();
+filterEvolucao();
 filterProdu();
 filterToque();
 populateCasosFilters(); filterCasos();
