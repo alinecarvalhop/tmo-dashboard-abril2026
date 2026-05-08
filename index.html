@@ -789,25 +789,25 @@ tr:last-child td { border-bottom: none; }
 
   <!-- KPIs -->
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
-    <div class="kpi red">
-      <div class="kpi-lbl">NPS CHAT — Abril 2026</div>
-      <div class="kpi-val">59,4%</div>
-      <div class="kpi-sub">Meta 62% 🔴 · 192 surveys · TMO 29,34 min</div>
+    <div id="nps-chat-card" class="kpi red">
+      <div class="kpi-lbl" id="nps-chat-lbl">NPS CHAT — Abril 2026</div>
+      <div class="kpi-val" id="nps-chat-val">59,4%</div>
+      <div class="kpi-sub" id="nps-chat-sub">Meta 62% 🔴 · 192 surveys · TMO 29,34 min</div>
     </div>
-    <div class="kpi green">
-      <div class="kpi-lbl">NPS C2C — Abril 2026</div>
-      <div class="kpi-val">86,7%</div>
-      <div class="kpi-sub">Meta 45,9% 🟢 · 15 surveys · TMO 28,80 min</div>
+    <div id="nps-c2c-card" class="kpi green">
+      <div class="kpi-lbl" id="nps-c2c-lbl">NPS C2C — Abril 2026</div>
+      <div class="kpi-val" id="nps-c2c-val">86,7%</div>
+      <div class="kpi-sub" id="nps-c2c-sub">Meta 45,9% 🟢 · 15 surveys · TMO 28,80 min</div>
     </div>
-    <div class="kpi red">
+    <div id="nps-newbie-card" class="kpi red">
       <div class="kpi-lbl">NPS CHAT NEWBIE</div>
-      <div class="kpi-val">23,1%</div>
-      <div class="kpi-sub">Meta 62% 🔴 · 13 surveys — crítico</div>
+      <div class="kpi-val" id="nps-newbie-val">23,1%</div>
+      <div class="kpi-sub" id="nps-newbie-sub">Meta 62% 🔴 · 13 surveys — crítico</div>
     </div>
-    <div class="kpi green">
+    <div id="nps-expert-card" class="kpi green">
       <div class="kpi-lbl">NPS CHAT EXPERT</div>
-      <div class="kpi-val">62,0%</div>
-      <div class="kpi-sub">Meta 62% 🟢 · 179 surveys — na meta</div>
+      <div class="kpi-val" id="nps-expert-val">62,0%</div>
+      <div class="kpi-sub" id="nps-expert-sub">Meta 62% 🟢 · 179 surveys — na meta</div>
     </div>
   </div>
 
@@ -1415,12 +1415,30 @@ function notaBadge(n) {
 }
 
 function populateCorrelacaoFilters() {
-  const reps  = [...new Set(detratoresData.map(r=>r.rep))].sort();
-  const procs = [...new Set(detratoresData.map(r=>r.proc))].sort();
+  const src   = currentMonth==='2026-04' ? detratoresData : MAY_detratoresData;
+  const reps  = [...new Set(src.map(r=>r.rep))].sort();
+  const procs = [...new Set(src.map(r=>r.proc))].sort();
   const sr = document.getElementById('fnps-rep');
   const sp = document.getElementById('fnps-proc');
   reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sr.appendChild(o); });
   procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sp.appendChild(o); });
+}
+
+function updateNpsKpis(m) {
+  const k = NPS_KPIS[m];
+  const lbl = m==='2026-04' ? 'Abril 2026' : 'Maio 2026 ⚡';
+  document.getElementById('nps-chat-lbl').textContent = 'NPS CHAT — '+lbl;
+  document.getElementById('nps-chat-val').textContent = k.chat_nps.toFixed(1)+'%';
+  document.getElementById('nps-chat-sub').textContent = 'Meta '+k.chat_meta+'% '+(k.chat_nps>=k.chat_meta?'🟢':'🔴')+' · '+k.chat_surveys+' surveys · TMO '+k.chat_tmo+' min';
+  document.getElementById('nps-chat-card').className = 'kpi '+(k.chat_nps>=k.chat_meta?'green':'red');
+  document.getElementById('nps-c2c-lbl').textContent = 'NPS C2C — '+lbl;
+  document.getElementById('nps-c2c-val').textContent = k.c2c_nps.toFixed(1)+'%';
+  document.getElementById('nps-c2c-sub').textContent = 'Meta '+k.c2c_meta+'% '+(k.c2c_nps>=k.c2c_meta?'🟢':'🔴')+' · '+k.c2c_surveys+' surveys · TMO '+k.c2c_tmo+' min';
+  document.getElementById('nps-c2c-card').className = 'kpi '+(k.c2c_nps>=k.c2c_meta?'green':'red');
+  document.getElementById('nps-newbie-val').textContent = k.newbie_nps!=null ? k.newbie_nps.toFixed(1)+'%' : 'N/D';
+  document.getElementById('nps-newbie-sub').textContent = k.newbie_nps!=null ? 'Meta 62% 🔴 · '+k.newbie_surveys+' surveys' : 'Amostra insuficiente em '+lbl;
+  document.getElementById('nps-expert-val').textContent = k.expert_nps!=null ? k.expert_nps.toFixed(1)+'%' : 'N/D';
+  document.getElementById('nps-expert-sub').textContent = 'Meta 62% '+(k.expert_nps>=62?'🟢':'🔴')+' · '+k.expert_surveys+' surveys';
 }
 
 function filterCorrelacao() {
@@ -1428,7 +1446,8 @@ function filterCorrelacao() {
   const r  = document.getElementById('fnps-rep').value;
   const p  = document.getElementById('fnps-proc').value;
   const n  = document.getElementById('fnps-nota').value;
-  let rows = detratoresData.filter(x => {
+  const src = currentMonth==='2026-04' ? detratoresData : MAY_detratoresData;
+  let rows = src.filter(x => {
     if (c && x.canal !== c) return false;
     if (r && x.rep !== r)   return false;
     if (p && x.proc !== p)  return false;
@@ -1849,6 +1868,31 @@ const MAY_prodRepData = [
 ];
 
 // ---- DADOS TMO × NPS ----
+const NPS_KPIS = {
+  '2026-04': {
+    chat_nps:59.4, chat_meta:62, chat_surveys:192, chat_tmo:29.34, chat_status:'Abaixo da meta',
+    c2c_nps:86.7,  c2c_meta:45.9, c2c_surveys:15, c2c_tmo:28.80,  c2c_status:'Acima da meta',
+    newbie_nps:23.1, newbie_surveys:13,
+    expert_nps:62.0, expert_surveys:179,
+    insight:'Chat e C2C têm TMO similar (~29 min), mas NPS radicalmente diferente (59% vs 87%). O canal voz resolve mais e gera mais satisfação.'
+  },
+  '2026-05': {
+    chat_nps:60.0, chat_meta:62, chat_surveys:20, chat_tmo:27.81, chat_status:'Abaixo da meta',
+    c2c_nps:100.0, c2c_meta:45.9, c2c_surveys:3,  c2c_tmo:27.83,  c2c_status:'Acima da meta',
+    newbie_nps:null, newbie_surveys:0,
+    expert_nps:60.0, expert_surveys:20,
+    insight:'Maio parcial (1-8/05): Chat 60% vs meta 62% (abaixo). C2C 100% — volume baixo (3 surveys). Padrão de C2C superior ao Chat se mantém.'
+  }
+};
+
+const MAY_detratoresData = [
+  {caso:'454494234',data:'06/05',rep:'ext_joscaua',canal:'MULTICANAL C2C',proc:'Potenciar Ventas',nota:4,tmo:151.52,comentario:'Não conseguimos finalizar o assunto'},
+  {caso:'454315709',data:'04/05',rep:'ext_railcost',canal:'MULTICANAL CHAT',proc:'Reputación',nota:6,tmo:66.40,comentario:'O atendimento ainda é ruim. Ainda existe falta de conhecimento e compreensão. Perdemos muito tempo com resoluções simples'},
+  {caso:'454318818',data:'04/05',rep:'ext_amaellen',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',nota:0,tmo:41.60,comentario:'Não resolveram meu problema'},
+  {caso:'454224263',data:'04/05',rep:'lianadsilva',canal:'MULTICANAL CHAT',proc:'Reputación',nota:3,tmo:23.65,comentario:'nao resolveu meu problema'},
+  {caso:'454320650',data:'04/05',rep:'gbmontilha',canal:'MULTICANAL CHAT',proc:'Reputación',nota:0,tmo:21.38,comentario:'nao removeu impacto favoravel ao vendedor'},
+];
+
 const detratoresData = [
   {caso:'448673069',data:'06/04',rep:'maybalazshaz',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',nota:0,tmo:93.27,comentario:'atendente nem leu'},
   {caso:'450354216',data:'14/04',rep:'mandoliveira',canal:'MULTICANAL CHAT',proc:'Reputación',nota:1,tmo:79.93,comentario:''},
@@ -2337,6 +2381,7 @@ function setMonth(m) {
   populateProdTipoReps(); filterProdTipo();
   filterProdu();
   filterEvolucao();
+  updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
   document.getElementById('last-updated').textContent = k.partial
     ? `⚡ Dados parciais 01-08/05 · ${new Date().toLocaleDateString('pt-BR')}`
     : 'Fechamento completo — Abril 2026';
@@ -2409,7 +2454,7 @@ populateProcFilter(); filterProcesso();
 populateQ4Filters(); filterQ4();
 filterMulti();
 filterEvolucao();
-populateCorrelacaoFilters(); filterCorrelacao();
+updateNpsKpis('2026-04'); populateCorrelacaoFilters(); filterCorrelacao();
 renderProdTime(); populateProdTipoReps(); filterProdTipo();
 filterProdu();
 filterToque();
