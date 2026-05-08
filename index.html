@@ -134,8 +134,10 @@ tr:last-child td { border-bottom: none; }
 <body>
 
 <header>
-  <div>
-    <h1>📊 TMO/PRODU - Publicações</h1>
+  <div style="display:flex;align-items:center;gap:14px">
+    <img src="logo.png" alt="Mature Publicações"
+         style="height:52px;width:52px;object-fit:contain;mix-blend-mode:multiply;filter:brightness(1.1)">
+    <h1>TMO/PRODU - Publicações</h1>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="badge">META: CHAT 27,54 min · C2C 19,73 min</div>
@@ -3068,9 +3070,6 @@ function setMonth(m) {
   renderExecSummary(m);
   filterEstilo();
   updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
-  // last-updated removido
-  // k.partial
-    ? `⚡ Dados parciais 01-08/05 · ${new Date().toLocaleDateString('pt-BR')}`
 
 }
 
