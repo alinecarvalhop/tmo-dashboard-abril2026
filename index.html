@@ -1496,15 +1496,23 @@ function filterProcesso() {
 
 // ---- Q4 TABLE ----
 function populateQ4Filters() {
-  const data  = getQ4Data();
-  const procs = [...new Set(data.map(r=>r.proc))].sort();
-  const reps  = [...new Set(data.map(r=>r.rep))].sort();
+  const data   = getQ4Data();
+  const procs  = [...new Set(data.map(r=>r.proc))].sort();
+  const reps   = [...new Set(data.map(r=>r.rep))].sort();
+  const canais = [...new Set(data.map(r=>r.canal))].sort();
+  const liders = [...new Set(data.map(r=>r.lider).filter(Boolean))].sort();
   const sp = document.getElementById('f4-proc');
   const sr = document.getElementById('f4-rep');
+  const sc = document.getElementById('f4-canal');
+  const sl = document.getElementById('f4-lider');
   sp.innerHTML = '<option value="">Todos</option>';
   sr.innerHTML = '<option value="">Todos</option>';
+  sc.innerHTML = '<option value="">Todos</option>';
+  sl.innerHTML = '<option value="">Todos</option>';
   procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sp.appendChild(o); });
   reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sr.appendChild(o); });
+  canais.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; sc.appendChild(o); });
+  liders.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sl.appendChild(o); });
 }
 function filterQ4() {
   const c = document.getElementById('f4-canal').value;
@@ -5498,7 +5506,37 @@ function setFila(fila) {
   document.getElementById('header-title').textContent = info.label;
   document.getElementById('meta-badge').textContent = 'META: CHAT '+meta.chat+' min · C2C '+meta.c2c+' min';
   populateQuartilFilters();
+  populateToqueFilters();
+  populateProduFilters();
+  populateProdTFilters();
   setMonth(currentMonth);
+}
+
+function populateToqueFilters() {
+  const data = getToqueData();
+  const liders = [...new Set(data.map(r=>r.lider).filter(Boolean))].sort();
+  const sl = document.getElementById('ft-lider');
+  if (!sl) return;
+  sl.innerHTML = '<option value="">Todos</option>';
+  liders.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sl.appendChild(o); });
+}
+
+function populateProduFilters() {
+  const data = getProduData();
+  const liders = [...new Set(data.map(r=>r.lider).filter(Boolean))].sort();
+  const sl = document.getElementById('fp2-lider');
+  if (!sl) return;
+  sl.innerHTML = '<option value="">Todos</option>';
+  liders.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sl.appendChild(o); });
+}
+
+function populateProdTFilters() {
+  const data = getProdTData();
+  const liders = [...new Set(data.map(r=>r.lider).filter(Boolean))].sort();
+  const sl = document.getElementById('fpt-lider');
+  if (!sl) return;
+  sl.innerHTML = '<option value="">Todos</option>';
+  liders.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sl.appendChild(o); });
 }
 
 // ---- INIT ----
@@ -5579,8 +5617,9 @@ filterEstilo();
 populateEstiloCasosProc(); filterEstiloCasos();
 updateNpsKpis('2026-04'); populateCorrelacaoFilters(); filterCorrelacao();
 renderProdTime(); populateProdTipoReps(); filterProdTipo();
-filterProdu();
-filterToque();
+populateProduFilters(); filterProdu();
+populateToqueFilters(); filterToque();
+populateProdTFilters();
 populateCasosFilters(); filterCasos();
 
 </script>
