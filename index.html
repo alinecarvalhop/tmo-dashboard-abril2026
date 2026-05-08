@@ -1117,7 +1117,7 @@ tr:last-child td { border-bottom: none; }
       <table id="tbl-sol-q4">
         <thead>
           <tr>
-            <th>#</th><th>Processo (Solução)</th><th>Canal</th>
+            <th>#</th><th>Solução (CX_SOL_NAME)</th><th>Canal</th>
             <th>Rep</th><th>Seniority</th><th>Líder</th>
             <th>TMO Q4</th><th>Meta</th><th>Desvio</th><th>Severidade</th>
           </tr>
@@ -2343,11 +2343,46 @@ function renderDispersao() {
 }
 
 
+// ---- DADOS SOLUÇÕES CX_SOL_NAME (join BT_CX_NPS_DETAIL × DM_CX_TMO · Abril 2026) ----
+const solucoesQ4Data = [
+  {rep:"ext_moreirem",solucao:"Anunciar - Sugestão de criação de novos produtos de catálogo",proc:"Antes de publicar",canal:"MULTICANAL CHAT",n:2,tmo:111.42},
+  {rep:"maybalazshaz",solucao:"Modificar - Modificar estoque e tempo de disponibilidade",proc:"Gestión de Publicación",canal:"MULTICANAL CHAT",n:1,tmo:93.27},
+  {rep:"maybalazshaz",solucao:"Analisamos reputação - Reclamação afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:74.42},
+  {rep:"cccsousa",solucao:"Modificar - Modificar tipo de envio ou limite de unidades por envio",proc:"Gestión de Publicación",canal:"MULTICANAL CHAT",n:1,tmo:72.07},
+  {rep:"bemarques",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto sem estoque",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:69.88},
+  {rep:"maybalazshaz",solucao:"Analisamos reputação - Cancelamento afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:68.80},
+  {rep:"cccsousa",solucao:"Potencializador (Promoções) - Não pode ativar promoções",proc:"Gestión de Publicación",canal:"MULTICANAL CHAT",n:1,tmo:66.30},
+  {rep:"lecandido",solucao:"Modificar - Como criar ou modificar variantes e fotos",proc:"Gestión de Publicación",canal:"MULTICANAL CHAT",n:1,tmo:65.53},
+  {rep:"vfonorio",solucao:"Potencializador (Posicionamento) - Como melhorar a exposição",proc:"Potenciar Ventas",canal:"MULTICANAL CHAT",n:2,tmo:65.08},
+  {rep:"vfonorio",solucao:"Modificar - Modificar características principais e secundárias",proc:"Gestión de Publicación",canal:"MULTICANAL CHAT",n:1,tmo:64.92},
+  {rep:"vfonorio",solucao:"Anunciar - Como Anunciar um produto",proc:"Antes de publicar",canal:"MULTICANAL CHAT",n:1,tmo:64.22},
+  {rep:"vitnasciment",solucao:"Analisamos reputação - Reclamação não afeta a reputação",proc:"Reputación",canal:"MULTICANAL C2C",n:1,tmo:63.88},
+  {rep:"amcandido",solucao:"Potencializador (LO) - Fazer cadastro como Loja Oficial",proc:"Potenciar Ventas",canal:"MULTICANAL CHAT",n:1,tmo:63.55},
+  {rep:"lecandido",solucao:"Reputação ME Coleta XD: Coleta pendente",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:58.55},
+  {rep:"bemarques",solucao:"Analisamos reputação - Reclamação afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:57.95},
+  {rep:"amcandido",solucao:"Técnica Proibida - Deve buscar seu produto no catálogo",proc:"PR - Técnica prohibida",canal:"MULTICANAL CHAT",n:1,tmo:56.72},
+  {rep:"gabrielaaiol",solucao:"Modificar - Modificar publicação de catálogo ou tradicional",proc:"Gestión de Publicación",canal:"MULTICANAL C2C",n:1,tmo:56.17},
+  {rep:"bemarques",solucao:"Técnica proibida - Rollback (reativamos o anúncio)",proc:"PR - Técnica prohibida",canal:"MULTICANAL CHAT",n:2,tmo:55.31},
+  {rep:"bemarques",solucao:"Analisamos reputação - Cancelamento afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:52.40},
+  {rep:"vfonorio",solucao:"Analisamos reputação - Reclamação afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:51.38},
+  {rep:"amcandido",solucao:"Analisamos reputação - Cancelamento afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:46.95},
+  {rep:"cccsousa",solucao:"Analisamos reputação - Reclamação afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:46.67},
+  {rep:"vfonorio",solucao:"Artigo proibido - Rollback (reativamos o anúncio)",proc:"PR - Artículos prohibidos",canal:"MULTICANAL CHAT",n:1,tmo:40.48},
+  {rep:"amcandido",solucao:"Analisamos reputação - Reclamação afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:3,tmo:39.37},
+  {rep:"maybalazshaz",solucao:"Modificar - Como modificar o título",proc:"Gestión de Publicación",canal:"MULTICANAL CHAT",n:2,tmo:37.07},
+  {rep:"lecandido",solucao:"Potencializador (Publicidade) - Product Ads: O que é e como funciona",proc:"Potenciar Ventas",canal:"MULTICANAL CHAT",n:2,tmo:36.90},
+  {rep:"bemarques",solucao:"Reputação ME Coleta XD: Coleta pendente",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:35.62},
+  {rep:"amcandido",solucao:"Reputação ME Coleta XD: Coleta pendente",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:35.23},
+  {rep:"raisacsantos",solucao:"Analisamos reputação - Reclamação afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL C2C",n:1,tmo:31.47},
+  {rep:"amcandido",solucao:"Potencializador (Promoções) - Não pode ativar promoções",proc:"Potenciar Ventas",canal:"MULTICANAL CHAT",n:2,tmo:28.03},
+  {rep:"maybalazshaz",solucao:"Qualidade da foto - Aplicamos rollback cumpre com todos os critérios",proc:"Calidad de foto",canal:"MULTICANAL CHAT",n:1,tmo:26.08},
+  {rep:"kroza",solucao:"Potencializador (Posicionamento) - Como melhorar minha competitividade",proc:"Potenciar Ventas",canal:"MULTICANAL CHAT",n:1,tmo:19.48},
+];
+
 // ---- SOLUÇÕES OFENSORAS Q4 ----
 function populateSolucoesFilters() {
-  const q4 = getQ4Data();
-  const reps  = [...new Set(q4.map(r=>r.rep))].sort();
-  const procs = [...new Set(q4.map(r=>r.proc))].sort();
+  const reps  = [...new Set(solucoesQ4Data.map(r=>r.rep))].sort();
+  const procs = [...new Set(solucoesQ4Data.map(r=>r.proc))].sort();
   const sr = document.getElementById('fd-sol-rep');
   const sp = document.getElementById('fd-sol-proc');
   if (!sr || !sp) return;
@@ -2361,23 +2396,16 @@ function renderSolucoesQ4() {
   const c = document.getElementById('fd-sol-canal').value;
   const r = document.getElementById('fd-sol-rep').value;
   const p = document.getElementById('fd-sol-proc').value;
-  const q4 = getQ4Data();
 
-  // Enriquecer com meta da processoData
   const pdMap = {};
   getProcessoData().forEach(pd => { pdMap[pd.proc+'|'+pd.canal] = pd.meta || 0; });
 
-  let rows = q4.filter(x => {
-    const cNorm = normCanal(x.canal);
-    if (c && cNorm !== c) return false;
-    if (r && x.rep !== r) return false;
-    if (p && x.proc !== p) return false;
-    return true;
-  }).map(x => {
-    const cNorm = normCanal(x.canal);
-    const meta = pdMap[x.proc+'|'+cNorm] || 0;
+  let rows = solucoesQ4Data.filter(x =>
+    (!c || x.canal === c) && (!r || x.rep === r) && (!p || x.proc === p)
+  ).map(x => {
+    const meta = pdMap[x.proc+'|'+x.canal] || 0;
     const dev = meta > 0 ? Math.round((x.tmo - meta)*100)/100 : null;
-    return {...x, cNorm, meta, dev};
+    return {...x, meta, dev};
   }).sort((a,b) => b.tmo - a.tmo);
 
   const tb = document.getElementById('tbody-sol-q4');
@@ -2394,11 +2422,13 @@ function renderSolucoesQ4() {
     const metaTxt = x.meta > 0 ? `<span style="background:#e8f4f8;color:#0077b6;padding:2px 6px;border-radius:4px;font-size:11px">${x.meta} min</span>` : '—';
     return `<tr>
       <td><strong>${i+1}</strong></td>
-      <td><strong>${x.proc}</strong></td>
-      <td>${canalBadge(x.cNorm)}</td>
+      <td style="max-width:280px;white-space:normal;font-size:12px"><strong>${x.solucao}</strong>
+        <div style="font-size:10px;color:#6c757d;margin-top:2px">${x.proc}</div>
+      </td>
+      <td>${canalBadge(x.canal)}</td>
       <td><strong>${x.rep}</strong></td>
       <td>${senBadge(x.rep)}</td>
-      <td>${x.lider || '—'}</td>
+      <td>${x.lider || lider_of(x.rep)}</td>
       <td class="pos"><strong>${x.tmo.toFixed(2)} min</strong></td>
       <td>${metaTxt}</td>
       <td>${dev !== null ? devFmt(dev) : '—'}</td>
