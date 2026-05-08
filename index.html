@@ -174,41 +174,42 @@ tr:last-child td { border-bottom: none; }
 <!-- ===================== PÁGINA 1: VISÃO GERAL ===================== -->
 <div id="page-resumo" class="page active">
 
+  <!-- NÚMEROS GERAIS -->
+  <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
+    <div class="kpi red">
+      <div class="kpi-lbl">TMO Geral — Publicações</div>
+      <div class="kpi-val" id="kpi-tmo">28,78</div>
+      <div class="kpi-sub" id="kpi-tmo-sub" style="color:#e63946;font-weight:700">+6,6% vs meta</div>
+    </div>
+    <div class="kpi yellow">
+      <div class="kpi-lbl">TMO — MULTICANAL CHAT</div>
+      <div class="kpi-val" id="kpi-tmo-chat">29,24</div>
+      <div class="kpi-sub" id="kpi-tmo-chat-sub">min · 17.180 contatos</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-lbl">TMO — MULTICANAL C2C</div>
+      <div class="kpi-val" id="kpi-tmo-c2c">26,98</div>
+      <div class="kpi-sub" id="kpi-tmo-c2c-sub">min · 4.345 contatos</div>
+    </div>
+    <div class="kpi gray">
+      <div class="kpi-lbl">Reps Ativos</div>
+      <div class="kpi-val" id="kpi-reps">60</div>
+      <div class="kpi-sub" id="kpi-volume-sub">Abril 2026</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">Desvio da Meta (27 min)</div>
+      <div class="kpi-val" id="kpi-desvio">+1,78 min</div>
+      <div class="kpi-sub" id="kpi-desvio-sub">+6,6% fora do objetivo</div>
+    </div>
+  </div>
+
   <!-- RESUMO EXECUTIVO -->
-  <div id="exec-summary" style="background:white;border-radius:10px;padding:20px 24px;box-shadow:0 1px 6px rgba(0,0,0,.07);margin-bottom:20px;border-left:4px solid #e63946">
+  <div id="exec-summary" style="background:white;border-radius:10px;padding:20px 24px;box-shadow:0 1px 6px rgba(0,0,0,.07);margin-bottom:20px;border-left:4px solid #e63946;margin-top:18px">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
       <div style="font-size:14px;font-weight:700;color:#1a1a2e">📋 Resumo Executivo — Principais Oportunidades</div>
       <span id="exec-mes-lbl" style="font-size:11px;color:#6c757d;font-weight:600">Abril 2026</span>
     </div>
     <div id="exec-body" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px"></div>
-  </div>
-
-  <div class="kpi-row">
-    <div class="kpi red">
-      <div class="kpi-lbl">TMO Médio (Assign)</div>
-      <div class="kpi-val" id="kpi-tmo">29,34</div>
-      <div class="kpi-sub" id="kpi-tmo-sub" style="color:#e63946;font-weight:700">+8,7% vs meta</div>
-    </div>
-    <div class="kpi red">
-      <div class="kpi-lbl">TMO por Caso</div>
-      <div class="kpi-val" id="kpi-tmocaso">38,35</div>
-      <div class="kpi-sub">múltiplos assigns/caso</div>
-    </div>
-    <div class="kpi gray">
-      <div class="kpi-lbl">Volume Total</div>
-      <div class="kpi-val" id="kpi-volume">16.455</div>
-      <div class="kpi-sub" id="kpi-volume-sub">contatos em Abril</div>
-    </div>
-    <div class="kpi gray">
-      <div class="kpi-lbl">Reps Ativos</div>
-      <div class="kpi-val" id="kpi-reps">61</div>
-      <div class="kpi-sub">30 acima da meta</div>
-    </div>
-    <div class="kpi yellow">
-      <div class="kpi-lbl">Desvio da Meta</div>
-      <div class="kpi-val" id="kpi-desvio">+2,34 min</div>
-      <div class="kpi-sub" id="kpi-desvio-sub">+8,7% fora do objetivo</div>
-    </div>
   </div>
 
   <div class="charts-2">
@@ -2741,9 +2742,13 @@ function setMonth(m) {
   const k = KPIS[m];
   document.getElementById('kpi-tmo').textContent = k.tmo.toFixed(2);
   document.getElementById('kpi-tmo-sub').innerHTML = '<strong style="color:#e63946">'+(k.desvio>0?'+':'')+k.pct+'% vs meta</strong>';
-  document.getElementById('kpi-tmocaso').textContent = k.tmoCaso ? k.tmoCaso.toFixed(2) : 'parcial';
-  document.getElementById('kpi-volume').textContent = k.volume.toLocaleString('pt-BR');
-  document.getElementById('kpi-volume-sub').textContent = 'contatos em '+k.label;
+  // KPIs de canal
+  const cd = CANAL_DATA[m];
+  const chat = cd.find(r=>r.c==='MULTICANAL CHAT');
+  const c2c  = cd.find(r=>r.c==='MULTICANAL C2C');
+  if (chat) { document.getElementById('kpi-tmo-chat').textContent = chat.t.toFixed(2); document.getElementById('kpi-tmo-chat-sub').textContent = 'min · '+chat.v.toLocaleString('pt-BR')+' contatos'; }
+  if (c2c)  { document.getElementById('kpi-tmo-c2c').textContent  = c2c.t.toFixed(2);  document.getElementById('kpi-tmo-c2c-sub').textContent  = 'min · '+c2c.v.toLocaleString('pt-BR')+' contatos'; }
+  document.getElementById('kpi-volume-sub').textContent = k.label;
   document.getElementById('kpi-reps').textContent = k.reps;
   document.getElementById('kpi-desvio').textContent = (k.desvio>0?'+':'')+k.desvio.toFixed(2)+' min';
   document.getElementById('kpi-desvio-sub').textContent = (k.desvio>0?'+':'')+k.pct+'% '+(k.partial?'(parcial)':'fora do objetivo');
