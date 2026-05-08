@@ -137,11 +137,17 @@ tr:last-child td { border-bottom: none; }
   <div style="display:flex;align-items:center;gap:14px">
     <img src="logo.png" alt="Mature Publicações"
          style="height:52px;width:52px;object-fit:contain;mix-blend-mode:multiply;filter:brightness(1.1)">
-    <h1>TMO/PRODU - Publicações</h1>
+    <div>
+      <h1 id="header-title">TMO/PRODU - Publicações</h1>
+      <div style="display:flex;gap:4px;margin-top:4px">
+        <button onclick="setFila('publi')" id="btn-fila-publi" style="padding:3px 10px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.6);background:rgba(255,255,255,0.25);color:white;cursor:pointer;font-size:11px;font-weight:700">📢 Publicações</button>
+        <button onclick="setFila('ventas')" id="btn-fila-ventas" style="padding:3px 10px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;font-size:11px;font-weight:600">🛒 Vendas</button>
+        <button onclick="setFila('me')" id="btn-fila-me" style="padding:3px 10px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;font-size:11px;font-weight:600">📦 ME</button>
+      </div>
+    </div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
-    <div class="badge">META: CHAT 27,54 min · C2C 19,73 min</div>
-    
+    <div class="badge" id="meta-badge">META: CHAT 27,54 min · C2C 19,73 min</div>
   </div>
 </header>
 
@@ -1531,6 +1537,260 @@ function showPage(id, el) {
 
 
 // ---- DADOS MAIO 2026 ----
+// ---- DADOS MULTI-FILA ----
+let currentFila = 'publi';
+
+const FILAS_META = {
+  publi:  {chat:27.54, c2c:19.73, global:26.0},
+  ventas: {chat:25.00, c2c:16.00, global:21.0},
+  me:     {chat:22.00, c2c:11.00, global:18.0},
+};
+
+const FILAS_INFO = {
+  publi:  {label:'TMO/PRODU - Publicações', queue:'BR_Publicaciones_Sellers_Mature', emoji:'📢'},
+  ventas: {label:'TMO/PRODU - Vendas',      queue:'BR_Ventas_Sellers_Mature',        emoji:'🛒'},
+  me:     {label:'TMO/PRODU - ME',           queue:'BR_ME_Sellers_Mature',            emoji:'📦'},
+};
+
+const VENTAS_KPIS = {
+  '2026-04': {tmo:22.83, tmoCaso:null, volume:30615, reps:71, desvio:1.83, pct:8.7, label:'Abril 2026', partial:false},
+  '2026-05': {tmo:22.83, tmoCaso:null, volume:30615, reps:71, desvio:1.83, pct:8.7, label:'Maio 2026', partial:true}
+};
+const VENTAS_CANAL = {
+  '2026-04': [{c:'MULTICANAL CHAT',v:19467,t:27.79,d:2.79},{c:'MULTICANAL C2C',v:18282,t:16.93,d:0.93}],
+  '2026-05': [{c:'MULTICANAL CHAT',v:19467,t:27.79,d:2.79},{c:'MULTICANAL C2C',v:18282,t:16.93,d:0.93}]
+};
+const VENTAS_LIDER = {
+  '2026-04': [{l:'dyfernandes (CHAT)',t:68.63},{l:'fssvitek (CHAT)',t:42.96},{l:'rfidelis (CHAT)',t:42.58}],
+  '2026-05': [{l:'dyfernandes (CHAT)',t:68.63}]
+};
+
+const ME_KPIS = {
+  '2026-04': {tmo:20.08, tmoCaso:null, volume:50068, reps:89, desvio:2.08, pct:11.6, label:'Abril 2026', partial:false},
+  '2026-05': {tmo:20.08, tmoCaso:null, volume:50068, reps:89, desvio:2.08, pct:11.6, label:'Maio 2026', partial:true}
+};
+const ME_CANAL = {
+  '2026-04': [{c:'MULTICANAL CHAT',v:43354,t:23.10,d:1.10},{c:'MULTICANAL C2C',v:17882,t:11.37,d:0.37}],
+  '2026-05': [{c:'MULTICANAL CHAT',v:43354,t:23.10,d:1.10},{c:'MULTICANAL C2C',v:17882,t:11.37,d:0.37}]
+};
+const ME_LIDER = {
+  '2026-04': [{l:'carolinenuso (C2C)',t:24.40},{l:'mariangesant (C2C)',t:24.67},{l:'karolinelima (C2C)',t:21.64}],
+  '2026-05': [{l:'carolinenuso (C2C)',t:24.40}]
+};
+
+
+const VENTAS_quartilData = [
+  {q:'Q1',rep:'mimendonca',lider:'—',canal:'MULTICANAL C2C',vol:11,tmo:6.64,dev:-9.36},
+  {q:'Q1',rep:'gnberaldo',lider:'—',canal:'MULTICANAL C2C',vol:928,tmo:9.8,dev:-6.20},
+  {q:'Q1',rep:'siaraujo',lider:'—',canal:'MULTICANAL C2C',vol:860,tmo:10.57,dev:-5.43},
+  {q:'Q1',rep:'isfurtado',lider:'—',canal:'MULTICANAL C2C',vol:792,tmo:11.97,dev:-4.03},
+  {q:'Q1',rep:'kolivbarreto',lider:'—',canal:'MULTICANAL C2C',vol:630,tmo:12.07,dev:-3.93},
+  {q:'Q1',rep:'taiamorim',lider:'—',canal:'MULTICANAL C2C',vol:262,tmo:12.22,dev:-3.78},
+  {q:'Q1',rep:'kauevsilva',lider:'—',canal:'MULTICANAL C2C',vol:706,tmo:12.69,dev:-3.31},
+  {q:'Q1',rep:'rdorigan',lider:'—',canal:'MULTICANAL C2C',vol:581,tmo:14.08,dev:-1.92},
+  {q:'Q2',rep:'gpisani',lider:'—',canal:'MULTICANAL C2C',vol:691,tmo:14.35,dev:-1.65},
+  {q:'Q2',rep:'vbonilha',lider:'—',canal:'MULTICANAL C2C',vol:553,tmo:14.65,dev:-1.35},
+  {q:'Q2',rep:'wimjunior',lider:'—',canal:'MULTICANAL C2C',vol:620,tmo:15.19,dev:-0.81},
+  {q:'Q2',rep:'bslopes',lider:'—',canal:'MULTICANAL C2C',vol:507,tmo:15.43,dev:-0.57},
+  {q:'Q2',rep:'osidasilva',lider:'—',canal:'MULTICANAL C2C',vol:592,tmo:15.75,dev:-0.25},
+  {q:'Q2',rep:'vwguimaraes',lider:'—',canal:'MULTICANAL C2C',vol:572,tmo:16.68,dev:0.68},
+  {q:'Q2',rep:'ahalencar',lider:'—',canal:'MULTICANAL C2C',vol:524,tmo:16.73,dev:0.73},
+  {q:'Q2',rep:'dmbatista',lider:'—',canal:'MULTICANAL C2C',vol:584,tmo:17.34,dev:1.34},
+  {q:'Q3',rep:'mayllima',lider:'—',canal:'MULTICANAL C2C',vol:38,tmo:17.72,dev:1.72},
+  {q:'Q3',rep:'altsilva',lider:'—',canal:'MULTICANAL C2C',vol:543,tmo:18.44,dev:2.44},
+  {q:'Q3',rep:'lalmgviana',lider:'—',canal:'MULTICANAL C2C',vol:645,tmo:19.0,dev:3.00},
+  {q:'Q3',rep:'antdasilva',lider:'—',canal:'MULTICANAL C2C',vol:405,tmo:19.1,dev:3.10},
+  {q:'Q3',rep:'tpindsilva',lider:'—',canal:'MULTICANAL C2C',vol:661,tmo:19.11,dev:3.11},
+  {q:'Q3',rep:'amdias',lider:'—',canal:'MULTICANAL C2C',vol:509,tmo:19.38,dev:3.38},
+  {q:'Q3',rep:'alesandmoura',lider:'—',canal:'MULTICANAL C2C',vol:296,tmo:19.59,dev:3.59},
+  {q:'Q3',rep:'jmigliorini',lider:'—',canal:'MULTICANAL C2C',vol:261,tmo:20.72,dev:4.72},
+  {q:'Q4',rep:'martins',lider:'—',canal:'MULTICANAL C2C',vol:494,tmo:21.73,dev:5.73},
+  {q:'Q4',rep:'acguedes',lider:'—',canal:'MULTICANAL C2C',vol:328,tmo:24.37,dev:8.37},
+  {q:'Q4',rep:'rlfilho',lider:'—',canal:'MULTICANAL C2C',vol:111,tmo:28.92,dev:12.92},
+  {q:'Q4',rep:'ddemetrio',lider:'—',canal:'MULTICANAL C2C',vol:366,tmo:30.85,dev:14.85},
+  {q:'Q4',rep:'mayaran',lider:'—',canal:'MULTICANAL C2C',vol:272,tmo:32.79,dev:16.79},
+  {q:'Q4',rep:'tatianesanto',lider:'—',canal:'MULTICANAL C2C',vol:262,tmo:35.25,dev:19.25},
+  {q:'Q4',rep:'ggratao',lider:'—',canal:'MULTICANAL C2C',vol:331,tmo:35.65,dev:19.65},
+  {q:'Q1',rep:'ailoliveira',lider:'—',canal:'MULTICANAL CHAT',vol:916,tmo:16.0,dev:-9.00},
+  {q:'Q1',rep:'claudmoreira',lider:'—',canal:'MULTICANAL CHAT',vol:204,tmo:20.7,dev:-4.30},
+  {q:'Q1',rep:'nfguirra',lider:'—',canal:'MULTICANAL CHAT',vol:890,tmo:22.14,dev:-2.86},
+  {q:'Q1',rep:'rdlira',lider:'—',canal:'MULTICANAL CHAT',vol:769,tmo:22.81,dev:-2.19},
+  {q:'Q1',rep:'lmazelli',lider:'—',canal:'MULTICANAL CHAT',vol:54,tmo:22.91,dev:-2.09},
+  {q:'Q1',rep:'caddias',lider:'—',canal:'MULTICANAL CHAT',vol:568,tmo:23.35,dev:-1.65},
+  {q:'Q1',rep:'calsiqueira',lider:'—',canal:'MULTICANAL CHAT',vol:634,tmo:23.79,dev:-1.21},
+  {q:'Q1',rep:'guiscarneiro',lider:'—',canal:'MULTICANAL CHAT',vol:453,tmo:24.58,dev:-0.42},
+  {q:'Q1',rep:'jhgoncalves',lider:'—',canal:'MULTICANAL CHAT',vol:592,tmo:25.4,dev:0.40},
+  {q:'Q1',rep:'victolopes',lider:'—',canal:'MULTICANAL CHAT',vol:21,tmo:26.06,dev:1.06},
+  {q:'Q2',rep:'jebarros',lider:'—',canal:'MULTICANAL CHAT',vol:342,tmo:26.36,dev:1.36},
+  {q:'Q2',rep:'tolourenco',lider:'—',canal:'MULTICANAL CHAT',vol:593,tmo:26.74,dev:1.74},
+  {q:'Q2',rep:'lsfonseca',lider:'—',canal:'MULTICANAL CHAT',vol:490,tmo:26.85,dev:1.85},
+  {q:'Q2',rep:'aavviana',lider:'—',canal:'MULTICANAL CHAT',vol:692,tmo:27.17,dev:2.17},
+  {q:'Q2',rep:'monteixeira',lider:'—',canal:'MULTICANAL CHAT',vol:178,tmo:27.43,dev:2.43},
+  {q:'Q2',rep:'addamico',lider:'—',canal:'MULTICANAL CHAT',vol:365,tmo:27.46,dev:2.46},
+  {q:'Q2',rep:'dtarimura',lider:'—',canal:'MULTICANAL CHAT',vol:641,tmo:27.77,dev:2.77},
+  {q:'Q2',rep:'ailbarbosa',lider:'—',canal:'MULTICANAL CHAT',vol:466,tmo:27.82,dev:2.82},
+  {q:'Q2',rep:'tacosta',lider:'—',canal:'MULTICANAL CHAT',vol:369,tmo:28.41,dev:3.41},
+  {q:'Q2',rep:'icoelho',lider:'—',canal:'MULTICANAL CHAT',vol:380,tmo:28.69,dev:3.69},
+  {q:'Q3',rep:'abonfim',lider:'—',canal:'MULTICANAL CHAT',vol:565,tmo:29.14,dev:4.14},
+  {q:'Q3',rep:'ayasilva',lider:'—',canal:'MULTICANAL CHAT',vol:59,tmo:29.47,dev:4.47},
+  {q:'Q3',rep:'cguerra',lider:'—',canal:'MULTICANAL CHAT',vol:484,tmo:30.81,dev:5.81},
+  {q:'Q3',rep:'raysmartins',lider:'—',canal:'MULTICANAL CHAT',vol:319,tmo:31.39,dev:6.39},
+  {q:'Q3',rep:'tduque',lider:'—',canal:'MULTICANAL CHAT',vol:659,tmo:31.53,dev:6.53},
+  {q:'Q3',rep:'mfsilva',lider:'—',canal:'MULTICANAL CHAT',vol:104,tmo:31.56,dev:6.56},
+  {q:'Q3',rep:'pwpena',lider:'—',canal:'MULTICANAL CHAT',vol:593,tmo:31.81,dev:6.81},
+  {q:'Q3',rep:'mafelix',lider:'—',canal:'MULTICANAL CHAT',vol:511,tmo:32.18,dev:7.18},
+  {q:'Q3',rep:'nasousa',lider:'—',canal:'MULTICANAL CHAT',vol:311,tmo:32.66,dev:7.66},
+  {q:'Q3',rep:'hvasconcelos',lider:'—',canal:'MULTICANAL CHAT',vol:480,tmo:33.52,dev:8.52},
+  {q:'Q4',rep:'lmoreira',lider:'—',canal:'MULTICANAL CHAT',vol:282,tmo:34.16,dev:9.16},
+  {q:'Q4',rep:'cfurquim',lider:'—',canal:'MULTICANAL CHAT',vol:230,tmo:35.28,dev:10.28},
+  {q:'Q4',rep:'tamdias',lider:'—',canal:'MULTICANAL CHAT',vol:319,tmo:35.82,dev:10.82},
+  {q:'Q4',rep:'tpaula',lider:'—',canal:'MULTICANAL CHAT',vol:349,tmo:36.36,dev:11.36},
+  {q:'Q4',rep:'aoliveiras',lider:'—',canal:'MULTICANAL CHAT',vol:114,tmo:41.55,dev:16.55},
+  {q:'Q4',rep:'ccalvalhan',lider:'—',canal:'MULTICANAL CHAT',vol:345,tmo:41.71,dev:16.71},
+  {q:'Q4',rep:'ltavares',lider:'—',canal:'MULTICANAL CHAT',vol:15,tmo:42.48,dev:17.48},
+  {q:'Q4',rep:'rfidelis',lider:'—',canal:'MULTICANAL CHAT',vol:218,tmo:42.58,dev:17.58},
+  {q:'Q4',rep:'fssvitek',lider:'—',canal:'MULTICANAL CHAT',vol:16,tmo:42.96,dev:17.96},
+  {q:'Q4',rep:'dyfernandes',lider:'—',canal:'MULTICANAL CHAT',vol:90,tmo:68.63,dev:43.63},
+];
+
+const ME_quartilData = [
+  {q:'Q1',rep:'siacastro',lider:'—',canal:'MULTICANAL C2C',vol:1367,tmo:4.96,dev:-6.04},
+  {q:'Q1',rep:'iossilva',lider:'—',canal:'MULTICANAL C2C',vol:1395,tmo:5.97,dev:-5.03},
+  {q:'Q1',rep:'lucaasoares',lider:'—',canal:'MULTICANAL C2C',vol:924,tmo:7.87,dev:-3.13},
+  {q:'Q1',rep:'duadsantos',lider:'—',canal:'MULTICANAL C2C',vol:42,tmo:7.98,dev:-3.02},
+  {q:'Q1',rep:'cvalerio',lider:'—',canal:'MULTICANAL C2C',vol:579,tmo:8.76,dev:-2.24},
+  {q:'Q1',rep:'jozanascimen',lider:'—',canal:'MULTICANAL C2C',vol:567,tmo:8.81,dev:-2.19},
+  {q:'Q1',rep:'ccribas',lider:'—',canal:'MULTICANAL C2C',vol:40,tmo:9.25,dev:-1.75},
+  {q:'Q2',rep:'bsato',lider:'—',canal:'MULTICANAL C2C',vol:767,tmo:9.72,dev:-1.28},
+  {q:'Q2',rep:'aubarbosa',lider:'—',canal:'MULTICANAL C2C',vol:226,tmo:9.8,dev:-1.20},
+  {q:'Q2',rep:'athcosta',lider:'—',canal:'MULTICANAL C2C',vol:398,tmo:9.87,dev:-1.13},
+  {q:'Q2',rep:'mamrribeiro',lider:'—',canal:'MULTICANAL C2C',vol:808,tmo:10.57,dev:-0.43},
+  {q:'Q2',rep:'bfelisbino',lider:'—',canal:'MULTICANAL C2C',vol:714,tmo:10.96,dev:-0.04},
+  {q:'Q2',rep:'kkeevangelis',lider:'—',canal:'MULTICANAL C2C',vol:783,tmo:12.03,dev:1.03},
+  {q:'Q2',rep:'aguado',lider:'—',canal:'MULTICANAL C2C',vol:433,tmo:12.12,dev:1.12},
+  {q:'Q3',rep:'isactorres',lider:'—',canal:'MULTICANAL C2C',vol:243,tmo:12.16,dev:1.16},
+  {q:'Q3',rep:'natramos',lider:'—',canal:'MULTICANAL C2C',vol:453,tmo:12.38,dev:1.38},
+  {q:'Q3',rep:'thainunes',lider:'—',canal:'MULTICANAL C2C',vol:28,tmo:12.6,dev:1.60},
+  {q:'Q3',rep:'ggccerqueira',lider:'—',canal:'MULTICANAL C2C',vol:32,tmo:13.01,dev:2.01},
+  {q:'Q3',rep:'kfoliveira',lider:'—',canal:'MULTICANAL C2C',vol:661,tmo:13.83,dev:2.83},
+  {q:'Q3',rep:'tdrodrigues',lider:'—',canal:'MULTICANAL C2C',vol:707,tmo:13.84,dev:2.84},
+  {q:'Q3',rep:'sabessantos',lider:'—',canal:'MULTICANAL C2C',vol:500,tmo:13.96,dev:2.96},
+  {q:'Q4',rep:'sioesteves',lider:'—',canal:'MULTICANAL C2C',vol:315,tmo:14.26,dev:3.26},
+  {q:'Q4',rep:'uizdias',lider:'—',canal:'MULTICANAL C2C',vol:609,tmo:14.27,dev:3.27},
+  {q:'Q4',rep:'gabriellpere',lider:'—',canal:'MULTICANAL C2C',vol:523,tmo:15.04,dev:4.04},
+  {q:'Q4',rep:'karolinelima',lider:'—',canal:'MULTICANAL C2C',vol:515,tmo:21.64,dev:10.64},
+  {q:'Q4',rep:'carolinenuso',lider:'—',canal:'MULTICANAL C2C',vol:474,tmo:24.4,dev:13.40},
+  {q:'Q4',rep:'mariangesant',lider:'—',canal:'MULTICANAL C2C',vol:350,tmo:24.67,dev:13.67},
+  {q:'Q1',rep:'brenalmeida',lider:'—',canal:'MULTICANAL CHAT',vol:4,tmo:1.24,dev:-20.76},
+  {q:'Q1',rep:'miriaoliveir',lider:'—',canal:'MULTICANAL CHAT',vol:428,tmo:15.3,dev:-6.70},
+  {q:'Q1',rep:'aleramos',lider:'—',canal:'MULTICANAL CHAT',vol:335,tmo:16.49,dev:-5.51},
+  {q:'Q1',rep:'beloliveira',lider:'—',canal:'MULTICANAL CHAT',vol:170,tmo:18.3,dev:-3.70},
+  {q:'Q1',rep:'drcarneiro',lider:'—',canal:'MULTICANAL CHAT',vol:971,tmo:18.56,dev:-3.44},
+  {q:'Q1',rep:'bvieira',lider:'—',canal:'MULTICANAL CHAT',vol:728,tmo:18.63,dev:-3.37},
+  {q:'Q1',rep:'ttaalencar',lider:'—',canal:'MULTICANAL CHAT',vol:1062,tmo:18.65,dev:-3.35},
+  {q:'Q1',rep:'manholeto',lider:'—',canal:'MULTICANAL CHAT',vol:864,tmo:18.84,dev:-3.16},
+  {q:'Q1',rep:'anajulirocha',lider:'—',canal:'MULTICANAL CHAT',vol:599,tmo:19.21,dev:-2.79},
+  {q:'Q1',rep:'kekaaparecid',lider:'—',canal:'MULTICANAL CHAT',vol:821,tmo:19.38,dev:-2.62},
+  {q:'Q1',rep:'celgomes',lider:'—',canal:'MULTICANAL CHAT',vol:669,tmo:19.46,dev:-2.54},
+  {q:'Q1',rep:'yldamasceno',lider:'—',canal:'MULTICANAL CHAT',vol:887,tmo:19.72,dev:-2.28},
+  {q:'Q1',rep:'pmalavazi',lider:'—',canal:'MULTICANAL CHAT',vol:477,tmo:20.59,dev:-1.41},
+  {q:'Q1',rep:'mmzzacarias',lider:'—',canal:'MULTICANAL CHAT',vol:853,tmo:20.67,dev:-1.33},
+  {q:'Q1',rep:'wesconceicao',lider:'—',canal:'MULTICANAL CHAT',vol:772,tmo:20.92,dev:-1.08},
+  {q:'Q1',rep:'rlteodoro',lider:'—',canal:'MULTICANAL CHAT',vol:606,tmo:20.95,dev:-1.05},
+  {q:'Q2',rep:'gaquintela',lider:'—',canal:'MULTICANAL CHAT',vol:677,tmo:21.14,dev:-0.86},
+  {q:'Q2',rep:'prfmarques',lider:'—',canal:'MULTICANAL CHAT',vol:489,tmo:21.14,dev:-0.86},
+  {q:'Q2',rep:'biasilva',lider:'—',canal:'MULTICANAL CHAT',vol:624,tmo:21.21,dev:-0.79},
+  {q:'Q2',rep:'mvezetiev',lider:'—',canal:'MULTICANAL CHAT',vol:810,tmo:21.28,dev:-0.72},
+  {q:'Q2',rep:'tsdourado',lider:'—',canal:'MULTICANAL CHAT',vol:933,tmo:21.32,dev:-0.68},
+  {q:'Q2',rep:'darjsilva',lider:'—',canal:'MULTICANAL CHAT',vol:786,tmo:22.39,dev:0.39},
+  {q:'Q2',rep:'imgiraldi',lider:'—',canal:'MULTICANAL CHAT',vol:707,tmo:23.0,dev:1.00},
+  {q:'Q2',rep:'cctavares',lider:'—',canal:'MULTICANAL CHAT',vol:778,tmo:23.16,dev:1.16},
+  {q:'Q2',rep:'jcleme',lider:'—',canal:'MULTICANAL CHAT',vol:790,tmo:23.2,dev:1.20},
+  {q:'Q2',rep:'ffelippa',lider:'—',canal:'MULTICANAL CHAT',vol:753,tmo:23.64,dev:1.64},
+  {q:'Q2',rep:'waljunior',lider:'—',canal:'MULTICANAL CHAT',vol:191,tmo:23.86,dev:1.86},
+  {q:'Q2',rep:'vivhsouza',lider:'—',canal:'MULTICANAL CHAT',vol:714,tmo:23.92,dev:1.92},
+  {q:'Q2',rep:'esssferreira',lider:'—',canal:'MULTICANAL CHAT',vol:591,tmo:24.1,dev:2.10},
+  {q:'Q2',rep:'vmcandido',lider:'—',canal:'MULTICANAL CHAT',vol:596,tmo:24.26,dev:2.26},
+  {q:'Q2',rep:'brunaso',lider:'—',canal:'MULTICANAL CHAT',vol:710,tmo:24.27,dev:2.27},
+  {q:'Q2',rep:'lajustino',lider:'—',canal:'MULTICANAL CHAT',vol:582,tmo:24.29,dev:2.29},
+  {q:'Q3',rep:'lrezende',lider:'—',canal:'MULTICANAL CHAT',vol:90,tmo:24.35,dev:2.35},
+  {q:'Q3',rep:'alisilva',lider:'—',canal:'MULTICANAL CHAT',vol:736,tmo:24.4,dev:2.40},
+  {q:'Q3',rep:'ssgarcia',lider:'—',canal:'MULTICANAL CHAT',vol:694,tmo:24.5,dev:2.50},
+  {q:'Q3',rep:'luanunes',lider:'—',canal:'MULTICANAL CHAT',vol:776,tmo:24.96,dev:2.96},
+  {q:'Q3',rep:'ariancosta',lider:'—',canal:'MULTICANAL CHAT',vol:123,tmo:25.02,dev:3.02},
+  {q:'Q3',rep:'jbmeneses',lider:'—',canal:'MULTICANAL CHAT',vol:697,tmo:25.13,dev:3.13},
+  {q:'Q3',rep:'andrelopes',lider:'—',canal:'MULTICANAL CHAT',vol:714,tmo:25.17,dev:3.17},
+  {q:'Q3',rep:'rafrsilva',lider:'—',canal:'MULTICANAL CHAT',vol:676,tmo:25.62,dev:3.62},
+  {q:'Q3',rep:'nicoldjesus',lider:'—',canal:'MULTICANAL CHAT',vol:574,tmo:25.81,dev:3.81},
+  {q:'Q3',rep:'siddelima',lider:'—',canal:'MULTICANAL CHAT',vol:414,tmo:26.23,dev:4.23},
+  {q:'Q3',rep:'dspimentel',lider:'—',canal:'MULTICANAL CHAT',vol:395,tmo:26.33,dev:4.33},
+  {q:'Q3',rep:'ledeoliveira',lider:'—',canal:'MULTICANAL CHAT',vol:779,tmo:26.41,dev:4.41},
+  {q:'Q3',rep:'ffssimoes',lider:'—',canal:'MULTICANAL CHAT',vol:676,tmo:26.44,dev:4.44},
+  {q:'Q3',rep:'kegarcia',lider:'—',canal:'MULTICANAL CHAT',vol:581,tmo:26.49,dev:4.49},
+  {q:'Q3',rep:'prpmmacedo',lider:'—',canal:'MULTICANAL CHAT',vol:509,tmo:26.69,dev:4.69},
+  {q:'Q4',rep:'mmnnogueira',lider:'—',canal:'MULTICANAL CHAT',vol:641,tmo:26.95,dev:4.95},
+  {q:'Q4',rep:'dmazo',lider:'—',canal:'MULTICANAL CHAT',vol:202,tmo:27.45,dev:5.45},
+  {q:'Q4',rep:'tiacardoso',lider:'—',canal:'MULTICANAL CHAT',vol:644,tmo:27.63,dev:5.63},
+  {q:'Q4',rep:'albezerra',lider:'—',canal:'MULTICANAL CHAT',vol:581,tmo:27.81,dev:5.81},
+  {q:'Q4',rep:'junogueira',lider:'—',canal:'MULTICANAL CHAT',vol:550,tmo:27.85,dev:5.85},
+  {q:'Q4',rep:'kaumedeiros',lider:'—',canal:'MULTICANAL CHAT',vol:714,tmo:28.15,dev:6.15},
+  {q:'Q4',rep:'goroque',lider:'—',canal:'MULTICANAL CHAT',vol:75,tmo:29.39,dev:7.39},
+  {q:'Q4',rep:'ederribeiro',lider:'—',canal:'MULTICANAL CHAT',vol:185,tmo:29.49,dev:7.49},
+  {q:'Q4',rep:'lepessoa',lider:'—',canal:'MULTICANAL CHAT',vol:323,tmo:29.65,dev:7.65},
+  {q:'Q4',rep:'jacisilva',lider:'—',canal:'MULTICANAL CHAT',vol:677,tmo:30.22,dev:8.22},
+  {q:'Q4',rep:'welisboa',lider:'—',canal:'MULTICANAL CHAT',vol:575,tmo:30.54,dev:8.54},
+  {q:'Q4',rep:'savsouza',lider:'—',canal:'MULTICANAL CHAT',vol:501,tmo:31.17,dev:9.17},
+  {q:'Q4',rep:'mycardoso',lider:'—',canal:'MULTICANAL CHAT',vol:56,tmo:35.53,dev:13.53},
+  {q:'Q4',rep:'midalgo',lider:'—',canal:'MULTICANAL CHAT',vol:459,tmo:35.93,dev:13.93},
+  {q:'Q4',rep:'jeparaujo',lider:'—',canal:'MULTICANAL CHAT',vol:21,tmo:41.24,dev:19.24},
+];
+
+const VENTAS_processoData = [
+  {proc:'Problemas con pagos - Cards',canal:'MULTICANAL C2C',vol:3,tmo:102.44,meta:16.00,dev:86.44,min:0,max:0},
+  {proc:'ML | SHS - Soluções Genéricas',canal:'MULTICANAL C2C',vol:1,tmo:82.87,meta:16.00,dev:66.87,min:0,max:0},
+  {proc:'Asignación del contáctanos Mature Ventas',canal:'MULTICANAL CHAT',vol:495,tmo:33.56,meta:25.00,dev:8.56,min:0,max:0},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',vol:1096,tmo:29.4,meta:25.00,dev:4.40,min:0,max:0},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',vol:2510,tmo:28.66,meta:25.00,dev:3.66,min:0,max:0},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',vol:65,tmo:28.06,meta:25.00,dev:3.06,min:0,max:0},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',vol:11472,tmo:27.87,meta:25.00,dev:2.87,min:0,max:0},
+  {proc:'Anulación de Venta',canal:'MULTICANAL CHAT',vol:55,tmo:26.72,meta:25.00,dev:1.72,min:0,max:0},
+  {proc:'Asignación del contáctanos Mature Ventas',canal:'MULTICANAL C2C',vol:383,tmo:25.48,meta:16.00,dev:9.48,min:0,max:0},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL C2C',vol:56,tmo:20.61,meta:16.00,dev:4.61,min:0,max:0},
+  {proc:'Anulación de Venta',canal:'MULTICANAL C2C',vol:60,tmo:19.52,meta:16.00,dev:3.52,min:0,max:0},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL C2C',vol:8962,tmo:19.15,meta:16.00,dev:3.15,min:0,max:0},
+  {proc:'Reputación',canal:'MULTICANAL C2C',vol:3638,tmo:15.9,meta:16.00,dev:-0.10,min:0,max:0},
+  {proc:'Reputación ME',canal:'MULTICANAL C2C',vol:1259,tmo:15.82,meta:16.00,dev:-0.18,min:0,max:0},
+  {proc:'Asignacion del contactanos RA Seller',canal:'MULTICANAL CHAT',vol:2,tmo:9.91,meta:25.00,dev:-15.09,min:0,max:0},
+];
+
+const ME_processoData = [
+  {proc:'Viaje del paquete - Vendedor',canal:'MULTICANAL CHAT',vol:1680,tmo:26.32,meta:22.00,dev:4.32,min:0,max:0},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',vol:3472,tmo:25.06,meta:22.00,dev:3.06,min:0,max:0},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',vol:7657,tmo:24.5,meta:22.00,dev:2.50,min:0,max:0},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',vol:4520,tmo:24.17,meta:22.00,dev:2.17,min:0,max:0},
+  {proc:'Asignación del Contáctanos FBM',canal:'MULTICANAL C2C',vol:2,tmo:23.97,meta:11.00,dev:12.97,min:0,max:0},
+  {proc:'Asignación del contáctanos Mature ME',canal:'MULTICANAL CHAT',vol:1608,tmo:23.68,meta:22.00,dev:1.68,min:0,max:0},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',vol:12487,tmo:23,meta:22.00,dev:1.00,min:0,max:0},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',vol:321,tmo:22.41,meta:22.00,dev:0.41,min:0,max:0},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',vol:6,tmo:21.32,meta:22.00,dev:-0.68,min:0,max:0},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',vol:4064,tmo:20.87,meta:22.00,dev:-1.13,min:0,max:0},
+  {proc:'Asignacion del contactanos RA Seller',canal:'MULTICANAL CHAT',vol:2,tmo:17.83,meta:22.00,dev:-4.17,min:0,max:0},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL CHAT',vol:1,tmo:16.77,meta:22.00,dev:-5.23,min:0,max:0},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL C2C',vol:1,tmo:14.5,meta:11.00,dev:3.50,min:0,max:0},
+  {proc:'Asignación del Contáctanos Top On',canal:'MULTICANAL CHAT',vol:4,tmo:13.88,meta:22.00,dev:-8.12,min:0,max:0},
+  {proc:'Asignación del contáctanos Mature ME',canal:'MULTICANAL C2C',vol:882,tmo:13.7,meta:11.00,dev:2.70,min:0,max:0},
+  {proc:'Viaje del paquete - Vendedor',canal:'MULTICANAL C2C',vol:613,tmo:13.09,meta:11.00,dev:2.09,min:0,max:0},
+  {proc:'Reversa',canal:'MULTICANAL C2C',vol:1875,tmo:12.86,meta:11.00,dev:1.86,min:0,max:0},
+  {proc:'Asignacion del contactanos RA Seller',canal:'MULTICANAL C2C',vol:2,tmo:12.39,meta:11.00,dev:1.39,min:0,max:0},
+  {proc:'Reputación ME',canal:'MULTICANAL C2C',vol:648,tmo:12.23,meta:11.00,dev:1.23,min:0,max:0},
+  {proc:'Reputación',canal:'MULTICANAL C2C',vol:2130,tmo:11.95,meta:11.00,dev:0.95,min:0,max:0},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL C2C',vol:5703,tmo:11.33,meta:11.00,dev:0.33,min:0,max:0},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL C2C',vol:2155,tmo:10.79,meta:11.00,dev:-0.21,min:0,max:0},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL C2C',vol:88,tmo:9.33,meta:11.00,dev:-1.67,min:0,max:0},
+  {proc:'Vendedores Top On',canal:'MULTICANAL CHAT',vol:1,tmo:7.57,meta:22.00,dev:-14.43,min:0,max:0},
+  {proc:'ML | SHS - Soluções Genéricas',canal:'MULTICANAL CHAT',vol:1,tmo:5.28,meta:22.00,dev:-16.72,min:0,max:0},
+];
+
 // Valores validados contra pipeline HALO (CONSOLIDADO_KPI_LDAP)
 // Meta oficial ponderada por volume: CHAT ~39.58 min, C2C ~21.31 min → global ~35.6 min
 const META_CHAT = 27.54, META_C2C = 19.73, META_GLOBAL = 26.0;
@@ -3536,11 +3796,13 @@ function setMonth(m) {
   currentMonth = m;
   document.getElementById('mes-selector').value = m;
   // KPIs
-  const k = KPIS[m];
+  const _KPIS=currentFila==="ventas"?VENTAS_KPIS:currentFila==="me"?ME_KPIS:KPIS;
+  const k = _KPIS[m] || _KPIS["2026-04"];
   document.getElementById('kpi-tmo').textContent = k.tmo.toFixed(2);
   document.getElementById('kpi-tmo-sub').innerHTML = '<strong style="color:#e63946">'+(k.desvio>0?'+':'')+k.pct+'% vs meta</strong>';
   // KPIs de canal
-  const cd = CANAL_DATA[m];
+  const _CANAL=currentFila==="ventas"?VENTAS_CANAL:currentFila==="me"?ME_CANAL:CANAL_DATA;
+  const cd = _CANAL[m] || _CANAL["2026-04"];
   const chat = cd.find(r=>r.c==='MULTICANAL CHAT');
   const c2c  = cd.find(r=>r.c==='MULTICANAL C2C');
   if (chat) { document.getElementById('kpi-tmo-chat').textContent = chat.t.toFixed(2); document.getElementById('kpi-tmo-chat-sub').textContent = 'min · '+chat.v.toLocaleString('pt-BR')+' contatos'; }
@@ -3553,7 +3815,8 @@ function setMonth(m) {
   cCanalChart.data.datasets[0].data = cd.map(r=>r.t);
   cCanalChart.update();
   // líder chart
-  const ld = LIDER_DATA[m];
+  const _LIDER=currentFila==="ventas"?VENTAS_LIDER:currentFila==="me"?ME_LIDER:LIDER_DATA;
+  const ld = _LIDER[m] || _LIDER["2026-04"];
   cLiderChart.data.labels = ld.map(r=>r.l);
   cLiderChart.data.datasets[0].data = ld.map(r=>r.t);
   cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>27?'#e63946':'#2dc653');
@@ -3582,9 +3845,36 @@ function setMonth(m) {
 
 }
 
-function getQuartilData()  { return currentMonth==='2026-04' ? quartilData  : MAY_quartilData; }
-function getProcessoData() { return currentMonth==='2026-04' ? processoData : MAY_processoData; }
-function getQ4Data()       { return currentMonth==='2026-04' ? q4Data       : MAY_q4Data; }
+function getQuartilData() {
+  if (currentFila==='ventas') return VENTAS_quartilData;
+  if (currentFila==='me')     return ME_quartilData;
+  return currentMonth==='2026-04' ? quartilData : MAY_quartilData;
+}
+function getProcessoData() {
+  if (currentFila==='ventas') return VENTAS_processoData;
+  if (currentFila==='me')     return ME_processoData;
+  return currentMonth==='2026-04' ? processoData : MAY_processoData;
+}
+function getQ4Data() {
+  if (currentFila !== 'publi') return [];
+  return currentMonth==='2026-04' ? q4Data : MAY_q4Data;
+}
+function setFila(fila) {
+  currentFila = fila;
+  ['publi','ventas','me'].forEach(f => {
+    const btn = document.getElementById('btn-fila-'+f);
+    if (!btn) return;
+    btn.style.background = f===fila ? 'rgba(255,255,255,0.25)' : 'transparent';
+    btn.style.border     = f===fila ? '1.5px solid rgba(255,255,255,0.6)' : '1.5px solid rgba(255,255,255,0.3)';
+    btn.style.color      = f===fila ? 'white' : 'rgba(255,255,255,0.7)';
+    btn.style.fontWeight = f===fila ? '700' : '600';
+  });
+  const info = FILAS_INFO[fila];
+  const meta = FILAS_META[fila];
+  document.getElementById('header-title').textContent = info.label;
+  document.getElementById('meta-badge').textContent = 'META: CHAT '+meta.chat+' min · C2C '+meta.c2c+' min';
+  setMonth(currentMonth);
+}
 
 // ---- INIT ----
 let cCanalChart, cLiderChart;
