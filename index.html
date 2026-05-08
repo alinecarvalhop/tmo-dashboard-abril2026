@@ -18,18 +18,45 @@ header h1 { font-size: 18px; font-weight: 700; }
 header p { font-size: 12px; opacity: 0.65; margin-top: 3px; }
 .badge { background: #e63946; color: white; padding: 6px 14px; border-radius: 20px; font-size: 13px; font-weight: 700; white-space: nowrap; }
 
-/* NAV TABS */
-.nav { background: white; border-bottom: 2px solid #e9ecef; display: flex; padding: 0 32px; gap: 4px; }
-.nav-tab {
-  padding: 14px 20px; font-size: 13px; font-weight: 600; cursor: pointer;
-  border-bottom: 3px solid transparent; color: #6c757d;
-  transition: all 0.2s; white-space: nowrap;
+/* LAYOUT */
+.body-wrap { display: flex; min-height: calc(100vh - 64px); }
+
+/* SIDEBAR NAV */
+.nav {
+  width: 210px; min-width: 210px;
+  background: white;
+  border-right: 2px solid #e9ecef;
+  display: flex; flex-direction: column;
+  padding: 16px 0; gap: 2px;
+  position: sticky; top: 0; height: calc(100vh - 64px);
+  overflow-y: auto;
 }
-.nav-tab:hover { color: #1a1a2e; }
-.nav-tab.active { color: #1a1a2e; border-bottom-color: #e63946; }
+.nav-section {
+  font-size: 10px; font-weight: 700; text-transform: uppercase;
+  letter-spacing: .6px; color: #adb5bd; padding: 12px 18px 4px;
+}
+.nav-tab {
+  padding: 10px 18px; font-size: 13px; font-weight: 600; cursor: pointer;
+  border-left: 3px solid transparent; color: #6c757d;
+  transition: all 0.15s; white-space: nowrap;
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-tab:hover { color: #1a1a2e; background: #f8f9fa; }
+.nav-tab.active { color: #1a1a2e; border-left-color: #e63946; background: #fff5f5; }
+.nav-mes {
+  padding: 10px 18px; display: flex; align-items: center; gap:8px;
+  font-size: 11px; font-weight: 700; color: #6c757d;
+  border-top: 1px solid #e9ecef; margin-top: auto;
+}
+.nav-mes select {
+  flex: 1; padding: 5px 8px; border: 1.5px solid #dee2e6; border-radius:6px;
+  font-size: 12px; font-weight: 700; background: white; cursor: pointer;
+  outline: none;
+}
 
 /* PAGES */
-.page { display: none; max-width: 1400px; margin: 0 auto; padding: 24px 32px; }
+.pages-wrap { flex: 1; overflow-y: auto; }
+.page { display: none; max-width: 1300px; margin: 0 auto; padding: 24px 28px; }
 .page.active { display: block; }
 
 /* KPI */
@@ -117,26 +144,31 @@ tr:last-child td { border-bottom: none; }
   </div>
 </header>
 
+<div class="body-wrap">
 <nav class="nav">
+  <div class="nav-section">Visão</div>
   <div class="nav-tab active" onclick="showPage('resumo',this)">📈 Visão Geral</div>
+  <div class="nav-section">TMO</div>
   <div class="nav-tab" onclick="showPage('quartil',this)">🔢 Quartilização</div>
-  <div class="nav-tab" onclick="showPage('processo',this)">⚙️ TMO por Processo</div>
+  <div class="nav-tab" onclick="showPage('processo',this)">⚙️ Por Processo</div>
   <div class="nav-tab" onclick="showPage('q4reps',this)">🔴 Reps Q4</div>
-  <div class="nav-tab" onclick="showPage('diagnostico',this)">🔍 Diagnóstico</div>
   <div class="nav-tab" onclick="showPage('multiofensores',this)">🔥 Multi-Ofensores</div>
   <div class="nav-tab" onclick="showPage('toque',this)">⏱️ Tempo de Toque</div>
-  <div class="nav-tab" onclick="showPage('produ',this)">🏆 Produtividade</div>
-  <div class="nav-tab" onclick="showPage('evolucao',this)">📈 Evolução Semanal</div>
+  <div class="nav-tab" onclick="showPage('evolucao',this)">📅 Evolução Semanal</div>
   <div class="nav-tab" onclick="showPage('prodtipo',this)">⚡ TMO Produtivo/NP</div>
-  <div style="flex:1"></div>
-  <div style="display:flex;align-items:center;gap:8px;padding:8px 0">
-    <span style="font-size:11px;font-weight:700;color:#6c757d;text-transform:uppercase;letter-spacing:.5px">Mês:</span>
-    <select id="mes-selector" onchange="setMonth(this.value)" style="padding:5px 28px 5px 10px;border:1.5px solid #dee2e6;border-radius:7px;font-size:13px;font-weight:700;background:white;color:#1a1a2e;cursor:pointer;appearance:none;background-image:url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236c757d'/%3E%3C/svg%3E\");background-repeat:no-repeat;background-position:right 8px center;outline:none">
+  <div class="nav-section">Performance</div>
+  <div class="nav-tab" onclick="showPage('produ',this)">🏆 Produtividade</div>
+  <div class="nav-section">Análise</div>
+  <div class="nav-tab" onclick="showPage('diagnostico',this)">🔍 Diagnóstico</div>
+  <div class="nav-mes">
+    <span>Mês</span>
+    <select id="mes-selector" onchange="setMonth(this.value)">
       <option value="2026-04">Abril 2026</option>
       <option value="2026-05">Maio 2026 ⚡</option>
     </select>
   </div>
 </nav>
+<div class="pages-wrap">
 
 <!-- ===================== PÁGINA 1: VISÃO GERAL ===================== -->
 <div id="page-resumo" class="page active">
@@ -2060,5 +2092,7 @@ filterToque();
 populateCasosFilters(); filterCasos();
 document.getElementById('last-updated').textContent = 'Fechamento completo';
 </script>
+</div><!-- /pages-wrap -->
+</div><!-- /body-wrap -->
 </body>
 </html>
