@@ -960,68 +960,76 @@ tr:last-child td { border-bottom: none; }
 
 <script>
 // ---- DATA ----
+// Quartilização validada contra pipeline HALO — NTILE(4) por canal
 const quartilData = [
-  {q:'Q1',rep:'kperrone',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:319,tmo:18.52,dev:-8.48},
-  {q:'Q1',rep:'stdiniz',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:658,tmo:20.75,dev:-6.25},
-  {q:'Q1',rep:'amcaldeira',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:569,tmo:20.85,dev:-6.15},
+  // MULTICANAL CHAT — Q1
+  {q:'Q1',rep:'kperrone',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:317,tmo:18.32,dev:-8.68},
+  {q:'Q1',rep:'amcaldeira',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:557,tmo:21.05,dev:-5.95},
+  {q:'Q1',rep:'stdiniz',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:638,tmo:21.13,dev:-5.87},
   {q:'Q1',rep:'mrmarques',lider:'isabmot',canal:'MULTICANAL CHAT',vol:96,tmo:21.18,dev:-5.82},
-  {q:'Q1',rep:'aldmelo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:759,tmo:22.21,dev:-4.79},
+  {q:'Q1',rep:'aldmelo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:755,tmo:22.14,dev:-4.86},
+  {q:'Q1',rep:'marfreitas',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:467,tmo:22.52,dev:-4.48},
   {q:'Q1',rep:'acruz',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:144,tmo:22.69,dev:-4.31},
-  {q:'Q1',rep:'marfreitas',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:472,tmo:22.71,dev:-4.29},
-  {q:'Q1',rep:'aaugustinho',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:347,tmo:24.66,dev:-2.34},
-  {q:'Q1',rep:'cafarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:443,tmo:24.99,dev:-2.01},
-  {q:'Q1',rep:'jamonteiro',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:359,tmo:25.02,dev:-1.98},
-  {q:'Q1',rep:'juslima',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:296,tmo:25.63,dev:-1.37},
-  {q:'Q2',rep:'leibarcelos',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:91,tmo:25.77,dev:-1.23},
-  {q:'Q2',rep:'blvicente',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:698,tmo:26.54,dev:-0.46},
+  {q:'Q1',rep:'cafarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:448,tmo:24.53,dev:-2.47},
+  {q:'Q1',rep:'aaugustinho',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:342,tmo:24.80,dev:-2.20},
+  {q:'Q1',rep:'jamonteiro',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:357,tmo:25.02,dev:-1.98},
+  {q:'Q1',rep:'leibarcelos',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:92,tmo:25.40,dev:-1.60},
+  // MULTICANAL CHAT — Q2
+  {q:'Q2',rep:'juslima',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:296,tmo:25.54,dev:-1.46},
+  {q:'Q2',rep:'blvicente',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:694,tmo:26.50,dev:-0.50},
   {q:'Q2',rep:'czago',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:51,tmo:27.07,dev:0.07},
-  {q:'Q2',rep:'vdpiedade',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:558,tmo:27.43,dev:0.43},
-  {q:'Q2',rep:'camcsilva',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:680,tmo:27.99,dev:0.99},
-  {q:'Q2',rep:'lyalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:357,tmo:28.87,dev:1.87},
-  {q:'Q2',rep:'polivdaraujo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:615,tmo:29.65,dev:2.65},
-  {q:'Q2',rep:'fenunes',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:382,tmo:29.96,dev:2.96},
+  {q:'Q2',rep:'vdpiedade',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:552,tmo:27.32,dev:0.32},
+  {q:'Q2',rep:'camcsilva',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:685,tmo:27.58,dev:0.58},
+  {q:'Q2',rep:'lyalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:357,tmo:28.60,dev:1.60},
+  {q:'Q2',rep:'fenunes',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:392,tmo:29.27,dev:2.27},
+  {q:'Q2',rep:'polivdaraujo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:613,tmo:29.53,dev:2.53},
+  {q:'Q2',rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:522,tmo:29.98,dev:2.98},
   {q:'Q2',rep:'kroza',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:231,tmo:29.99,dev:2.99},
-  {q:'Q2',rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:522,tmo:30.14,dev:3.14},
-  {q:'Q2',rep:'gbmontilha',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:739,tmo:30.26,dev:3.26},
-  {q:'Q3',rep:'lianadsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:417,tmo:30.43,dev:3.43},
-  {q:'Q3',rep:'ulissouza',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:419,tmo:30.58,dev:3.58},
-  {q:'Q3',rep:'vfarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:447,tmo:30.78,dev:3.78},
-  {q:'Q3',rep:'mfvieira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:358,tmo:31.21,dev:4.21},
-  {q:'Q3',rep:'cchimenez',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:341,tmo:31.41,dev:4.41},
-  {q:'Q3',rep:'mandoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:521,tmo:31.51,dev:4.51},
+  {q:'Q2',rep:'gbmontilha',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:736,tmo:30.23,dev:3.23},
+  // MULTICANAL CHAT — Q3
+  {q:'Q3',rep:'ulissouza',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:424,tmo:30.25,dev:3.25},
+  {q:'Q3',rep:'lianadsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:419,tmo:30.34,dev:3.34},
+  {q:'Q3',rep:'cchimenez',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:345,tmo:30.65,dev:3.65},
+  {q:'Q3',rep:'vfarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:441,tmo:30.74,dev:3.74},
+  {q:'Q3',rep:'mfvieira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:354,tmo:30.98,dev:3.98},
+  {q:'Q3',rep:'casbarreiros',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:387,tmo:31.26,dev:4.26},
+  {q:'Q3',rep:'mandoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:516,tmo:31.26,dev:4.26},
+  {q:'Q3',rep:'marlaraujo',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:453,tmo:31.66,dev:4.66},
+  {q:'Q3',rep:'mariasilva',lider:'isabmot',canal:'MULTICANAL CHAT',vol:203,tmo:31.71,dev:4.71},
   {q:'Q3',rep:'elaoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:240,tmo:31.91,dev:4.91},
-  {q:'Q3',rep:'phegoncalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:412,tmo:32.13,dev:5.13},
-  {q:'Q3',rep:'mariasilva',lider:'isabmot',canal:'MULTICANAL CHAT',vol:208,tmo:32.16,dev:5.16},
-  {q:'Q3',rep:'uizfsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:412,tmo:32.32,dev:5.32},
-  {q:'Q4',rep:'casbarreiros',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:380,tmo:32.61,dev:5.61},
-  {q:'Q4',rep:'renataperei',lider:'isabmot',canal:'MULTICANAL CHAT',vol:474,tmo:32.65,dev:5.65},
-  {q:'Q4',rep:'marlaraujo',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:436,tmo:32.85,dev:5.85},
+  // MULTICANAL CHAT — Q4
+  {q:'Q4',rep:'uizfsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:415,tmo:32.08,dev:5.08},
+  {q:'Q4',rep:'phegoncalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:405,tmo:32.19,dev:5.19},
+  {q:'Q4',rep:'renataperei',lider:'isabmot',canal:'MULTICANAL CHAT',vol:473,tmo:32.71,dev:5.71},
   {q:'Q4',rep:'ccnnasciment',lider:'isabmot',canal:'MULTICANAL CHAT',vol:110,tmo:33.14,dev:6.14},
-  {q:'Q4',rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',vol:566,tmo:35.35,dev:8.35},
-  {q:'Q4',rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:420,tmo:35.95,dev:8.95},
-  {q:'Q4',rep:'bemarques',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:442,tmo:36.07,dev:9.07},
-  {q:'Q4',rep:'amcandido',lider:'isabmot',canal:'MULTICANAL CHAT',vol:522,tmo:38.16,dev:11.16},
-  {q:'Q4',rep:'cccsousa',lider:'isabmot',canal:'MULTICANAL CHAT',vol:397,tmo:41.67,dev:14.67},
-  {q:'Q4',rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:238,tmo:53.51,dev:26.51},
-  {q:'Q1',rep:'tsgarbim',lider:'lrossetto',canal:'MULTICANAL C2C',vol:321,tmo:16.64,dev:-10.36},
-  {q:'Q1',rep:'mudiniz',lider:'lrossetto',canal:'MULTICANAL C2C',vol:291,tmo:19.46,dev:-7.54},
-  {q:'Q1',rep:'pmarinho',lider:'lrossetto',canal:'MULTICANAL C2C',vol:178,tmo:20.30,dev:-6.70},
-  {q:'Q1',rep:'marcovenicio',lider:'lrossetto',canal:'MULTICANAL C2C',vol:369,tmo:20.85,dev:-6.15},
-  {q:'Q1',rep:'vltrevizan',lider:'lrossetto',canal:'MULTICANAL C2C',vol:386,tmo:21.22,dev:-5.78},
-  {q:'Q2',rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',vol:364,tmo:22.20,dev:-4.80},
-  {q:'Q2',rep:'luciagarcia',lider:'lrossetto',canal:'MULTICANAL C2C',vol:408,tmo:23.15,dev:-3.85},
-  {q:'Q2',rep:'cdoliveira',lider:'lrossetto',canal:'MULTICANAL C2C',vol:291,tmo:25.86,dev:-1.14},
-  {q:'Q2',rep:'claudoliveir',lider:'lrossetto',canal:'MULTICANAL C2C',vol:165,tmo:29.70,dev:2.70},
-  {q:'Q2',rep:'amarquini',lider:'lrossetto',canal:'MULTICANAL C2C',vol:190,tmo:30.12,dev:3.12},
-  {q:'Q3',rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:141,tmo:33.87,dev:6.87},
-  {q:'Q3',rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',vol:207,tmo:35.52,dev:8.52},
-  {q:'Q3',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',vol:194,tmo:41.55,dev:14.55},
-  {q:'Q3',rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',vol:160,tmo:44.37,dev:17.37},
-  {q:'Q4',rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:140,tmo:45.89,dev:18.89},
-  {q:'Q4',rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',vol:157,tmo:49.09,dev:22.09},
-  {q:'Q4',rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:132,tmo:49.66,dev:22.66},
-  {q:'Q4',rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:121,tmo:59.90,dev:32.90},
-  {q:'Q1',rep:'wgomdsouza',lider:'lrossetto',canal:'C2C',vol:142,tmo:20.78,dev:-6.22},
+  {q:'Q4',rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',vol:571,tmo:35.05,dev:8.05},
+  {q:'Q4',rep:'cccsousa',lider:'isabmot',canal:'MULTICANAL CHAT',vol:469,tmo:35.08,dev:8.08},
+  {q:'Q4',rep:'bemarques',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:438,tmo:35.74,dev:8.74},
+  {q:'Q4',rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:418,tmo:35.88,dev:8.88},
+  {q:'Q4',rep:'amcandido',lider:'isabmot',canal:'MULTICANAL CHAT',vol:522,tmo:37.79,dev:10.79},
+  {q:'Q4',rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:235,tmo:53.44,dev:26.44},
+  // MULTICANAL C2C — Q1
+  {q:'Q1',rep:'tsgarbim',lider:'lrossetto',canal:'MULTICANAL C2C',vol:389,tmo:14.20,dev:-12.80},
+  {q:'Q1',rep:'mudiniz',lider:'lrossetto',canal:'MULTICANAL C2C',vol:293,tmo:19.05,dev:-7.95},
+  {q:'Q1',rep:'marcovenicio',lider:'lrossetto',canal:'MULTICANAL C2C',vol:402,tmo:19.28,dev:-7.72},
+  {q:'Q1',rep:'pmarinho',lider:'lrossetto',canal:'MULTICANAL C2C',vol:185,tmo:19.58,dev:-7.42},
+  {q:'Q1',rep:'vltrevizan',lider:'lrossetto',canal:'MULTICANAL C2C',vol:394,tmo:20.37,dev:-6.63},
+  // MULTICANAL C2C — Q2
+  {q:'Q2',rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',vol:378,tmo:21.01,dev:-5.99},
+  {q:'Q2',rep:'luciagarcia',lider:'lrossetto',canal:'MULTICANAL C2C',vol:420,tmo:22.27,dev:-4.73},
+  {q:'Q2',rep:'cdoliveira',lider:'lrossetto',canal:'MULTICANAL C2C',vol:286,tmo:25.20,dev:-1.80},
+  {q:'Q2',rep:'amarquini',lider:'lrossetto',canal:'MULTICANAL C2C',vol:197,tmo:28.07,dev:1.07},
+  {q:'Q2',rep:'claudoliveir',lider:'lrossetto',canal:'MULTICANAL C2C',vol:165,tmo:28.17,dev:1.17},
+  // MULTICANAL C2C — Q3
+  {q:'Q3',rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:135,tmo:33.46,dev:6.46},
+  {q:'Q3',rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',vol:200,tmo:35.34,dev:8.34},
+  {q:'Q3',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',vol:191,tmo:38.30,dev:11.30},
+  {q:'Q3',rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',vol:160,tmo:41.62,dev:14.62},
+  // MULTICANAL C2C — Q4
+  {q:'Q4',rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:142,tmo:43.42,dev:16.42},
+  {q:'Q4',rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:132,tmo:44.70,dev:17.70},
+  {q:'Q4',rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',vol:158,tmo:46.37,dev:19.37},
+  {q:'Q4',rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:118,tmo:60.02,dev:33.02},
 ];
 
 const processoData = [
@@ -1261,71 +1269,81 @@ function showPage(id, el) {
 
 
 // ---- DADOS MAIO 2026 ----
+// Valores validados contra pipeline HALO (CONSOLIDADO_KPI_LDAP)
 const KPIS = {
-  '2026-04': {tmo:29.34, tmoCaso:38.35, volume:16455, reps:61, desvio:2.34, pct:8.7, label:'Abril 2026', partial:false},
-  '2026-05': {tmo:27.50, tmoCaso:null,  volume:2404,  reps:51, desvio:0.50, pct:1.9, label:'Maio 2026', partial:true}
+  '2026-04': {tmo:28.78, tmoCaso:null, volume:21525, reps:60, desvio:1.78, pct:6.6, label:'Abril 2026', partial:false},
+  '2026-05': {tmo:27.34, tmoCaso:null, volume:3598,  reps:51, desvio:0.34, pct:1.3, label:'Maio 2026', partial:true}
 };
 const CANAL_DATA = {
-  '2026-04': [{c:'MULTICANAL CHAT',v:12832,t:29.34,d:2.34},{c:'MULTICANAL C2C',v:4073,t:28.80,d:1.80},{c:'C2C',v:139,t:20.78,d:-6.22}],
-  '2026-05': [{c:'MULTICANAL CHAT',v:1808,t:27.81,d:0.81},{c:'MULTICANAL C2C',v:521,t:27.83,d:0.83},{c:'C2C',v:75,t:17.83,d:-9.17}]
+  '2026-04': [{c:'MULTICANAL CHAT',v:17180,t:29.24,d:2.24},{c:'MULTICANAL C2C',v:4345,t:26.98,d:-0.02}],
+  '2026-05': [{c:'MULTICANAL CHAT',v:2749,t:27.83,d:0.83},{c:'MULTICANAL C2C',v:849,t:25.77,d:-1.23}]
 };
 const LIDER_DATA = {
-  '2026-04': [{l:'isabmot',t:34.24},{l:'bkaroline',t:29.34},{l:'alicarvalho',t:28.45},{l:'thaidossanto',t:26.78}],
-  '2026-05': [{l:'alicarvalho',t:29.78},{l:'bkaroline',t:28.36},{l:'isabmot',t:27.04},{l:'thaidossanto',t:24.94}]
+  '2026-04': [{l:'isabmot',t:33.35},{l:'bkaroline',t:29.17},{l:'alicarvalho',t:28.33},{l:'lrossetto C2C',t:26.98},{l:'thaidossanto',t:26.60}],
+  '2026-05': [{l:'bkaroline',t:29.15},{l:'alicarvalho',t:28.47},{l:'isabmot',t:27.68},{l:'lrossetto C2C',t:25.77},{l:'thaidossanto',t:24.87}]
 };
 
+// MAY quartilização validada contra pipeline HALO — NTILE(4) por canal
 const MAY_quartilData = [
+  // MULTICANAL CHAT — Q1
   {q:'Q1',rep:'kperrone',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:34,tmo:16.73,dev:-10.27},
-  {q:'Q1',rep:'mandoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:91,tmo:19.76,dev:-7.24},
-  {q:'Q1',rep:'amcaldeira',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:56,tmo:19.89,dev:-7.11},
-  {q:'Q1',rep:'mrmarques',lider:'isabmot',canal:'MULTICANAL CHAT',vol:94,tmo:20.00,dev:-7.00},
-  {q:'Q1',rep:'aldmelo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:91,tmo:20.94,dev:-6.06},
-  {q:'Q1',rep:'marfreitas',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:65,tmo:21.35,dev:-5.65},
-  {q:'Q1',rep:'vdpiedade',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:38,tmo:22.79,dev:-4.21},
-  {q:'Q1',rep:'stdiniz',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:60,tmo:23.29,dev:-3.71},
-  {q:'Q1',rep:'blvicente',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:84,tmo:24.57,dev:-2.43},
-  {q:'Q2',rep:'polivdaraujo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:78,tmo:26.38,dev:-0.62},
+  {q:'Q1',rep:'amcaldeira',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:71,tmo:19.75,dev:-7.25},
+  {q:'Q1',rep:'mrmarques',lider:'isabmot',canal:'MULTICANAL CHAT',vol:122,tmo:20.67,dev:-6.33},
+  {q:'Q1',rep:'aldmelo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:137,tmo:20.95,dev:-6.05},
+  {q:'Q1',rep:'mandoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:136,tmo:21.29,dev:-5.71},
+  {q:'Q1',rep:'marfreitas',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:105,tmo:21.41,dev:-5.59},
+  {q:'Q1',rep:'stdiniz',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:94,tmo:22.69,dev:-4.31},
+  {q:'Q1',rep:'blvicente',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:122,tmo:24.62,dev:-2.38},
+  {q:'Q1',rep:'aaugustinho',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:66,tmo:25.71,dev:-1.29},
+  // MULTICANAL CHAT — Q2
+  {q:'Q2',rep:'ulissouza',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:84,tmo:25.94,dev:-1.06},
+  {q:'Q2',rep:'polivdaraujo',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:120,tmo:26.25,dev:-0.75},
+  {q:'Q2',rep:'mfvieira',lider:'isabmot',canal:'MULTICANAL CHAT',vol:41,tmo:26.33,dev:-0.67},
+  {q:'Q2',rep:'vdpiedade',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:60,tmo:26.36,dev:-0.64},
   {q:'Q2',rep:'phegoncalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:29,tmo:26.73,dev:-0.27},
-  {q:'Q2',rep:'marlaraujo',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:54,tmo:26.84,dev:-0.16},
-  {q:'Q2',rep:'camcsilva',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:69,tmo:27.26,dev:0.26},
-  {q:'Q2',rep:'uizfsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:43,tmo:27.90,dev:0.90},
-  {q:'Q2',rep:'ulissouza',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:60,tmo:28.14,dev:1.14},
-  {q:'Q2',rep:'aaugustinho',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:38,tmo:28.72,dev:1.72},
-  {q:'Q2',rep:'kroza',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:26,tmo:29.28,dev:2.28},
-  {q:'Q3',rep:'lyalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:43,tmo:29.38,dev:2.38},
-  {q:'Q3',rep:'cchimenez',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:58,tmo:29.60,dev:2.60},
-  {q:'Q3',rep:'lianadsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:55,tmo:30.25,dev:3.25},
-  {q:'Q3',rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',vol:69,tmo:30.26,dev:3.26},
-  {q:'Q3',rep:'casbarreiros',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:27,tmo:30.39,dev:3.39},
-  {q:'Q3',rep:'amcandido',lider:'isabmot',canal:'MULTICANAL CHAT',vol:48,tmo:31.57,dev:4.57},
-  {q:'Q3',rep:'gbmontilha',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:70,tmo:32.02,dev:5.02},
-  {q:'Q3',rep:'bemarques',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:23,tmo:32.99,dev:5.99},
-  {q:'Q4',rep:'renataperei',lider:'isabmot',canal:'MULTICANAL CHAT',vol:58,tmo:33.99,dev:6.99},
-  {q:'Q4',rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:49,tmo:34.10,dev:7.10},
-  {q:'Q4',rep:'fenunes',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:53,tmo:34.49,dev:7.49},
-  {q:'Q4',rep:'cafarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:50,tmo:34.67,dev:7.67},
-  {q:'Q4',rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:54,tmo:35.31,dev:8.31},
-  {q:'Q4',rep:'cccsousa',lider:'isabmot',canal:'MULTICANAL CHAT',vol:51,tmo:36.46,dev:9.46},
-  {q:'Q4',rep:'vfarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:41,tmo:36.87,dev:9.87},
-  {q:'Q4',rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:49,tmo:37.68,dev:10.68},
-  {q:'Q1',rep:'marcovenicio',lider:'lrossetto',canal:'MULTICANAL C2C',vol:65,tmo:13.66,dev:-13.34},
-  {q:'Q1',rep:'vltrevizan',lider:'lrossetto',canal:'MULTICANAL C2C',vol:29,tmo:16.03,dev:-10.97},
-  {q:'Q1',rep:'tsgarbim',lider:'lrossetto',canal:'MULTICANAL C2C',vol:16,tmo:16.46,dev:-10.54},
-  {q:'Q1',rep:'amarquini',lider:'lrossetto',canal:'MULTICANAL C2C',vol:30,tmo:18.47,dev:-8.53},
-  {q:'Q1',rep:'pmarinho',lider:'lrossetto',canal:'MULTICANAL C2C',vol:36,tmo:18.84,dev:-8.16},
-  {q:'Q2',rep:'claudoliveir',lider:'lrossetto',canal:'MULTICANAL C2C',vol:38,tmo:18.86,dev:-8.14},
-  {q:'Q2',rep:'mudiniz',lider:'lrossetto',canal:'MULTICANAL C2C',vol:36,tmo:20.07,dev:-6.93},
-  {q:'Q2',rep:'luciagarcia',lider:'lrossetto',canal:'MULTICANAL C2C',vol:34,tmo:24.60,dev:-2.40},
-  {q:'Q2',rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',vol:35,tmo:29.49,dev:2.49},
-  {q:'Q3',rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:22,tmo:32.20,dev:5.20},
-  {q:'Q3',rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',vol:38,tmo:34.04,dev:7.04},
-  {q:'Q3',rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:22,tmo:39.27,dev:12.27},
-  {q:'Q3',rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:19,tmo:41.42,dev:14.42},
-  {q:'Q4',rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',vol:28,tmo:42.21,dev:15.21},
-  {q:'Q4',rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',vol:21,tmo:45.66,dev:18.66},
-  {q:'Q4',rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:27,tmo:46.49,dev:19.49},
-  {q:'Q4',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',vol:25,tmo:51.68,dev:24.68},
-  {q:'Q1',rep:'wgomdsouza',lider:'lrossetto',canal:'C2C',vol:75,tmo:17.83,dev:-9.17},
+  {q:'Q2',rep:'uizfsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:69,tmo:27.65,dev:0.65},
+  {q:'Q2',rep:'camcsilva',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:67,tmo:28.03,dev:1.03},
+  {q:'Q2',rep:'cchimenez',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:101,tmo:28.17,dev:1.17},
+  {q:'Q2',rep:'casbarreiros',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:62,tmo:28.29,dev:1.29},
+  // MULTICANAL CHAT — Q3
+  {q:'Q3',rep:'lyalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:68,tmo:28.59,dev:1.59},
+  {q:'Q3',rep:'marlaraujo',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:69,tmo:28.83,dev:1.83},
+  {q:'Q3',rep:'lianadsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:81,tmo:29.17,dev:2.17},
+  {q:'Q3',rep:'kroza',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:26,tmo:29.28,dev:2.28},
+  {q:'Q3',rep:'amcandido',lider:'isabmot',canal:'MULTICANAL CHAT',vol:86,tmo:29.68,dev:2.68},
+  {q:'Q3',rep:'cafarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:85,tmo:30.16,dev:3.16},
+  {q:'Q3',rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',vol:107,tmo:31.31,dev:4.31},
+  {q:'Q3',rep:'bemarques',lider:'thaidossanto',canal:'MULTICANAL CHAT',vol:55,tmo:31.59,dev:4.59},
+  // MULTICANAL CHAT — Q4
+  {q:'Q4',rep:'vfarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:74,tmo:31.77,dev:4.77},
+  {q:'Q4',rep:'gbmontilha',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:106,tmo:32.04,dev:5.04},
+  {q:'Q4',rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',vol:79,tmo:32.97,dev:5.97},
+  {q:'Q4',rep:'renataperei',lider:'isabmot',canal:'MULTICANAL CHAT',vol:86,tmo:33.31,dev:6.31},
+  {q:'Q4',rep:'fenunes',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:88,tmo:34.29,dev:7.29},
+  {q:'Q4',rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:81,tmo:37.24,dev:10.24},
+  {q:'Q4',rep:'cccsousa',lider:'isabmot',canal:'MULTICANAL CHAT',vol:69,tmo:38.30,dev:11.30},
+  {q:'Q4',rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',vol:69,tmo:41.49,dev:14.49},
+  // MULTICANAL C2C — Q1
+  {q:'Q1',rep:'marcovenicio',lider:'lrossetto',canal:'MULTICANAL C2C',vol:110,tmo:12.42,dev:-14.58},
+  {q:'Q1',rep:'vltrevizan',lider:'lrossetto',canal:'MULTICANAL C2C',vol:56,tmo:14.68,dev:-12.32},
+  {q:'Q1',rep:'tsgarbim',lider:'lrossetto',canal:'MULTICANAL C2C',vol:17,tmo:15.55,dev:-11.45},
+  {q:'Q1',rep:'pmarinho',lider:'lrossetto',canal:'MULTICANAL C2C',vol:66,tmo:16.84,dev:-10.16},
+  {q:'Q1',rep:'claudoliveir',lider:'lrossetto',canal:'MULTICANAL C2C',vol:65,tmo:17.67,dev:-9.33},
+  // MULTICANAL C2C — Q2
+  {q:'Q2',rep:'amarquini',lider:'lrossetto',canal:'MULTICANAL C2C',vol:46,tmo:17.83,dev:-9.17},
+  {q:'Q2',rep:'mudiniz',lider:'lrossetto',canal:'MULTICANAL C2C',vol:50,tmo:20.09,dev:-6.91},
+  {q:'Q2',rep:'luciagarcia',lider:'lrossetto',canal:'MULTICANAL C2C',vol:61,tmo:21.95,dev:-5.05},
+  {q:'Q2',rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',vol:69,tmo:22.12,dev:-4.88},
+  // MULTICANAL C2C — Q3
+  {q:'Q3',rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',vol:62,tmo:32.46,dev:5.46},
+  {q:'Q3',rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',vol:39,tmo:35.78,dev:8.78},
+  {q:'Q3',rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:31,tmo:40.41,dev:13.41},
+  {q:'Q3',rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',vol:36,tmo:41.54,dev:14.54},
+  // MULTICANAL C2C — Q4
+  {q:'Q4',rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:32,tmo:41.83,dev:14.83},
+  {q:'Q4',rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',vol:28,tmo:42.61,dev:15.61},
+  {q:'Q4',rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',vol:44,tmo:43.21,dev:16.21},
+  {q:'Q4',rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:37,tmo:50.87,dev:23.87},
 ];
 
 const MAY_processoData = [
@@ -2496,10 +2514,10 @@ let cCanalChart, cLiderChart;
 cCanalChart = new Chart(document.getElementById('cCanal'),{
   type:'bar',
   data:{
-    labels:['MULTICANAL CHAT','MULTICANAL C2C','C2C'],
+    labels:['MULTICANAL CHAT','MULTICANAL C2C'],
     datasets:[
-      {label:'TMO (min)',data:[29.34,28.80,20.78],backgroundColor:['#457b9d','#e76f51','#2dc653'],borderRadius:6},
-      {label:'Meta 27 min',data:[27,27,27],type:'line',borderColor:'#e63946',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+      {label:'TMO (min)',data:[29.24,26.98],backgroundColor:['#457b9d','#e76f51'],borderRadius:6},
+      {label:'Meta 27 min',data:[27,27],type:'line',borderColor:'#e63946',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
     ]
   },
   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:35,grid:{color:'#f0f0f0'}}}}
