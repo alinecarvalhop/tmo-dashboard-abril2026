@@ -139,7 +139,7 @@ tr:last-child td { border-bottom: none; }
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="badge">META: CHAT 27,54 min · C2C 19,73 min</div>
-    <div id="last-updated" style="font-size:11px;opacity:0.6"></div>
+    
   </div>
 </header>
 
@@ -3068,9 +3068,10 @@ function setMonth(m) {
   renderExecSummary(m);
   filterEstilo();
   updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
-  document.getElementById('last-updated').textContent = k.partial
+  // last-updated removido
+  // k.partial
     ? `⚡ Dados parciais 01-08/05 · ${new Date().toLocaleDateString('pt-BR')}`
-    : 'Fechamento completo — Abril 2026';
+
 }
 
 function getQuartilData()  { return currentMonth==='2026-04' ? quartilData  : MAY_quartilData; }
@@ -3156,7 +3157,7 @@ renderProdTime(); populateProdTipoReps(); filterProdTipo();
 filterProdu();
 filterToque();
 populateCasosFilters(); filterCasos();
-document.getElementById('last-updated').textContent = 'Fechamento completo';
+
 </script>
 </div><!-- /pages-wrap -->
 </div><!-- /body-wrap -->
