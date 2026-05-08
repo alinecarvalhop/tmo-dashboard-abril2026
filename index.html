@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TMO/PRODU - Publicações</title>
+<title>TMO - Mature</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -136,7 +136,7 @@ tr:last-child td { border-bottom: none; }
 <header>
   <div style="display:flex;align-items:center;gap:14px">
     <div>
-      <h1 id="header-title">TMO/PRODU - Publicações</h1>
+      <h1 id="header-title">TMO - Mature</h1>
       <div style="display:flex;gap:4px;margin-top:4px">
         <button onclick="setFila('publi')" id="btn-fila-publi" style="padding:3px 10px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.6);background:rgba(255,255,255,0.25);color:white;cursor:pointer;font-size:11px;font-weight:700">📢 Publicações</button>
         <button onclick="setFila('ventas')" id="btn-fila-ventas" style="padding:3px 10px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;font-size:11px;font-weight:600">🛒 Vendas</button>
@@ -1545,9 +1545,9 @@ const FILAS_META = {
 };
 
 const FILAS_INFO = {
-  publi:  {label:'TMO/PRODU - Publicações', queue:'BR_Publicaciones_Sellers_Mature', emoji:'📢'},
-  ventas: {label:'TMO/PRODU - Vendas',      queue:'BR_Ventas_Sellers_Mature',        emoji:'🛒'},
-  me:     {label:'TMO/PRODU - ME',           queue:'BR_ME_Sellers_Mature',            emoji:'📦'},
+  publi:  {label:'TMO - Mature Publicações', queue:'BR_Publicaciones_Sellers_Mature', emoji:'📢'},
+  ventas: {label:'TMO - Mature Vendas',      queue:'BR_Ventas_Sellers_Mature',        emoji:'🛒'},
+  me:     {label:'TMO - Mature ME',           queue:'BR_ME_Sellers_Mature',            emoji:'📦'},
 };
 
 const VENTAS_KPIS = {
