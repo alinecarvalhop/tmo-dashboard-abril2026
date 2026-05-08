@@ -156,6 +156,7 @@ tr:last-child td { border-bottom: none; }
   <div class="nav-tab" onclick="showPage('toque',this)">⏱️ Tempo de Toque</div>
   <div class="nav-tab" onclick="showPage('evolucao',this)">📅 Evolução Semanal</div>
   <div class="nav-tab" onclick="showPage('prodtipo',this)">⚡ TMO Produtivo/NP</div>
+  <div class="nav-tab" onclick="showPage('correlacao',this)">🔗 TMO × NPS</div>
   <div class="nav-section">Performance</div>
   <div class="nav-tab" onclick="showPage('produ',this)">🏆 Produtividade</div>
   <div class="nav-section">Análise</div>
@@ -783,6 +784,117 @@ tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
+<!-- ===================== PÁGINA 11: TMO × NPS ===================== -->
+<div id="page-correlacao" class="page">
+
+  <!-- KPIs -->
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+    <div class="kpi red">
+      <div class="kpi-lbl">NPS CHAT — Abril 2026</div>
+      <div class="kpi-val">59,4%</div>
+      <div class="kpi-sub">Meta 62% 🔴 · 192 surveys · TMO 29,34 min</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-lbl">NPS C2C — Abril 2026</div>
+      <div class="kpi-val">86,7%</div>
+      <div class="kpi-sub">Meta 45,9% 🟢 · 15 surveys · TMO 28,80 min</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">NPS CHAT NEWBIE</div>
+      <div class="kpi-val">23,1%</div>
+      <div class="kpi-sub">Meta 62% 🔴 · 13 surveys — crítico</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-lbl">NPS CHAT EXPERT</div>
+      <div class="kpi-val">62,0%</div>
+      <div class="kpi-sub">Meta 62% 🟢 · 179 surveys — na meta</div>
+    </div>
+  </div>
+
+  <!-- Canal TMO x NPS -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title">📊 Canal × TMO × NPS — Abril 2026 <span style="font-size:11px;font-weight:400;color:#6c757d">· Fonte: DM_CX_TMO + DM_CX_BILLING_NPS</span></div>
+    <div class="tbl-wrap">
+      <table>
+        <thead><tr><th>Canal</th><th>TMO Médio</th><th>vs Meta (27 min)</th><th>NPS Real</th><th>Meta NPS</th><th>Status NPS</th><th>Surveys</th><th>Insight</th></tr></thead>
+        <tbody>
+          <tr style="background:#fff5f5">
+            <td><span class="chat">MULTICANAL CHAT</span></td>
+            <td><strong>29,34 min</strong></td>
+            <td class="pos">+2,34 min</td>
+            <td><strong style="font-size:16px">59,4%</strong></td>
+            <td>62%</td>
+            <td><span class="q4">Abaixo da meta</span></td>
+            <td>192</td>
+            <td style="font-size:12px;color:#6c757d">TMO alto + NPS abaixo → correlação direta</td>
+          </tr>
+          <tr style="background:#f0fdf4">
+            <td><span class="mc2c">MULTICANAL C2C</span></td>
+            <td><strong>28,80 min</strong></td>
+            <td class="pos">+1,80 min</td>
+            <td><strong style="font-size:16px">86,7%</strong></td>
+            <td>45,9%</td>
+            <td><span class="q1">Acima da meta</span></td>
+            <td>15</td>
+            <td style="font-size:12px;color:#6c757d">TMO alto MAS NPS excelente → canal voz resolve melhor</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:14px;padding:12px 16px;background:#f8f9fa;border-radius:8px;font-size:13px;color:#495057;border-left:4px solid #457b9d">
+      💡 <strong>Insight central:</strong> Chat e C2C têm TMO similar (~29 min), mas NPS radicalmente diferente (59% vs 87%). O TMO isolado não explica o NPS — a <strong>capacidade de resolução no primeiro contato</strong> e o <strong>canal de comunicação</strong> têm peso maior. Casos de voz (C2C) resolvem mais e geram mais satisfação.
+    </div>
+  </div>
+
+  <!-- Casos detratores -->
+  <div class="card">
+    <div class="card-title">🔴 Casos Detratores com TMO Alto — Exemplos Reais · Abril 2026
+      <span style="font-size:11px;font-weight:400;color:#6c757d">· nota NPS ≤ 6 · join DM_CX_TMO × BT_CX_NPS_DETAIL</span>
+    </div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fnps-canal" onchange="filterCorrelacao()">
+          <option value="">Todos</option>
+          <option>MULTICANAL CHAT</option>
+          <option>MULTICANAL C2C</option>
+          <option>C2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Rep</label>
+        <select id="fnps-rep" onchange="filterCorrelacao()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Processo</label>
+        <select id="fnps-proc" onchange="filterCorrelacao()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Nota NPS</label>
+        <select id="fnps-nota" onchange="filterCorrelacao()">
+          <option value="">Todas (≤6)</option>
+          <option value="0">Nota 0</option>
+          <option value="1">Nota 1</option>
+          <option value="2">Nota 2</option>
+          <option value="3-4">Nota 3-4</option>
+          <option value="5-6">Nota 5-6</option>
+        </select>
+      </div>
+      <div class="filter-count" id="fnps-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-correlacao">
+        <thead><tr><th>Caso</th><th>Data</th><th>Rep</th><th>Canal</th><th>Processo</th><th>Nota NPS</th><th>TMO</th><th>Comentário do Seller</th></tr></thead>
+        <tbody id="tbody-correlacao"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <!-- ===================== PÁGINA 5: DIAGNÓSTICO ===================== -->
 <div id="page-diagnostico" class="page">
   <div class="diag-grid">
@@ -1295,6 +1407,58 @@ const MAY_q4Data = [
 ];
 
 // ---- MULTI-OFENSORES ----
+// ---- TMO × NPS ----
+function notaBadge(n) {
+  const bg = n <= 2 ? '#f8d7da' : n <= 4 ? '#fff3cd' : '#fff3cd';
+  const col = n <= 2 ? '#721c24' : '#856404';
+  return '<span style="background:'+bg+';color:'+col+';padding:2px 8px;border-radius:4px;font-weight:700;font-size:13px">'+n+'</span>';
+}
+
+function populateCorrelacaoFilters() {
+  const reps  = [...new Set(detratoresData.map(r=>r.rep))].sort();
+  const procs = [...new Set(detratoresData.map(r=>r.proc))].sort();
+  const sr = document.getElementById('fnps-rep');
+  const sp = document.getElementById('fnps-proc');
+  reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sr.appendChild(o); });
+  procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sp.appendChild(o); });
+}
+
+function filterCorrelacao() {
+  const c  = document.getElementById('fnps-canal').value;
+  const r  = document.getElementById('fnps-rep').value;
+  const p  = document.getElementById('fnps-proc').value;
+  const n  = document.getElementById('fnps-nota').value;
+  let rows = detratoresData.filter(x => {
+    if (c && x.canal !== c) return false;
+    if (r && x.rep !== r)   return false;
+    if (p && x.proc !== p)  return false;
+    if (n === '0'   && x.nota !== 0) return false;
+    if (n === '1'   && x.nota !== 1) return false;
+    if (n === '2'   && x.nota !== 2) return false;
+    if (n === '3-4' && (x.nota < 3 || x.nota > 4)) return false;
+    if (n === '5-6' && (x.nota < 5 || x.nota > 6)) return false;
+    return true;
+  }).sort((a,b) => b.tmo - a.tmo);
+  const tb = document.getElementById('tbody-correlacao');
+  document.getElementById('fnps-count').textContent = `${rows.length} caso(s)`;
+  if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
+  tb.innerHTML = rows.map(x => {
+    const comentario = x.comentario
+      ? '<span style="font-style:italic;color:#495057">"'+x.comentario+'"</span>'
+      : '<span style="color:#ccc">—</span>';
+    return `<tr>
+      <td><code style="font-size:11px">${x.caso}</code></td>
+      <td>${x.data}/2026</td>
+      <td><strong>${x.rep}</strong></td>
+      <td>${canalBadge(x.canal)}</td>
+      <td style="font-size:12px">${x.proc}</td>
+      <td style="text-align:center">${notaBadge(x.nota)}</td>
+      <td class="pos"><strong>${x.tmo.toFixed(2)} min</strong></td>
+      <td style="max-width:320px;white-space:normal;font-size:12px">${comentario}</td>
+    </tr>`;
+  }).join('');
+}
+
 // ---- TMO PRODUTIVO / NÃO PRODUTIVO ----
 function pctBar(pct, cor) {
   return '<div style="display:flex;align-items:center;gap:6px">'
@@ -1558,6 +1722,36 @@ function filterMulti() {
     </tr>`;
   }).join('');
 }
+
+// ---- DADOS TMO × NPS ----
+const detratoresData = [
+  {caso:'448673069',data:'06/04',rep:'maybalazshaz',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',nota:0,tmo:93.27,comentario:'atendente nem leu'},
+  {caso:'450354216',data:'14/04',rep:'mandoliveira',canal:'MULTICANAL CHAT',proc:'Reputación',nota:1,tmo:79.93,comentario:''},
+  {caso:'447889709',data:'07/04',rep:'ext_moreirem',canal:'MULTICANAL CHAT',proc:'Antes de publicar',nota:0,tmo:168.40,comentario:''},
+  {caso:'449645480',data:'10/04',rep:'blvicente',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',nota:4,tmo:79.43,comentario:'Absurdo n poder trocar algo errado do título do anuncio'},
+  {caso:'448877972',data:'07/04',rep:'fenunes',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:5,tmo:76.68,comentario:''},
+  {caso:'453699159',data:'30/04',rep:'maybalazshaz',canal:'MULTICANAL CHAT',proc:'Reputación',nota:2,tmo:76.67,comentario:'Demora no atendimento, não é objetivo, nunca resolve nada.'},
+  {caso:'450265045',data:'14/04',rep:'ulissouza',canal:'MULTICANAL CHAT',proc:'Potenciar Ventas',nota:0,tmo:72.18,comentario:'0 soluções'},
+  {caso:'450105527',data:'13/04',rep:'cccsousa',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',nota:4,tmo:72.07,comentario:'encerrou o atendimento sem terminar de sanar minhas duvidas'},
+  {caso:'452307972',data:'24/04',rep:'amcaldeira',canal:'MULTICANAL CHAT',proc:'Reputación',nota:0,tmo:65.13,comentario:''},
+  {caso:'448873289',data:'07/04',rep:'aldmelo',canal:'MULTICANAL CHAT',proc:'PR - Artículos prohibidos',nota:3,tmo:61.62,comentario:''},
+  {caso:'453773696',data:'30/04',rep:'lecandido',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:4,tmo:58.55,comentario:''},
+  {caso:'448104423',data:'02/04',rep:'lyalves',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:6,tmo:54.48,comentario:'A atendente foi muito atenciosa e conseguiu solucionar o meu problema. Estou muito satisfeito!'},
+  {caso:'453532849',data:'29/04',rep:'blvicente',canal:'MULTICANAL CHAT',proc:'Reputación',nota:1,tmo:51.92,comentario:''},
+  {caso:'449048089',data:'08/04',rep:'losouza',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:1,tmo:51.30,comentario:'DIFERENTE DE TODAS AS OUTRAS VEZES QUE ENTREI EM CONTATO PARA RESOLVER O MESMO TIPO DE PROBLEMA, SOMENTE DESTA VEZ O ATENDENTE NÃO FEZ ABSOLUTAMENTE NADA PARA ME AJUDAR.'},
+  {caso:'450378121',data:'14/04',rep:'vdpiedade',canal:'MULTICANAL CHAT',proc:'Antes de publicar',nota:1,tmo:48.68,comentario:'Não deu um suporte, só mandou mensagem automática'},
+  {caso:'450584994',data:'15/04',rep:'phegoncalves',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',nota:0,tmo:41.62,comentario:'Quase 5 horas em atendimento para nenhuma resolução dos meus problemas, toda hora alternando de atendimento para atendimento.'},
+  {caso:'451624064',data:'20/04',rep:'elaoliveira',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:0,tmo:41.25,comentario:'Solução não atendida'},
+  {caso:'449120178',data:'09/04',rep:'ext_megama',canal:'MULTICANAL CHAT',proc:'PR - Artículos prohibidos',nota:0,tmo:38.87,comentario:'Mais de 24 horas em atendimento e não resolveram o problema!!!'},
+  {caso:'450393996',data:'15/04',rep:'uizfsilva',canal:'MULTICANAL CHAT',proc:'Calidad de foto',nota:2,tmo:33.17,comentario:'Experiencia péssima. Profissionais despreparados, orientações incorretas, indevidas e terminologias que não deveriam ser usadas.'},
+  {caso:'453136630',data:'28/04',rep:'stdiniz',canal:'MULTICANAL CHAT',proc:'PR - Técnica prohibida',nota:0,tmo:31.97,comentario:'não me responderam a pergunta principal'},
+  {caso:'448810724',data:'07/04',rep:'ext_luanolia',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',nota:0,tmo:31.23,comentario:'Péssima, Mercado Livre só piora a vida do vendedor.'},
+  {caso:'453163630',data:'28/04',rep:'ext_itrufino',canal:'MULTICANAL CHAT',proc:'Reputación ME Masivos',nota:0,tmo:33.50,comentario:'inutil! mesma coisa que falar com uma criança de 2 anos de idade, não sabem de nada, não resolvem nada.'},
+  {caso:'450579971',data:'15/04',rep:'cchimenez',canal:'MULTICANAL CHAT',proc:'Potenciar Ventas',nota:2,tmo:18.20,comentario:''},
+  {caso:'453780127',data:'30/04',rep:'wgomdsouza',canal:'C2C',proc:'Reputación',nota:0,tmo:27.02,comentario:'atendimento sem transparência com o vendedor'},
+  {caso:'447972194',data:'02/04',rep:'ext_kelvsouz',canal:'MULTICANAL CHAT',proc:'Potenciar Ventas',nota:0,tmo:69.30,comentario:'Resolução foi que os anúncios foram aceitos mas quando entrei não tinha o clip, como se tivesse sido excluido'},
+  {caso:'448613330',data:'06/04',rep:'ext_elmneves',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:26.22,comentario:'não solucionaram o problema'},
+];
 
 // ---- DADOS TMO PRODUTIVO / NÃO PRODUTIVO ----
 const prodTimeData = [
@@ -2086,6 +2280,7 @@ populateProcFilter(); filterProcesso();
 populateQ4Filters(); filterQ4();
 filterMulti();
 filterEvolucao();
+populateCorrelacaoFilters(); filterCorrelacao();
 renderProdTime(); populateProdTipoReps(); filterProdTipo();
 filterProdu();
 filterToque();
