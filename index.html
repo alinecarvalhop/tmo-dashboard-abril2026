@@ -681,6 +681,9 @@ tr:last-child td { border-bottom: none; }
 
 <!-- ===================== PÁGINA 9: EVOLUÇÃO SEMANAL ===================== -->
 <div id="page-evolucao" class="page">
+
+  <!-- RECORTE SEMANAL: atual vs anterior -->
+  <div id="evolucao-kpis" style="margin-bottom:20px"></div>
   <div class="card">
     <div class="card-title">📈 Evolução Semanal de TMO por Representante — Abril 2026
       <span style="font-size:11px;font-weight:400;color:#6c757d;margin-left:12px">S1=06/04 · S2=13/04 · S3=20/04 · S4=27/04 · Meta: CHAT ~39 min · C2C ~21 min</span>
@@ -1825,6 +1828,117 @@ function filterProdTipo() {
   </tr>`).join('');
 }
 
+// ---- RECORTE SEMANAL: atual vs anterior ----
+function computeEvolucaoKPIs(m) {
+  // Filtrar semanas do mês selecionado + semana anterior se mês=Maio
+  const prefix = m === '2026-04' ? '2026-04' : '2026-05';
+  let rows = semanalRaw.filter(r => r[3].startsWith(prefix));
+
+  // Para Maio, adiciona última semana de Abril como "anterior"
+  if (m === '2026-05') {
+    const abrilRows = semanalRaw.filter(r => r[3] === '2026-04-27');
+    rows = [...abrilRows, ...rows];
+  }
+
+  // Semanas únicas ordenadas
+  const semanas = [...new Set(rows.map(r => r[3]))].sort();
+  if (semanas.length < 1) return;
+
+  const curr = semanas[semanas.length - 1];
+  const prev = semanas.length >= 2 ? semanas[semanas.length - 2] : null;
+
+  // Função de média ponderada (conta = 1 por rep/semana)
+  function avg(data) {
+    if (!data.length) return null;
+    return data.reduce((s, r) => s + r[4], 0) / data.length;
+  }
+
+  function delta(curr, prev) {
+    if (curr == null || prev == null) return null;
+    return curr - prev;
+  }
+
+  function fmtDelta(d, inv) {
+    if (d == null) return '<span style="color:#adb5bd">—</span>';
+    const up = inv ? d < 0 : d > 0;
+    const col = up ? '#e63946' : '#2dc653';
+    const arrow = d > 0 ? '▲' : '▼';
+    return `<span style="color:${col};font-size:11px;font-weight:700">${arrow} ${Math.abs(d).toFixed(2)} min</span>`;
+  }
+
+  function fmtSemana(s) {
+    return s ? s.slice(5).replace('-', '/') : '—';
+  }
+
+  const currRows = rows.filter(r => r[3] === curr);
+  const prevRows = prev ? rows.filter(r => r[3] === prev) : [];
+
+  // 1. Geral
+  const tmoAtual = avg(currRows);
+  const tmoPrev  = avg(prevRows);
+
+  // 2. Por canal
+  const canais = [...new Set(currRows.map(r => r[2]))];
+  const canalStats = canais.map(c => ({
+    canal: c,
+    atual: avg(currRows.filter(r => r[2] === c)),
+    prev:  avg(prevRows.filter(r => r[2] === c))
+  }));
+
+  // 3. Por líder
+  const lideres = [...new Set(currRows.map(r => r[1]))].sort();
+  const liderStats = lideres.map(l => ({
+    lider: l,
+    canal: currRows.find(r => r[1] === l)?.[2] || '',
+    atual: avg(currRows.filter(r => r[1] === l)),
+    prev:  avg(prevRows.filter(r => r[1] === l))
+  }));
+
+  const canalBadgeS = c => c.includes('CHAT') ? `<span class="chat" style="font-size:10px">CHAT</span>` : `<span class="mc2c" style="font-size:10px">C2C</span>`;
+
+  let html = `
+  <div style="background:white;border-radius:10px;padding:18px 22px;box-shadow:0 1px 6px rgba(0,0,0,.07)">
+    <div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:14px">
+      📊 Recorte Semanal — Semana atual <strong>${fmtSemana(curr)}</strong> vs anterior <strong>${prev ? fmtSemana(prev) : '—'}</strong>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px">
+
+      <!-- 1. GERAL -->
+      <div style="background:#f8f9fa;border-radius:8px;padding:14px 16px;border-left:4px solid #1a1a2e">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#6c757d;margin-bottom:8px">TMO Publi Geral</div>
+        <div style="font-size:24px;font-weight:800;color:#1a1a2e">${tmoAtual != null ? tmoAtual.toFixed(2)+' min' : '—'}</div>
+        <div style="margin-top:4px">${fmtDelta(delta(tmoAtual, tmoPrev), true)}
+          ${tmoPrev != null ? `<span style="font-size:11px;color:#6c757d"> ant: ${tmoPrev.toFixed(2)} min</span>` : ''}</div>
+      </div>
+
+      <!-- 2. POR CANAL -->
+      <div style="background:#f8f9fa;border-radius:8px;padding:14px 16px;border-left:4px solid #457b9d">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#6c757d;margin-bottom:8px">TMO por Canal</div>
+        ${canalStats.map(cs => `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+            <span>${canalBadgeS(cs.canal)}</span>
+            <span style="font-weight:700;font-size:13px">${cs.atual != null ? cs.atual.toFixed(2)+' min' : '—'}</span>
+            <span>${fmtDelta(delta(cs.atual, cs.prev), true)}</span>
+          </div>`).join('')}
+      </div>
+
+      <!-- 3. POR LÍDER -->
+      <div style="background:#f8f9fa;border-radius:8px;padding:14px 16px;border-left:4px solid #f4a261">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#6c757d;margin-bottom:8px">TMO por Líder</div>
+        ${liderStats.map(ls => `
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+            <span style="font-size:12px;font-weight:600;flex:1">${ls.lider}</span>
+            <span style="font-weight:700;font-size:12px;margin:0 6px">${ls.atual != null ? ls.atual.toFixed(2) : '—'}</span>
+            <span>${fmtDelta(delta(ls.atual, ls.prev), true)}</span>
+          </div>`).join('')}
+      </div>
+
+    </div>
+  </div>`;
+
+  document.getElementById('evolucao-kpis').innerHTML = html;
+}
+
 // ---- EVOLUÇÃO SEMANAL ----
 function buildEvolucaoData() {
   const map = {};
@@ -2513,6 +2627,58 @@ const semanalRaw = [
   ['vltrevizan','lrossetto','MULTICANAL C2C','2026-04-13',20.03],
   ['vltrevizan','lrossetto','MULTICANAL C2C','2026-04-20',20.70],
   ['vltrevizan','lrossetto','MULTICANAL C2C','2026-04-27',20.35],
+  // Maio 2026 — semana 04/05 (HALO pipeline)
+  ['aaugustinho','alicarvalho','MULTICANAL CHAT','2026-05-04',26.51],
+  ['adysantos','lrossetto','MULTICANAL C2C','2026-05-04',49.25],
+  ['albarbosa','lrossetto','MULTICANAL C2C','2026-05-04',35.65],
+  ['aldmelo','bkaroline','MULTICANAL CHAT','2026-05-04',21.28],
+  ['amarquini','lrossetto','MULTICANAL C2C','2026-05-04',16.87],
+  ['amcaldeira','thaidossanto','MULTICANAL CHAT','2026-05-04',21.68],
+  ['amcandido','isabmot','MULTICANAL CHAT','2026-05-04',31.72],
+  ['bemarques','thaidossanto','MULTICANAL CHAT','2026-05-04',30.86],
+  ['blvicente','bkaroline','MULTICANAL CHAT','2026-05-04',23.05],
+  ['cafarias','alicarvalho','MULTICANAL CHAT','2026-05-04',30.04],
+  ['camcsilva','bkaroline','MULTICANAL CHAT','2026-05-04',30.73],
+  ['casbarreiros','thaidossanto','MULTICANAL CHAT','2026-05-04',29.01],
+  ['cccsousa','isabmot','MULTICANAL CHAT','2026-05-04',39.70],
+  ['cchimenez','thaidossanto','MULTICANAL CHAT','2026-05-04',27.54],
+  ['claudoliveir','lrossetto','MULTICANAL C2C','2026-05-04',18.67],
+  ['fenunes','bkaroline','MULTICANAL CHAT','2026-05-04',35.44],
+  ['gabrielaaiol','lrossetto','MULTICANAL C2C','2026-05-04',36.82],
+  ['gbmontilha','bkaroline','MULTICANAL CHAT','2026-05-04',31.72],
+  ['giselesosant','lrossetto','MULTICANAL C2C','2026-05-04',33.71],
+  ['jecosta','lrossetto','MULTICANAL C2C','2026-05-04',17.79],
+  ['kavalle','lrossetto','MULTICANAL C2C','2026-05-04',41.53],
+  ['kperrone','thaidossanto','MULTICANAL CHAT','2026-05-04',16.73],
+  ['kroza','bkaroline','MULTICANAL CHAT','2026-05-04',29.28],
+  ['lecandido','bkaroline','MULTICANAL CHAT','2026-05-04',37.31],
+  ['lianadsilva','alicarvalho','MULTICANAL CHAT','2026-05-04',30.08],
+  ['linessousa','lrossetto','MULTICANAL C2C','2026-05-04',43.67],
+  ['losouza','alicarvalho','MULTICANAL CHAT','2026-05-04',32.04],
+  ['luciagarcia','lrossetto','MULTICANAL C2C','2026-05-04',22.67],
+  ['lyalves','alicarvalho','MULTICANAL CHAT','2026-05-04',29.14],
+  ['mandoliveira','isabmot','MULTICANAL CHAT','2026-05-04',21.30],
+  ['marcovenicio','lrossetto','MULTICANAL C2C','2026-05-04',12.67],
+  ['marfreitas','thaidossanto','MULTICANAL CHAT','2026-05-04',22.66],
+  ['marlaraujo','alicarvalho','MULTICANAL CHAT','2026-05-04',28.43],
+  ['maybalazshaz','bkaroline','MULTICANAL CHAT','2026-05-04',39.76],
+  ['mfvieira','isabmot','MULTICANAL CHAT','2026-05-04',27.67],
+  ['mrmarques','isabmot','MULTICANAL CHAT','2026-05-04',21.06],
+  ['mudiniz','lrossetto','MULTICANAL C2C','2026-05-04',19.80],
+  ['phegoncalves','alicarvalho','MULTICANAL CHAT','2026-05-04',26.73],
+  ['pmarinho','lrossetto','MULTICANAL C2C','2026-05-04',15.67],
+  ['polivdaraujo','bkaroline','MULTICANAL CHAT','2026-05-04',26.98],
+  ['raisacsantos','lrossetto','MULTICANAL C2C','2026-05-04',39.61],
+  ['renataperei','isabmot','MULTICANAL CHAT','2026-05-04',34.66],
+  ['stdiniz','alicarvalho','MULTICANAL CHAT','2026-05-04',23.24],
+  ['tsgarbim','lrossetto','MULTICANAL C2C','2026-05-04',15.55],
+  ['uizfsilva','alicarvalho','MULTICANAL CHAT','2026-05-04',29.18],
+  ['ulissouza','thaidossanto','MULTICANAL CHAT','2026-05-04',26.87],
+  ['vdpiedade','bkaroline','MULTICANAL CHAT','2026-05-04',28.43],
+  ['vfarias','alicarvalho','MULTICANAL CHAT','2026-05-04',30.48],
+  ['vfonorio','isabmot','MULTICANAL CHAT','2026-05-04',32.11],
+  ['vitnasciment','lrossetto','MULTICANAL C2C','2026-05-04',36.50],
+  ['vltrevizan','lrossetto','MULTICANAL C2C','2026-05-04',16.85],
 ];
 
 const SEMANAS = ['2026-04-06','2026-04-13','2026-04-20','2026-04-27'];
@@ -2898,6 +3064,7 @@ function setMonth(m) {
   populateProdTipoReps(); filterProdTipo();
   filterProdu();
   filterEvolucao();
+  computeEvolucaoKPIs(m);
   renderExecSummary(m);
   filterEstilo();
   updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
@@ -2979,6 +3146,7 @@ populateProcFilter(); filterProcesso();
 populateQ4Filters(); filterQ4();
 filterMulti();
 filterEvolucao();
+computeEvolucaoKPIs('2026-04');
 updateAllKpis('2026-04');
 renderExecSummary('2026-04');
 filterEstilo();
