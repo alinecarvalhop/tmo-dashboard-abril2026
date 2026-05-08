@@ -136,7 +136,6 @@ tr:last-child td { border-bottom: none; }
 <header>
   <div>
     <h1>📊 TMO/PRODU - Publicações</h1>
-    <p>Fechamento Abril 2026 · Fonte: meli-bi-data.WHOWNER.DM_CX_TMO · sem outliers · sem drop · com toque</p>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
     <div class="badge">META: 27 min</div>
@@ -2442,7 +2441,7 @@ function updateAllKpis(m) {
     if (el.textContent.includes('Por Representante — ')) el.textContent = el.textContent.replace(/— .*/, '— '+lbl);
   });
   // Header
-  document.querySelector('header p').textContent = lbl+' · Fonte: meli-bi-data.WHOWNER.DM_CX_TMO · sem outliers · sem drop · com toque';
+  // subtítulo removido
 }
 
 // ---- MÊS ATIVO ----
