@@ -163,6 +163,7 @@ tr:last-child td { border-bottom: none; }
   <div class="nav-tab" onclick="showPage('evolucao',this)">📅 Evolução Semanal</div>
   <div class="nav-tab" onclick="showPage('prodtipo',this)">⚡ TMO Produtivo/NP</div>
   <div class="nav-tab" onclick="showPage('correlacao',this)">🔗 TMO × NPS</div>
+  <div class="nav-tab" onclick="showPage('estilo',this)">🎨 TMO × Estilo Meli</div>
   <div class="nav-section">Performance</div>
   <div class="nav-tab" onclick="showPage('produ',this)">🏆 Produtividade</div>
   <div class="nav-section">Análise</div>
@@ -172,6 +173,16 @@ tr:last-child td { border-bottom: none; }
 
 <!-- ===================== PÁGINA 1: VISÃO GERAL ===================== -->
 <div id="page-resumo" class="page active">
+
+  <!-- RESUMO EXECUTIVO -->
+  <div id="exec-summary" style="background:white;border-radius:10px;padding:20px 24px;box-shadow:0 1px 6px rgba(0,0,0,.07);margin-bottom:20px;border-left:4px solid #e63946">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:14px;font-weight:700;color:#1a1a2e">📋 Resumo Executivo — Principais Oportunidades</div>
+      <span id="exec-mes-lbl" style="font-size:11px;color:#6c757d;font-weight:600">Abril 2026</span>
+    </div>
+    <div id="exec-body" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px"></div>
+  </div>
+
   <div class="kpi-row">
     <div class="kpi red">
       <div class="kpi-lbl">TMO Médio (Assign)</div>
@@ -259,11 +270,19 @@ tr:last-child td { border-bottom: none; }
           <option value="Q4">Q4 — Piores</option>
         </select>
       </div>
+      <div class="filter-group">
+        <label>Seniority</label>
+        <select id="fq-sen" onchange="filterQuartil()">
+          <option value="">Todos</option>
+          <option value="EXPERT">EXPERT</option>
+          <option value="NEWBIE">NEWBIE</option>
+        </select>
+      </div>
       <div class="filter-count" id="fq-count"></div>
     </div>
     <div class="tbl-wrap">
       <table id="tbl-quartil">
-        <thead><tr><th>Quartil</th><th>Rep</th><th>Líder</th><th>Canal</th><th>Volume</th><th>TMO (min)</th><th>Desvio vs Meta</th></tr></thead>
+        <thead><tr><th>Quartil</th><th>Rep</th><th>Seniority</th><th>Líder</th><th>Canal</th><th>Volume</th><th>TMO (min)</th><th>Desvio vs Meta</th></tr></thead>
         <tbody id="tbody-quartil"></tbody>
       </table>
     </div>
@@ -345,11 +364,19 @@ tr:last-child td { border-bottom: none; }
           <option value="">Todos</option>
         </select>
       </div>
+      <div class="filter-group">
+        <label>Seniority</label>
+        <select id="f4-sen" onchange="filterQ4()">
+          <option value="">Todos</option>
+          <option value="EXPERT">EXPERT</option>
+          <option value="NEWBIE">NEWBIE</option>
+        </select>
+      </div>
       <div class="filter-count" id="f4-count"></div>
     </div>
     <div class="tbl-wrap">
       <table id="tbl-q4">
-        <thead><tr><th>Processo</th><th>Canal</th><th>Rep</th><th>Líder</th><th>Volume</th><th>TMO (min)</th><th>Desvio vs Meta</th></tr></thead>
+        <thead><tr><th>Processo</th><th>Canal</th><th>Rep</th><th>Seniority</th><th>Líder</th><th>Volume</th><th>TMO (min)</th><th>Desvio vs Meta</th></tr></thead>
         <tbody id="tbody-q4"></tbody>
       </table>
     </div>
@@ -871,6 +898,79 @@ tr:last-child td { border-bottom: none; }
   </div>
 </div>
 
+<!-- ===================== PÁGINA 12: TMO × ESTILO MELI ===================== -->
+<div id="page-estilo" class="page">
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
+    <div class="kpi blue">
+      <div class="kpi-lbl">Estilo Médio — CHAT</div>
+      <div class="kpi-val" id="est-chat-val">52,5%</div>
+      <div class="kpi-sub">Abril 2026</div>
+    </div>
+    <div class="kpi yellow">
+      <div class="kpi-lbl">Estilo Médio — C2C</div>
+      <div class="kpi-val" id="est-c2c-val">47,8%</div>
+      <div class="kpi-sub">Abril 2026</div>
+    </div>
+    <div class="kpi green">
+      <div class="kpi-lbl">Estilo EXPERT Médio</div>
+      <div class="kpi-val" id="est-expert-val">52,9%</div>
+      <div class="kpi-sub">Abril 2026</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">Estilo NEWBIE Médio</div>
+      <div class="kpi-val" id="est-newbie-val">40,5%</div>
+      <div class="kpi-sub">TMO médio NEWBIE: 43,1 min</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">🎨 TMO × Adesão Estilo Meli por Representante — Abril 2026
+      <span style="font-size:11px;font-weight:400;color:#6c757d">· ESTILO_MELI_QM_ANALYSIS · escores 0–100%</span>
+    </div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fest-canal" onchange="filterEstilo()">
+          <option value="">Todos</option>
+          <option>MULTICANAL CHAT</option>
+          <option>MULTICANAL C2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Seniority</label>
+        <select id="fest-sen" onchange="filterEstilo()">
+          <option value="">Todos</option>
+          <option value="EXPERT">EXPERT</option>
+          <option value="NEWBIE">NEWBIE</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Ordenar por</label>
+        <select id="fest-sort" onchange="filterEstilo()">
+          <option value="tmo">TMO (maior→menor)</option>
+          <option value="estilo">Estilo (menor→maior)</option>
+          <option value="gap">Maior gap TMO-Estilo</option>
+        </select>
+      </div>
+      <div class="filter-count" id="fest-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-estilo">
+        <thead>
+          <tr>
+            <th>Rep</th><th>Canal</th><th>Seniority</th>
+            <th>TMO</th><th>Estilo Meli %</th><th>Barra Estilo</th><th>Volume</th><th>Correlação</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-estilo"></tbody>
+      </table>
+    </div>
+    <div style="margin-top:14px;padding:12px 16px;background:#f8f9fa;border-radius:8px;font-size:13px;color:#495057;border-left:4px solid #e63946">
+      💡 <strong>Padrão identificado:</strong> Reps NEWBIE têm Estilo médio de <strong>40,5%</strong> vs <strong>52,9%</strong> dos EXPERT — e TMO médio 43 min vs 28 min. A correlação sugere que <strong>menor adesão ao Estilo Meli está associada a maior TMO</strong>, especialmente em C2C (vitnasciment: Estilo 31%, TMO 41 min).
+    </div>
+  </div>
+</div>
+
 <!-- ===================== PÁGINA 5: DIAGNÓSTICO ===================== -->
 <div id="page-diagnostico" class="page">
   <div class="diag-grid">
@@ -1181,17 +1281,19 @@ function filterQuartil() {
   const c = document.getElementById('fq-canal').value;
   const l = document.getElementById('fq-lider').value;
   const q = document.getElementById('fq-quartil').value;
+  const s = document.getElementById('fq-sen').value;
   let rows = getQuartilData().filter(r =>
-    (!c || r.canal===c) &&
-    (!l || r.lider===l) &&
-    (!q || r.q===q)
+    (!c || r.canal===c) && (!l || r.lider===l) &&
+    (!q || r.q===q) && (!s || getSeniority(r.rep)===s)
   );
   const tb = document.getElementById('tbody-quartil');
   document.getElementById('fq-count').textContent = `${rows.length} representante(s)`;
-  if (!rows.length) { tb.innerHTML = emptyRow(7); return; }
+  if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
   tb.innerHTML = rows.map(r=>`<tr>
-    <td>${quartilBadge(r.q)}</td><td>${r.rep}</td><td>${r.lider}</td>
-    <td>${canalBadge(r.canal)}</td><td>${r.vol.toLocaleString('pt-BR')}</td>
+    <td>${quartilBadge(r.q)}</td><td>${r.rep}</td>
+    <td>${senBadge(r.rep)}</td>
+    <td>${r.lider}</td><td>${canalBadge(r.canal)}</td>
+    <td>${r.vol.toLocaleString('pt-BR')}</td>
     <td><strong>${r.tmo.toFixed(2)}</strong></td><td>${devFmt(r.dev)}</td>
   </tr>`).join('');
 }
@@ -1241,18 +1343,19 @@ function filterQ4() {
   const l = document.getElementById('f4-lider').value;
   const p = document.getElementById('f4-proc').value;
   const r = document.getElementById('f4-rep').value;
+  const s = document.getElementById('f4-sen').value;
   let rows = getQ4Data().filter(x =>
-    (!c || x.canal===c) &&
-    (!l || x.lider===l) &&
-    (!p || x.proc===p) &&
-    (!r || x.rep===r)
+    (!c || x.canal===c) && (!l || x.lider===l) &&
+    (!p || x.proc===p) && (!r || x.rep===r) &&
+    (!s || getSeniority(x.rep)===s)
   );
   const tb = document.getElementById('tbody-q4');
   document.getElementById('f4-count').textContent = `${rows.length} ocorrência(s)`;
-  if (!rows.length) { tb.innerHTML = emptyRow(7); return; }
+  if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
   tb.innerHTML = rows.map(x=>`<tr>
     <td>${x.proc}</td><td>${canalBadge(x.canal)}</td>
-    <td><strong>${x.rep}</strong></td><td>${x.lider}</td>
+    <td><strong>${x.rep}</strong></td><td>${senBadge(x.rep)}</td>
+    <td>${x.lider}</td>
     <td>${x.vol}</td>
     <td><strong>${x.tmo.toFixed(2)}</strong></td>
     <td>${devFmt(x.dev)}</td>
@@ -1401,6 +1504,83 @@ const MAY_q4Data = [
 ];
 
 // ---- MULTI-OFENSORES ----
+// ---- RESUMO EXECUTIVO ----
+const EXEC_SUMMARY = {
+  '2026-04': [
+    {peso:1, cor:'#e63946', icon:'🔴', titulo:'C2C NEWBIE — Grupo crítico (maior peso)',
+     texto:'<strong>adysantos (60 min), kavalle (46), raisacsantos (45), linessousa (43), vitnasciment (42)</strong> — todos NEWBIE, todos Q4. TMO médio 44 min (+63% vs meta). Impacto direto no TMO total da fila.'},
+    {peso:2, cor:'#e63946', icon:'🔴', titulo:'maybalazshaz — Rep multi-ofensora CHAT',
+     texto:'TMO <strong>53,4 min</strong> · Q4 em <strong>9 processos</strong> diferentes · NEWBIE · Estilo 49% · 235 contatos. Maior impacto individual do canal CHAT.'},
+    {peso:3, cor:'#f4a261', icon:'🟡', titulo:'Processos PR via C2C — Gap estrutural',
+     texto:'PR Artículos prohibidos <strong>51,7 min</strong>, PR Datos Personales <strong>51,5 min</strong>, PR Propiedad intelectual <strong>37,7 min</strong>. Sem script conversacional = variação extrema (máx 358 min).'},
+    {peso:4, cor:'#f4a261', icon:'🟡', titulo:'Reputación + Gestión Pub CHAT — Alto volume',
+     texto:'Reputación: <strong>30,8 min · 5.281 contatos (33% do volume)</strong>. Gestión Pub: 30,7 min · 3.682 contatos. Impacto sistêmico — sem macro/template forçam re-escrita a cada contato.'},
+    {peso:5, cor:'#f4a261', icon:'🟡', titulo:'NPS CHAT abaixo da meta (correlação TMO)',
+     texto:'NPS CHAT: <strong>59,4% vs meta 62%</strong>. NEWBIE apenas <strong>23,1%</strong>. Casos detratores com TMO >40 min incluem "Quase 5 horas sem resolução" e "nunca resolve nada".'},
+    {peso:6, cor:'#457b9d', icon:'🔵', titulo:'Estilo Meli — NEWBIE com baixa adesão',
+     texto:'NEWBIE médio: <strong>40,5% Estilo</strong> vs 52,9% EXPERT. vitnasciment: Estilo 31% + TMO 41 min. Correlação: reps com Estilo <45% concentram 78% dos desvios de TMO acima de 35 min.'},
+  ],
+  '2026-05': [
+    {peso:1, cor:'#e63946', icon:'🔴', titulo:'C2C NEWBIE — Tendência de piora (parcial)',
+     texto:'<strong>adysantos (50,9 min), gabrielaaiol (43,2), kavalle (42,6)</strong> mantêm TMO elevado em Maio. Sem intervenção do mês anterior, padrão persiste.'},
+    {peso:2, cor:'#e63946', icon:'🔴', titulo:'maybalazshaz — CHAT ainda Q4',
+     texto:'TMO <strong>41,5 min</strong> em Maio (parcial) — Q4 novamente. NEWBIE com Estilo 49% e Produtividade 1,78 (pior do canal).'},
+    {peso:3, cor:'#f4a261', icon:'🟡', titulo:'CHAT TMO caindo mas NPS não melhora',
+     texto:'TMO CHAT caiu de 29,2 → 27,8 min em Maio. NPS mantém <strong>60%</strong> (meta 62%). Indica que TMO sozinho não move NPS — qualidade de resolução importa mais.'},
+    {peso:4, cor:'#f4a261', icon:'🟡', titulo:'Produtividade divergindo por seniority',
+     texto:'EXPERT médio: <strong>3,3</strong> · NEWBIE médio: <strong>1,2</strong>. Gap de 2,7× — NEWBIEs com TMO alto + produtividade baixa são o principal vetor de ineficiência.'},
+  ]
+};
+
+function renderExecSummary(m) {
+  const items = EXEC_SUMMARY[m] || EXEC_SUMMARY['2026-04'];
+  document.getElementById('exec-mes-lbl').textContent = m==='2026-05' ? 'Maio 2026 ⚡ (parcial)' : 'Abril 2026';
+  document.getElementById('exec-body').innerHTML = items.map(i=>`
+    <div style="background:#f8f9fa;border-radius:8px;padding:12px 14px;border-left:3px solid ${i.cor}">
+      <div style="font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:4px">
+        ${i.icon} <span style="background:${i.cor};color:white;padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px">#${i.peso}</span>${i.titulo}
+      </div>
+      <div style="font-size:12px;color:#495057;line-height:1.5">${i.texto}</div>
+    </div>`).join('');
+}
+
+// ---- TMO × ESTILO MELI ----
+function filterEstilo() {
+  const c = document.getElementById('fest-canal').value;
+  const s = document.getElementById('fest-sen').value;
+  const sort = document.getElementById('fest-sort').value;
+  let rows = estiloData.filter(r =>
+    (!c || r.canal===c) && (!s || r.sen===s)
+  );
+  if (sort==='tmo') rows.sort((a,b)=>b.tmo-a.tmo);
+  else if (sort==='estilo') rows.sort((a,b)=>a.estilo-b.estilo);
+  else rows.sort((a,b)=>(b.tmo-b.estilo/2)-(a.tmo-a.estilo/2));
+  const tb = document.getElementById('tbody-estilo');
+  document.getElementById('fest-count').textContent = `${rows.length} rep(s)`;
+  if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
+  tb.innerHTML = rows.map(r => {
+    const estiloCol = r.estilo < 45 ? '#e63946' : r.estilo < 55 ? '#f4a261' : '#2dc653';
+    const bar = `<div style="display:flex;align-items:center;gap:6px">
+      <div style="width:80px;height:8px;background:#f0f2f5;border-radius:4px;overflow:hidden">
+        <div style="width:${r.estilo}%;height:100%;background:${estiloCol};border-radius:4px"></div>
+      </div><strong>${r.estilo.toFixed(1)}%</strong></div>`;
+    const cor = r.tmo>35?'pos':r.tmo>27?'':'neg';
+    const correl = r.tmo>35 && r.estilo<45 ? '🔴 TMO alto + Estilo baixo' :
+                   r.tmo>35 && r.estilo>=55 ? '🟡 TMO alto apesar de Estilo ok' :
+                   r.tmo<=27 && r.estilo>=55 ? '🟢 Referência' : '➡️ Regular';
+    return `<tr>
+      <td><strong>${r.rep}</strong></td>
+      <td>${canalBadge(r.canal)}</td>
+      <td>${senBadge(r.rep)}</td>
+      <td class="${cor}"><strong>${r.tmo.toFixed(2)} min</strong></td>
+      <td>${r.estilo.toFixed(1)}%</td>
+      <td>${bar}</td>
+      <td>${r.vol}</td>
+      <td style="font-size:12px">${correl}</td>
+    </tr>`;
+  }).join('');
+}
+
 // ---- TMO × NPS ----
 function notaBadge(n) {
   const bg = n <= 2 ? '#f8d7da' : n <= 4 ? '#fff3cd' : '#fff3cd';
@@ -2468,6 +2648,89 @@ function updateAllKpis(m) {
   // subtítulo removido
 }
 
+// ---- SENIORITY MAP (HALO pipeline — EXPERT/NEWBIE) ----
+const SENIORITY_MAP = {
+  adysantos:'NEWBIE', albarbosa:'NEWBIE', amarquini:'NEWBIE', gabrielaaiol:'NEWBIE',
+  giselesosant:'NEWBIE', kavalle:'NEWBIE', linessousa:'NEWBIE', maybalazshaz:'NEWBIE',
+  raisacsantos:'NEWBIE', renataperei:'NEWBIE', vitnasciment:'NEWBIE', wgomdsouza:'NEWBIE',
+  // todos os demais são EXPERT
+};
+function getSeniority(rep) { return SENIORITY_MAP[rep] || 'EXPERT'; }
+function senBadge(rep) {
+  const s = getSeniority(rep);
+  return s==='NEWBIE'
+    ? '<span style="background:#fff3cd;color:#856404;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700">NEWBIE</span>'
+    : '<span style="background:#d4edda;color:#155724;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700">EXPERT</span>';
+}
+
+// ---- DADOS ESTILO MELI × TMO (Abril 2026) ----
+// HALO pipeline: ESTILO_MELI_QM_ANALYSIS · score 0→1 (×100 = %)
+const estiloData = [
+  // C2C
+  {rep:'adysantos',canal:'MULTICANAL C2C',sen:'NEWBIE',tmo:60.02,estilo:41.2,vol:39},
+  {rep:'albarbosa',canal:'MULTICANAL C2C',sen:'NEWBIE',tmo:33.46,estilo:40.1,vol:31},
+  {rep:'amarquini',canal:'MULTICANAL C2C',sen:'NEWBIE',tmo:28.07,estilo:41.8,vol:38},
+  {rep:'cdoliveira',canal:'MULTICANAL C2C',sen:'EXPERT',tmo:25.20,estilo:54.3,vol:62},
+  {rep:'claudoliveir',canal:'MULTICANAL C2C',sen:'EXPERT',tmo:28.17,estilo:56.4,vol:44},
+  {rep:'gabrielaaiol',canal:'MULTICANAL C2C',sen:'NEWBIE',tmo:38.30,estilo:38.5,vol:41},
+  {rep:'giselesosant',canal:'MULTICANAL C2C',sen:'NEWBIE',tmo:35.34,estilo:37.0,vol:40},
+  {rep:'jecosta',canal:'MULTICANAL C2C',sen:'EXPERT',tmo:21.01,estilo:57.2,vol:52},
+  {rep:'kavalle',canal:'MULTICANAL C2C',sen:'NEWBIE',tmo:46.37,estilo:41.4,vol:38},
+  {rep:'linessousa',canal:'MULTICANAL C2C',sen:'NEWBIE',tmo:43.42,estilo:43.4,vol:40},
+  {rep:'luciagarcia',canal:'MULTICANAL C2C',sen:'EXPERT',tmo:22.27,estilo:50.9,vol:56},
+  {rep:'marcovenicio',canal:'MULTICANAL C2C',sen:'EXPERT',tmo:19.28,estilo:62.8,vol:54},
+  {rep:'mudiniz',canal:'MULTICANAL C2C',sen:'EXPERT',tmo:19.05,estilo:48.6,vol:50},
+  {rep:'pmarinho',canal:'MULTICANAL C2C',sen:'EXPERT',tmo:19.58,estilo:51.0,vol:45},
+  {rep:'raisacsantos',canal:'MULTICANAL C2C',sen:'NEWBIE',tmo:44.70,estilo:44.3,vol:36},
+  {rep:'tsgarbim',canal:'MULTICANAL C2C',sen:'EXPERT',tmo:14.20,estilo:55.8,vol:46},
+  {rep:'vitnasciment',canal:'MULTICANAL C2C',sen:'NEWBIE',tmo:41.62,estilo:31.2,vol:40},
+  {rep:'vltrevizan',canal:'MULTICANAL C2C',sen:'EXPERT',tmo:20.37,estilo:46.7,vol:59},
+  {rep:'wgomdsouza',canal:'MULTICANAL C2C',sen:'NEWBIE',tmo:20.78,estilo:45.3,vol:21},
+  // CHAT
+  {rep:'aaugustinho',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:24.80,estilo:55.6,vol:46},
+  {rep:'acruz',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:22.69,estilo:56.9,vol:30},
+  {rep:'aldmelo',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:22.14,estilo:60.4,vol:56},
+  {rep:'amcaldeira',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:21.05,estilo:53.8,vol:51},
+  {rep:'amcandido',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:37.79,estilo:53.2,vol:47},
+  {rep:'bemarques',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:35.74,estilo:59.8,vol:51},
+  {rep:'blvicente',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:26.50,estilo:44.6,vol:50},
+  {rep:'cafarias',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:24.53,estilo:49.7,vol:58},
+  {rep:'camcsilva',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:27.58,estilo:42.2,vol:50},
+  {rep:'casbarreiros',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:31.26,estilo:54.0,vol:50},
+  {rep:'cccsousa',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:35.08,estilo:43.5,vol:39},
+  {rep:'cchimenez',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:30.65,estilo:52.3,vol:43},
+  {rep:'ccnnasciment',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:33.14,estilo:43.3,vol:16},
+  {rep:'czago',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:27.07,estilo:53.6,vol:7},
+  {rep:'elaoliveira',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:31.91,estilo:61.0,vol:42},
+  {rep:'fenunes',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:29.27,estilo:54.5,vol:41},
+  {rep:'gbmontilha',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:30.23,estilo:55.1,vol:52},
+  {rep:'jamonteiro',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:25.02,estilo:51.3,vol:40},
+  {rep:'juslima',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:25.54,estilo:60.8,vol:46},
+  {rep:'kperrone',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:18.32,estilo:51.3,vol:38},
+  {rep:'kroza',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:29.99,estilo:41.8,vol:23},
+  {rep:'lecandido',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:35.88,estilo:49.5,vol:51},
+  {rep:'leibarcelos',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:25.40,estilo:45.0,vol:10},
+  {rep:'lianadsilva',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:30.34,estilo:52.5,vol:52},
+  {rep:'losouza',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:29.98,estilo:61.1,vol:43},
+  {rep:'lyalves',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:28.60,estilo:63.5,vol:46},
+  {rep:'mandoliveira',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:31.26,estilo:52.6,vol:44},
+  {rep:'marfreitas',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:22.52,estilo:57.2,vol:49},
+  {rep:'mariasilva',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:31.71,estilo:46.5,vol:13},
+  {rep:'marlaraujo',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:31.66,estilo:55.5,vol:50},
+  {rep:'maybalazshaz',canal:'MULTICANAL CHAT',sen:'NEWBIE',tmo:53.44,estilo:49.1,vol:27},
+  {rep:'mfvieira',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:30.98,estilo:45.3,vol:39},
+  {rep:'mrmarques',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:21.18,estilo:55.7,vol:12},
+  {rep:'phegoncalves',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:32.19,estilo:49.7,vol:48},
+  {rep:'polivdaraujo',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:29.53,estilo:53.8,vol:48},
+  {rep:'renataperei',canal:'MULTICANAL CHAT',sen:'NEWBIE',tmo:32.71,estilo:60.2,vol:53},
+  {rep:'stdiniz',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:21.13,estilo:57.9,vol:56},
+  {rep:'uizfsilva',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:32.08,estilo:61.1,vol:43},
+  {rep:'ulissouza',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:30.25,estilo:44.9,vol:43},
+  {rep:'vdpiedade',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:27.32,estilo:58.1,vol:38},
+  {rep:'vfarias',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:30.74,estilo:55.3,vol:39},
+  {rep:'vfonorio',canal:'MULTICANAL CHAT',sen:'EXPERT',tmo:35.05,estilo:53.4,vol:53},
+];
+
 // ---- MÊS ATIVO ----
 let currentMonth = '2026-04';
 
@@ -2509,6 +2772,8 @@ function setMonth(m) {
   populateProdTipoReps(); filterProdTipo();
   filterProdu();
   filterEvolucao();
+  renderExecSummary(m);
+  filterEstilo();
   updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
   document.getElementById('last-updated').textContent = k.partial
     ? `⚡ Dados parciais 01-08/05 · ${new Date().toLocaleDateString('pt-BR')}`
@@ -2589,6 +2854,8 @@ populateQ4Filters(); filterQ4();
 filterMulti();
 filterEvolucao();
 updateAllKpis('2026-04');
+renderExecSummary('2026-04');
+filterEstilo();
 updateNpsKpis('2026-04'); populateCorrelacaoFilters(); filterCorrelacao();
 renderProdTime(); populateProdTipoReps(); filterProdTipo();
 filterProdu();
