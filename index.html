@@ -1045,7 +1045,7 @@ tr:last-child td { border-bottom: none; }
       </div>
       <div class="filter-count" id="fd-count"></div>
     </div>
-    <div style="height:340px"><canvas id="cDispersao"></canvas></div>
+    <div style="height:420px"><canvas id="cDispersao"></canvas></div>
     <div style="margin-top:10px;display:flex;gap:16px;justify-content:center;font-size:12px">
       <span><span style="background:#2dc653;display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px"></span>Q1 — Melhor</span>
       <span><span style="background:#457b9d;display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px"></span>Q2</span>
@@ -1994,169 +1994,177 @@ function computeEvolucaoKPIs(m) {
 // ---- DISPERSÃO Q1→Q4 ----
 let cDispersaoChart = null;
 
-function buildDispersaoData(m) {
-  const qd = getQuartilData();    // reps × canal × quartil × tmo
-  const pd = getProcessoData();   // processo × canal × tmo × meta × vol
-  const q4 = getQ4Data();         // processo × canal × rep × tmo
-
-  // 1. Montar mapa: processo+canal → {q1_reps,q2_reps,q3_reps,q4_reps, tmos_por_quartil}
-  const procMap = {};
-  qd.forEach(r => {
-    // precisamos cruzar rep com seus processos via q4Data
-    // usamos processoData para TMO geral do processo
-  });
-
-  // Agregar q4Data por processo+canal
-  const q4map = {};
-  q4.forEach(r => {
-    const key = r.proc + '|' + r.canal;
-    if (!q4map[key]) q4map[key] = {proc:r.proc, canal:r.canal, reps:[], tmos:[]};
-    q4map[key].reps.push(r.rep);
-    q4map[key].tmos.push(r.tmo);
-  });
-
-  // Juntar com processoData para ter volume total e meta
-  const result = [];
-  pd.forEach(p => {
-    const key = p.proc + '|' + p.canal;
-    const q4info = q4map[key] || {reps:[], tmos:[]};
-    const q4count = q4info.reps.length;
-    const tmoQ4avg = q4info.tmos.length > 0
-      ? q4info.tmos.reduce((a,b)=>a+b,0) / q4info.tmos.length : 0;
-
-    // Contar Q1/Q2/Q3 reps para este processo usando quartilData
-    // (aproximação: reps do quartil 1 têm tmo < 25th percentile do processo)
-    // Simplificado: mostramos Q4 count vs total volume
-    const totalVol = p.vol;
-    const pctQ4 = totalVol > 0 ? (q4count / totalVol * 100) : 0;
-    const devQ4 = tmoQ4avg > 0 ? round2(tmoQ4avg - (p.meta || 27)) : 0;
-
-    result.push({
-      proc: p.proc,
-      canal: p.canal,
-      tmo_geral: p.tmo,
-      tmo_q4: round2(tmoQ4avg),
-      meta: p.meta || 0,
-      vol: totalVol,
-      q4count,
-      pctQ4: round2(pctQ4),
-      devQ4,
-      desvio_geral: p.dev
-    });
-  });
-
-  return result.sort((a,b) => b.q4count - a.q4count);
+function normCanal(c) {
+  if (!c) return '';
+  if (c === 'CHAT' || c === 'MC2C') return 'MULTICANAL ' + (c === 'CHAT' ? 'CHAT' : 'C2C');
+  return c;
 }
 
-function round2(v) { return Math.round(v * 100) / 100; }
+function buildDispersaoData() {
+  const pd = getProcessoData();   // processo × canal × tmo × meta × vol
+  const q4 = getQ4Data();         // processo × canal (abrev) × rep × tmo
+
+  // Mapear q4Data por processo+canal normalizado
+  const q4map = {};
+  q4.forEach(r => {
+    const cNorm = normCanal(r.canal);
+    const key = r.proc + '|' + cNorm;
+    if (!q4map[key]) q4map[key] = {tmos: [], reps: []};
+    q4map[key].tmos.push(r.tmo);
+    q4map[key].reps.push(r.rep);
+  });
+
+  // Montar resultado cruzado com processoData
+  return pd.map(p => {
+    const key = p.proc + '|' + p.canal;
+    const q4info = q4map[key] || {tmos: [], reps: []};
+    const tmoQ4avg = q4info.tmos.length > 0
+      ? q4info.tmos.reduce((a,b)=>a+b,0) / q4info.tmos.length : null;
+    return {
+      proc:     p.proc,
+      canal:    p.canal,
+      tmo:      p.tmo,
+      meta:     p.meta || 0,
+      vol:      p.vol,
+      tmoQ4:    tmoQ4avg ? Math.round(tmoQ4avg * 100) / 100 : null,
+      q4count:  q4info.reps.length,
+      q4reps:   q4info.reps
+    };
+  }).filter(r => r.tmoQ4 !== null).sort((a,b) => b.tmoQ4 - a.tmoQ4);
+}
 
 function renderDispersao() {
   const canal = document.getElementById('fd-canal').value;
   const m = currentMonth;
-  const data = buildDispersaoData(m).filter(r => !canal || r.canal === canal);
+  const mes = m === '2026-04' ? 'Abril 2026' : 'Maio 2026 ⚡';
+  const allData = buildDispersaoData();
+  const data = allData.filter(r => !canal || r.canal === canal);
 
   document.getElementById('fd-count').textContent = data.length + ' processo(s)';
+  document.getElementById('disp-chart-title').innerHTML =
+    `📊 Dispersão TMO por Processo — Q1 → Q4 · ${mes}`;
 
   // KPIs
-  const totalQ4 = data.reduce((s,r) => s + r.q4count, 0);
-  const totalVol = data.reduce((s,r) => s + r.vol, 0);
-  const worstProc = data[0] || {};
-  const chatData = data.filter(r => r.canal.includes('CHAT'));
-  const c2cData  = data.filter(r => r.canal.includes('C2C'));
-  const avgQ4Chat = chatData.length ? round2(chatData.reduce((s,r)=>s+r.tmo_q4,0)/chatData.length) : 0;
-  const avgQ4C2C  = c2cData.length  ? round2(c2cData.reduce((s,r)=>s+r.tmo_q4,0)/c2cData.length)  : 0;
-  const mes = m === '2026-04' ? 'Abril 2026' : 'Maio 2026 ⚡';
-
-  document.getElementById('disp-chart-title').innerHTML =
-    `📊 Dispersão TMO por Processo — Q1 → Q4 · ${mes} <span style="font-size:11px;font-weight:400;color:#6c757d"> · cada ponto = processo×canal · tamanho = volume · cor = nível de desvio</span>`;
+  const worstQ4 = data.reduce((a,b) => (!a || b.tmoQ4 > a.tmoQ4) ? b : a, null);
+  const chatD = data.filter(r => r.canal.includes('CHAT'));
+  const c2cD  = data.filter(r => r.canal.includes('C2C'));
+  const avgQ4Chat = chatD.length ? Math.round(chatD.reduce((s,r)=>s+r.tmoQ4,0)/chatD.length*100)/100 : 0;
+  const avgQ4C2C  = c2cD.length  ? Math.round(c2cD.reduce((s,r)=>s+r.tmoQ4,0)/c2cD.length*100)/100  : 0;
+  const totalQ4   = data.reduce((s,r)=>s+r.q4count,0);
 
   document.getElementById('disp-kpis').innerHTML = `
-    <div class="kpi red"><div class="kpi-lbl">Processo mais ofensor</div>
-      <div class="kpi-val" style="font-size:14px">${worstProc.proc || '—'}</div>
-      <div class="kpi-sub">${worstProc.q4count || 0} reps Q4 · ${worstProc.canal || ''}</div></div>
-    <div class="kpi red"><div class="kpi-lbl">TMO Q4 Médio — CHAT</div>
+    <div class="kpi red">
+      <div class="kpi-lbl">Processo mais ofensor (Q4)</div>
+      <div class="kpi-val" style="font-size:14px">${worstQ4 ? worstQ4.proc : '—'}</div>
+      <div class="kpi-sub">${worstQ4 ? 'TMO Q4: '+worstQ4.tmoQ4+' min · '+worstQ4.canal.replace('MULTICANAL ','') : ''}</div>
+    </div>
+    <div class="kpi red">
+      <div class="kpi-lbl">TMO Q4 Médio — CHAT</div>
       <div class="kpi-val">${avgQ4Chat} min</div>
-      <div class="kpi-sub">média dos processos CHAT em Q4</div></div>
-    <div class="kpi yellow"><div class="kpi-lbl">TMO Q4 Médio — C2C</div>
+      <div class="kpi-sub">média Q4 nos processos CHAT</div>
+    </div>
+    <div class="kpi yellow">
+      <div class="kpi-lbl">TMO Q4 Médio — C2C</div>
       <div class="kpi-val">${avgQ4C2C} min</div>
-      <div class="kpi-sub">média dos processos C2C em Q4</div></div>
-    <div class="kpi gray"><div class="kpi-lbl">Total Reps Q4 × Processo</div>
+      <div class="kpi-sub">média Q4 nos processos C2C</div>
+    </div>
+    <div class="kpi gray">
+      <div class="kpi-lbl">Reps Q4 × Processo</div>
       <div class="kpi-val">${totalQ4}</div>
-      <div class="kpi-sub">ocorrências Q4 em ${data.length} processos</div></div>`;
+      <div class="kpi-sub">ocorrências Q4 em ${data.length} processos</div>
+    </div>`;
 
-  // Gráfico de bolhas
-  const bubbleData = data.map(r => ({
-    x: r.tmo_geral,
-    y: r.tmo_q4 || r.tmo_geral,
-    r: Math.max(4, Math.min(20, r.vol / 200)),
-    proc: r.proc,
-    canal: r.canal,
-    q4: r.q4count,
-    meta: r.meta,
-    vol: r.vol
-  }));
-
-  // Separar por nível de desvio
-  const dsQ4  = bubbleData.filter(d => (d.y - d.meta) > 5);
-  const dsQ3  = bubbleData.filter(d => (d.y - d.meta) > 0 && (d.y - d.meta) <= 5);
-  const dsQ2  = bubbleData.filter(d => (d.y - d.meta) > -5 && (d.y - d.meta) <= 0);
-  const dsQ1  = bubbleData.filter(d => (d.y - d.meta) <= -5);
+  // Gráfico de barras horizontais agrupadas
+  const labels = data.map(r => r.proc.replace('Asig. Mature Publicaciones','Asig.Mature') + ' (' + r.canal.replace('MULTICANAL ','') + ')');
+  const tmoGeral = data.map(r => r.tmo);
+  const tmoQ4    = data.map(r => r.tmoQ4);
+  const metas    = data.map(r => r.meta || 0);
 
   if (cDispersaoChart) { cDispersaoChart.destroy(); }
   cDispersaoChart = new Chart(document.getElementById('cDispersao'), {
-    type: 'bubble',
+    type: 'bar',
     data: {
+      labels,
       datasets: [
-        {label:'Desvio alto (Q4)', data:dsQ4,  backgroundColor:'rgba(230,57,70,0.65)',  borderColor:'#e63946'},
-        {label:'Desvio médio (Q3)',data:dsQ3,  backgroundColor:'rgba(244,162,97,0.65)', borderColor:'#f4a261'},
-        {label:'Dentro da meta',   data:dsQ2,  backgroundColor:'rgba(69,123,157,0.65)', borderColor:'#457b9d'},
-        {label:'Abaixo da meta',   data:dsQ1,  backgroundColor:'rgba(45,198,83,0.65)',  borderColor:'#2dc653'},
+        {
+          label: 'TMO Geral do Processo',
+          data: tmoGeral,
+          backgroundColor: 'rgba(69,123,157,0.5)',
+          borderColor: '#457b9d',
+          borderWidth: 1,
+          borderRadius: 3,
+        },
+        {
+          label: 'TMO Médio Reps Q4',
+          data: tmoQ4,
+          backgroundColor: data.map(r => r.tmoQ4 > (r.meta||0) ? 'rgba(230,57,70,0.75)' : 'rgba(45,198,83,0.75)'),
+          borderColor: data.map(r => r.tmoQ4 > (r.meta||0) ? '#e63946' : '#2dc653'),
+          borderWidth: 1.5,
+          borderRadius: 3,
+        },
+        {
+          label: 'Meta Oficial',
+          data: metas,
+          type: 'line',
+          borderColor: '#f4a261',
+          borderWidth: 2,
+          borderDash: [6,4],
+          pointRadius: 3,
+          pointBackgroundColor: '#f4a261',
+          fill: false,
+          tension: 0,
+        }
       ]
     },
     options: {
-      responsive: true, maintainAspectRatio: false,
+      indexAxis: 'y',
+      responsive: true,
+      maintainAspectRatio: false,
       plugins: {
-        legend: {position:'bottom', labels:{font:{size:11}}},
+        legend: { position: 'bottom', labels: { font: { size: 11 } } },
         tooltip: {
           callbacks: {
-            label: ctx => {
-              const d = ctx.raw;
-              return [`${d.proc} (${d.canal.replace('MULTICANAL ','')})`,'TMO geral: '+d.x.toFixed(2)+' min','TMO Q4: '+d.y.toFixed(2)+' min','Meta: '+d.meta+' min','Volume: '+d.vol,'Reps Q4: '+d.q4];
+            afterBody: ctx => {
+              const i = ctx[0].dataIndex;
+              const r = data[i];
+              return [`Volume: ${r.vol.toLocaleString('pt-BR')}`, `Reps Q4: ${r.q4count}`, `Meta: ${r.meta} min`];
             }
           }
         }
       },
       scales: {
-        x: { title:{display:true,text:'TMO Médio Geral (min)',font:{size:11}}, min:0 },
-        y: { title:{display:true,text:'TMO Médio Q4 (min)',font:{size:11}}, min:0 }
+        x: { beginAtZero: true, title: { display: true, text: 'TMO (min)', font: { size: 11 } }, grid: { color: '#f0f2f5' } },
+        y: { ticks: { font: { size: 10 } } }
       }
     }
   });
 
   // Tabela ranking
   const tb = document.getElementById('tbody-dispersao-rank');
-  const sorted = [...data].sort((a,b) => b.q4count - a.q4count || b.devQ4 - a.devQ4);
+  const sorted = [...data].sort((a,b) => (b.tmoQ4 - b.meta) - (a.tmoQ4 - a.meta));
   tb.innerHTML = sorted.map((r,i) => {
-    if (!r.q4count) return '';
-    const meta = r.meta || 0;
-    const pct = r.vol > 0 ? ((r.q4count / r.vol) * 100).toFixed(1) : '—';
+    const pct = r.vol > 0 ? ((r.q4count / r.vol)*100).toFixed(1) : '—';
+    const dev = r.tmoQ4 - (r.meta || 0);
+    const barW = Math.min(parseFloat(pct)||0, 100);
+    const barCol = barW > 20 ? '#e63946' : barW > 10 ? '#f4a261' : '#2dc653';
     const pctBar = `<div style="display:flex;align-items:center;gap:6px">
       <div style="width:60px;height:6px;background:#f0f2f5;border-radius:3px;overflow:hidden">
-        <div style="width:${Math.min(parseFloat(pct),100)}%;height:100%;background:${parseFloat(pct)>20?'#e63946':parseFloat(pct)>10?'#f4a261':'#2dc653'};border-radius:3px"></div>
+        <div style="width:${barW}%;height:100%;background:${barCol};border-radius:3px"></div>
       </div><strong>${pct}%</strong></div>`;
     return `<tr>
       <td><strong>${i+1}º</strong></td>
       <td>${r.proc}</td>
       <td>${canalBadge(r.canal)}</td>
       <td><strong style="color:#e63946">${r.q4count}</strong></td>
-      <td class="${r.tmo_q4>meta?'pos':''}">${r.tmo_q4>0?r.tmo_q4.toFixed(2)+' min':'—'}</td>
-      <td><span style="background:#e8f4f8;color:#0077b6;padding:2px 6px;border-radius:4px;font-size:11px">${meta>0?meta+' min':'—'}</span></td>
-      <td>${devFmt(r.devQ4)}</td>
+      <td class="${r.tmoQ4>(r.meta||0)?'pos':''}">${r.tmoQ4} min</td>
+      <td><span style="background:#e8f4f8;color:#0077b6;padding:2px 6px;border-radius:4px;font-size:11px">${r.meta>0?r.meta+' min':'—'}</span></td>
+      <td>${devFmt(Math.round(dev*100)/100)}</td>
       <td>${r.vol.toLocaleString('pt-BR')}</td>
       <td>${pctBar}</td>
     </tr>`;
-  }).filter(Boolean).join('');
+  }).join('');
 }
+
 
 // ---- EVOLUÇÃO SEMANAL ----
 function buildEvolucaoData() {
