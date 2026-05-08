@@ -1026,10 +1026,24 @@ tr:last-child td { border-bottom: none; }
 <!-- ===================== PÁGINA 13: DISPERSÃO Q1→Q4 ===================== -->
 <div id="page-dispersao" class="page">
 
+  <!-- Dispersao Q1 vs Q4 -->
+  <div id="disp-gap-section" style="background:white;border-radius:10px;padding:18px 22px;box-shadow:0 1px 6px rgba(0,0,0,.07);margin-bottom:18px"><div style="font-size:13px;font-weight:700;color:#1a1a2e;margin-bottom:14px">📐 Número de Dispersão — Diferença Q1 vs Q4</div><div id="disp-gap-cards" style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px"></div></div>
   <!-- KPIs resumo dispersão -->
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px" id="disp-kpis"></div>
 
-  <!-- Gráfico de bolhas: Processo × TMO Q4 × Volume -->
+  <!-- Gráfico de barras dispersão por canal -->
+  <div class="charts-2" style="margin-bottom:20px">
+    <div class="card">
+      <div class="card-title">📊 Dispersão por Canal — Q1 vs Q2 vs Q3 vs Q4</div>
+      <div style="height:260px"><canvas id="cDispCanalQ"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 Dispersão por Processo — Gap Q4 vs Q1</div>
+      <div style="height:260px"><canvas id="cDispProc"></canvas></div>
+    </div>
+  </div>
+
+  <!-- Gráfico de barras dispersão por canal -->
   <div class="card" style="margin-bottom:20px">
     <div class="card-title" id="disp-chart-title">📊 Dispersão TMO por Processo — Q1 → Q4 · Abril 2026
       <span style="font-size:11px;font-weight:400;color:#6c757d"> · cada bolha = processo×canal · tamanho = volume · cor = quartil dominante</span>
@@ -1992,7 +2006,7 @@ function computeEvolucaoKPIs(m) {
 }
 
 // ---- DISPERSÃO Q1→Q4 ----
-let cDispersaoChart = null;
+let cDispersaoChart = null, cDispCanalQChart = null, cDispProcChart = null;
 
 function normCanal(c) {
   if (!c) return '';
@@ -2039,6 +2053,127 @@ function renderDispersao() {
   const mes = m === '2026-04' ? 'Abril 2026' : 'Maio 2026 ⚡';
   const allData = buildDispersaoData();
   const data = allData.filter(r => !canal || r.canal === canal);
+
+  // ── NÚMERO DE DISPERSÃO Q1 vs Q4 ──────────────────────────────────────────
+  const qd = getQuartilData();
+  const canais = ['MULTICANAL CHAT','MULTICANAL C2C'];
+  const gapCards = canais.map(c => {
+    const q1 = qd.filter(r=>r.q==='Q1' && r.canal===c);
+    const q4 = qd.filter(r=>r.q==='Q4' && r.canal===c);
+    if (!q1.length || !q4.length) return '';
+    const avgQ1 = q1.reduce((s,r)=>s+r.tmo,0)/q1.length;
+    const avgQ4 = q4.reduce((s,r)=>s+r.tmo,0)/q4.length;
+    const gap   = Math.round((avgQ4-avgQ1)*100)/100;
+    const ratio = Math.round(avgQ4/avgQ1*100)/100;
+    const cLabel = c.replace('MULTICANAL ','');
+    const cor = gap > 15 ? '#e63946' : gap > 8 ? '#f4a261' : '#2dc653';
+    return `
+      <div style="background:#f8f9fa;border-radius:8px;padding:14px 16px;border-left:4px solid ${cor}">
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#6c757d;margin-bottom:6px">Dispersão ${cLabel}</div>
+        <div style="display:flex;align-items:baseline;gap:8px">
+          <span style="font-size:28px;font-weight:800;color:${cor}">+${gap} min</span>
+          <span style="font-size:12px;color:#6c757d">Q4 vs Q1</span>
+        </div>
+        <div style="margin-top:6px;font-size:12px;color:#495057">
+          Q1 médio: <strong>${Math.round(avgQ1*100)/100} min</strong> →
+          Q4 médio: <strong style="color:${cor}">${Math.round(avgQ4*100)/100} min</strong>
+          <span style="background:${cor};color:white;padding:1px 6px;border-radius:4px;font-size:10px;font-weight:700;margin-left:6px">×${ratio}x</span>
+        </div>
+        <div style="margin-top:8px;height:4px;background:#e9ecef;border-radius:2px;overflow:hidden">
+          <div style="width:${Math.min(gap/50*100,100)}%;height:100%;background:${cor};border-radius:2px"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:10px;color:#adb5bd;margin-top:2px">
+          <span>${q1.length} reps Q1</span><span>${q4.length} reps Q4</span>
+        </div>
+      </div>`;
+  });
+  // Card geral (todos os canais)
+  const q1all = qd.filter(r=>r.q==='Q1');
+  const q4all = qd.filter(r=>r.q==='Q4');
+  const avgQ1g = q1all.reduce((s,r)=>s+r.tmo,0)/q1all.length;
+  const avgQ4g = q4all.reduce((s,r)=>s+r.tmo,0)/q4all.length;
+  const gapG   = Math.round((avgQ4g-avgQ1g)*100)/100;
+  gapCards.unshift(`
+    <div style="background:#1a1a2e;border-radius:8px;padding:14px 16px;color:white">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;opacity:.7;margin-bottom:6px">Dispersão Geral da Fila</div>
+      <div style="font-size:30px;font-weight:800;color:#f4a261">+${gapG} min</div>
+      <div style="font-size:12px;opacity:.8;margin-top:4px">
+        Q1 médio: ${Math.round(avgQ1g*100)/100} min → Q4: ${Math.round(avgQ4g*100)/100} min
+      </div>
+      <div style="font-size:11px;opacity:.6;margin-top:2px">
+        Q4 gasta <strong style="color:#f4a261">${Math.round(avgQ4g/avgQ1g*100)/100}×</strong> mais tempo que Q1
+      </div>
+    </div>`);
+  document.getElementById('disp-gap-cards').innerHTML = gapCards.join('');
+
+  // ── GRÁFICO: TMO por Quartil por Canal ───────────────────────────────────
+  const canalsList = [...new Set(qd.map(r=>r.canal))];
+  const quartis = ['Q1','Q2','Q3','Q4'];
+  const qColors = {'Q1':'rgba(45,198,83,.75)','Q2':'rgba(69,123,157,.75)','Q3':'rgba(244,162,97,.75)','Q4':'rgba(230,57,70,.75)'};
+  const qBorder = {'Q1':'#2dc653','Q2':'#457b9d','Q3':'#f4a261','Q4':'#e63946'};
+
+  if (cDispCanalQChart) cDispCanalQChart.destroy();
+  cDispCanalQChart = new Chart(document.getElementById('cDispCanalQ'), {
+    type:'bar',
+    data:{
+      labels: canalsList.map(c=>c.replace('MULTICANAL ','')),
+      datasets: quartis.map(q=>({
+        label: q,
+        data: canalsList.map(c => {
+          const reps = qd.filter(r=>r.q===q && r.canal===c);
+          return reps.length ? Math.round(reps.reduce((s,r)=>s+r.tmo,0)/reps.length*100)/100 : 0;
+        }),
+        backgroundColor: qColors[q], borderColor: qBorder[q], borderWidth:1.5, borderRadius:3
+      }))
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},
+      scales:{y:{beginAtZero:true,title:{display:true,text:'TMO médio (min)',font:{size:10}},grid:{color:'#f0f2f5'}}}
+    }
+  });
+
+  // ── GRÁFICO: Gap Q4-Q1 por Processo ──────────────────────────────────────
+  const procDispData = [];
+  const q4data = getQ4Data();
+  const procs = [...new Set(q4data.map(r=>r.proc+' ('+normCanal(r.canal).replace('MULTICANAL ','')+')'))];
+  procs.forEach(label => {
+    const [proc, canaLabel] = label.split(' (');
+    const cFull = 'MULTICANAL ' + canaLabel.replace(')','');
+    const procQ4 = q4data.filter(r=>r.proc===proc && normCanal(r.canal)===cFull);
+    const avgQ4proc = procQ4.length ? procQ4.reduce((s,r)=>s+r.tmo,0)/procQ4.length : 0;
+    // Q1 reps deste canal
+    const q1Reps = qd.filter(r=>r.q==='Q1' && r.canal===cFull);
+    const avgQ1proc = q1Reps.length ? q1Reps.reduce((s,r)=>s+r.tmo,0)/q1Reps.length : 0;
+    if (avgQ4proc > 0 && avgQ1proc > 0) {
+      procDispData.push({label, gap: Math.round((avgQ4proc-avgQ1proc)*100)/100, avgQ4: Math.round(avgQ4proc*100)/100});
+    }
+  });
+  procDispData.sort((a,b)=>b.gap-a.gap);
+  const top12 = procDispData.slice(0,12);
+
+  if (cDispProcChart) cDispProcChart.destroy();
+  cDispProcChart = new Chart(document.getElementById('cDispProc'), {
+    type:'bar',
+    data:{
+      labels: top12.map(r=>r.label),
+      datasets:[{
+        label:'Gap Q4 - Q1 (min)',
+        data: top12.map(r=>r.gap),
+        backgroundColor: top12.map(r=>r.gap>20?'rgba(230,57,70,.8)':r.gap>10?'rgba(244,162,97,.8)':'rgba(69,123,157,.8)'),
+        borderColor: top12.map(r=>r.gap>20?'#e63946':r.gap>10?'#f4a261':'#457b9d'),
+        borderWidth:1.5, borderRadius:3
+      }]
+    },
+    options:{
+      indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{label:ctx=>`Gap: +${ctx.raw} min`}}
+      },
+      scales:{x:{beginAtZero:true,title:{display:true,text:'Gap Q4 - Q1 (min)',font:{size:10}}}}
+    }
+  });
 
   document.getElementById('fd-count').textContent = data.length + ' processo(s)';
   document.getElementById('disp-chart-title').innerHTML =
