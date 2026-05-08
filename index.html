@@ -138,7 +138,7 @@ tr:last-child td { border-bottom: none; }
     <h1>📊 TMO/PRODU - Publicações</h1>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
-    <div class="badge">META: 27 min</div>
+    <div class="badge">META: CHAT ~39 min · C2C ~21 min</div>
     <div id="last-updated" style="font-size:11px;opacity:0.6"></div>
   </div>
 </header>
@@ -197,7 +197,7 @@ tr:last-child td { border-bottom: none; }
       <div class="kpi-sub" id="kpi-volume-sub">Abril 2026</div>
     </div>
     <div class="kpi red">
-      <div class="kpi-lbl">Desvio da Meta (27 min)</div>
+      <div class="kpi-lbl">Desvio da Meta Oficial</div>
       <div class="kpi-val" id="kpi-desvio">+1,78 min</div>
       <div class="kpi-sub" id="kpi-desvio-sub">+6,6% fora do objetivo</div>
     </div>
@@ -214,7 +214,7 @@ tr:last-child td { border-bottom: none; }
 
   <div class="charts-2">
     <div class="card">
-      <div class="card-title">TMO por Canal vs Meta (27 min)</div>
+      <div class="card-title">TMO por Canal vs Meta Oficial por Canal</div>
       <div style="height:220px"><canvas id="cCanal"></canvas></div>
     </div>
     <div class="card">
@@ -322,7 +322,7 @@ tr:last-child td { border-bottom: none; }
     </div>
     <div class="tbl-wrap">
       <table id="tbl-processo">
-        <thead><tr><th>Processo</th><th>Canal</th><th>Volume</th><th>TMO (min)</th><th>Desvio vs Meta</th><th>TMO Mín</th><th>TMO Máx</th></tr></thead>
+        <thead><tr><th>Processo</th><th>Canal</th><th>Volume</th><th>TMO (min)</th><th>Meta Oficial</th><th>Desvio vs Meta</th><th>TMO Mín</th><th>TMO Máx</th></tr></thead>
         <tbody id="tbody-processo"></tbody>
       </table>
     </div>
@@ -684,7 +684,7 @@ tr:last-child td { border-bottom: none; }
 <div id="page-evolucao" class="page">
   <div class="card">
     <div class="card-title">📈 Evolução Semanal de TMO por Representante — Abril 2026
-      <span style="font-size:11px;font-weight:400;color:#6c757d;margin-left:12px">S1=06/04 · S2=13/04 · S3=20/04 · S4=27/04 · Meta: 27 min</span>
+      <span style="font-size:11px;font-weight:400;color:#6c757d;margin-left:12px">S1=06/04 · S2=13/04 · S3=20/04 · S4=27/04 · Meta: CHAT ~39 min · C2C ~21 min</span>
     </div>
     <div class="filters">
       <div class="filter-group">
@@ -843,7 +843,7 @@ tr:last-child td { border-bottom: none; }
     <div class="card-title" id="nps-canal-title">📊 Canal × TMO × NPS — Abril 2026 <span style="font-size:11px;font-weight:400;color:#6c757d">· Fonte: DM_CX_TMO + DM_CX_BILLING_NPS</span></div>
     <div class="tbl-wrap">
       <table>
-        <thead><tr><th>Canal</th><th>TMO Médio</th><th>vs Meta (27 min)</th><th>NPS Real</th><th>Meta NPS</th><th>Status NPS</th><th>Surveys</th><th>Insight</th></tr></thead>
+        <thead><tr><th>Canal</th><th>TMO Médio</th><th>vs Meta Oficial</th><th>NPS Real</th><th>Meta NPS</th><th>Status NPS</th><th>Surveys</th><th>Insight</th></tr></thead>
         <tbody id="tbody-nps-canal"></tbody>
       </table>
     </div>
@@ -1179,36 +1179,33 @@ const quartilData = [
   {q:'Q4',rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',vol:118,tmo:60.02,dev:33.02},
 ];
 
+// processoData com metas oficiais da planilha (team 2474, PRODUCTIVO)
+// Fonte: https://docs.google.com/spreadsheets/d/18wOD7t0OuiNyBvo4gRM2xe5qgu_PbpsdvNClhYYmLmo
 const processoData = [
-  {proc:'PR - Artículos prohibidos',canal:'MULTICANAL C2C',vol:81,tmo:51.69,dev:24.69,min:1.77,max:318.87},
-  {proc:'PR - Datos Personales',canal:'MULTICANAL C2C',vol:20,tmo:51.50,dev:24.50,min:1.90,max:259.30},
-  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL C2C',vol:380,tmo:37.71,dev:10.71,min:1.33,max:358.22},
-  {proc:'PR - Artículos prohibidos',canal:'C2C',vol:3,tmo:35.76,dev:8.76,min:22.60,max:57.37},
-  {proc:'Gestión de Publicación',canal:'MULTICANAL C2C',vol:509,tmo:33.82,dev:6.82,min:0.23,max:354.57},
-  {proc:'Potenciar Ventas',canal:'MULTICANAL C2C',vol:286,tmo:33.15,dev:6.15,min:0.28,max:316.08},
-  {proc:'Asig. Mature Publicaciones',canal:'MULTICANAL CHAT',vol:408,tmo:31.96,dev:4.96,min:0.78,max:168.62},
-  {proc:'PR - Técnica prohibida',canal:'MULTICANAL C2C',vol:184,tmo:31.52,dev:4.52,min:1.15,max:314.02},
-  {proc:'Reputación',canal:'MULTICANAL CHAT',vol:5281,tmo:30.77,dev:3.77,min:0.02,max:193.82},
-  {proc:'Potenciar Ventas',canal:'MULTICANAL CHAT',vol:1719,tmo:30.75,dev:3.75,min:0.03,max:280.47},
-  {proc:'Gestión de Publicación',canal:'MULTICANAL CHAT',vol:3682,tmo:30.68,dev:3.68,min:0.07,max:237.03},
-  {proc:'Antes de publicar',canal:'MULTICANAL CHAT',vol:489,tmo:29.06,dev:2.06,min:1.73,max:124.82},
-  {proc:'Reputación ME',canal:'MULTICANAL CHAT',vol:2514,tmo:28.85,dev:1.85,min:0.05,max:158.97},
-  {proc:'PR - Artículos prohibidos',canal:'MULTICANAL CHAT',vol:514,tmo:28.50,dev:1.50,min:0.57,max:317.65},
-  {proc:'PR - Datos Personales',canal:'MULTICANAL CHAT',vol:64,tmo:28.10,dev:1.10,min:3.27,max:133.03},
-  {proc:'PR - Técnica prohibida',canal:'MULTICANAL CHAT',vol:931,tmo:28.07,dev:1.07,min:0.82,max:328.53},
-  {proc:'Potenciar Ventas',canal:'C2C',vol:11,tmo:27.39,dev:0.39,min:2.05,max:56.47},
-  {proc:'Asig. Mature Publicaciones',canal:'MULTICANAL C2C',vol:43,tmo:27.17,dev:0.17,min:2.82,max:279.87},
-  {proc:'Antes de publicar',canal:'MULTICANAL C2C',vol:64,tmo:26.89,dev:-0.11,min:0.92,max:177.20},
-  {proc:'Reputación ME',canal:'MULTICANAL C2C',vol:759,tmo:26.33,dev:-0.67,min:0.03,max:355.78},
-  {proc:'Calidad de foto',canal:'MULTICANAL CHAT',vol:122,tmo:25.29,dev:-1.71,min:0.18,max:91.30},
-  {proc:'Reputación',canal:'MULTICANAL C2C',vol:1865,tmo:24.62,dev:-2.38,min:0.05,max:356.42},
-  {proc:'Reputación ME',canal:'C2C',vol:16,tmo:23.56,dev:-3.44,min:3.37,max:54.25},
-  {proc:'Calidad de foto',canal:'MULTICANAL C2C',vol:24,tmo:23.51,dev:-3.49,min:1.90,max:101.78},
-  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL CHAT',vol:1419,tmo:23.11,dev:-3.89,min:0.15,max:269.20},
-  {proc:'Reputación',canal:'C2C',vol:52,tmo:21.40,dev:-5.60,min:2.80,max:52.82},
-  {proc:'PR - Técnica prohibida',canal:'C2C',vol:11,tmo:19.95,dev:-7.05,min:2.30,max:49.33},
-  {proc:'PR - Propiedad intelectual',canal:'C2C',vol:24,tmo:17.89,dev:-9.11,min:2.67,max:55.18},
-  {proc:'Gestión de Publicación',canal:'C2C',vol:20,tmo:17.26,dev:-9.74,min:1.93,max:58.35},
+  // MULTICANAL C2C — acima da meta (meta menor que TMO)
+  {proc:'PR - Artículos prohibidos',canal:'MULTICANAL C2C',vol:81,tmo:51.69,meta:22.18,dev:29.51,min:1.77,max:318.87},
+  {proc:'PR - Datos Personales',canal:'MULTICANAL C2C',vol:20,tmo:51.50,meta:16.67,dev:34.83,min:1.90,max:259.30},
+  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL C2C',vol:380,tmo:37.71,meta:24.03,dev:13.68,min:1.33,max:358.22},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL C2C',vol:509,tmo:33.82,meta:20.63,dev:13.19,min:0.23,max:354.57},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL C2C',vol:286,tmo:33.15,meta:22.38,dev:10.77,min:0.28,max:316.08},
+  {proc:'PR - Técnica prohibida',canal:'MULTICANAL C2C',vol:184,tmo:31.52,meta:22.65,dev:8.87,min:1.15,max:314.02},
+  {proc:'Reputación ME',canal:'MULTICANAL C2C',vol:759,tmo:26.33,meta:22.73,dev:3.60,min:0.03,max:355.78},
+  {proc:'Asig. Mature Publicaciones',canal:'MULTICANAL C2C',vol:43,tmo:27.17,meta:4.82,dev:22.35,min:2.82,max:279.87},
+  {proc:'Antes de publicar',canal:'MULTICANAL C2C',vol:64,tmo:26.89,meta:19.72,dev:7.17,min:0.92,max:177.20},
+  {proc:'Reputación',canal:'MULTICANAL C2C',vol:1865,tmo:24.62,meta:20.08,dev:4.54,min:0.05,max:356.42},
+  {proc:'Calidad de foto',canal:'MULTICANAL C2C',vol:24,tmo:23.51,meta:15.48,dev:8.03,min:1.90,max:101.78},
+  // MULTICANAL CHAT — abaixo da meta (meta maior que TMO)
+  {proc:'Reputación',canal:'MULTICANAL CHAT',vol:5281,tmo:30.77,meta:38.17,dev:-7.40,min:0.02,max:193.82},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL CHAT',vol:3682,tmo:30.68,meta:40.92,dev:-10.24,min:0.07,max:237.03},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',vol:2514,tmo:28.85,meta:38.47,dev:-9.62,min:0.05,max:158.97},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL CHAT',vol:1719,tmo:30.75,meta:41.58,dev:-10.83,min:0.03,max:280.47},
+  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL CHAT',vol:1419,tmo:23.11,meta:41.73,dev:-18.62,min:0.15,max:269.20},
+  {proc:'PR - Técnica prohibida',canal:'MULTICANAL CHAT',vol:931,tmo:28.07,meta:39.07,dev:-11.00,min:0.82,max:328.53},
+  {proc:'PR - Artículos prohibidos',canal:'MULTICANAL CHAT',vol:514,tmo:28.50,meta:45.73,dev:-17.23,min:0.57,max:317.65},
+  {proc:'Asig. Mature Publicaciones',canal:'MULTICANAL CHAT',vol:408,tmo:31.96,meta:31.70,dev:0.26,min:0.78,max:168.62},
+  {proc:'Antes de publicar',canal:'MULTICANAL CHAT',vol:489,tmo:29.06,meta:39.82,dev:-10.76,min:1.73,max:124.82},
+  {proc:'PR - Datos Personales',canal:'MULTICANAL CHAT',vol:64,tmo:28.10,meta:41.95,dev:-13.85,min:3.27,max:133.03},
+  {proc:'Calidad de foto',canal:'MULTICANAL CHAT',vol:122,tmo:25.29,meta:33.22,dev:-7.93,min:0.18,max:91.30},
 ];
 
 const q4Data = [
@@ -1363,14 +1360,19 @@ function filterProcesso() {
   );
   const tb = document.getElementById('tbody-processo');
   document.getElementById('fp-count').textContent = `${rows.length} processo(s)`;
-  if (!rows.length) { tb.innerHTML = emptyRow(7); return; }
-  tb.innerHTML = rows.map(r=>`<tr>
+  if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
+  tb.innerHTML = rows.map(r=>{
+    const meta = r.meta || null;
+    const metaTxt = meta ? `<span style="background:#e8f4f8;color:#0077b6;padding:2px 6px;border-radius:4px;font-size:11px;font-weight:700">${meta.toFixed(2)}</span>` : '<span style="color:#adb5bd">—</span>';
+    const devReal = meta ? r.tmo - meta : r.dev;
+    return `<tr>
     <td>${r.proc}</td><td>${canalBadge(r.canal)}</td>
     <td>${r.vol.toLocaleString('pt-BR')}</td>
     <td><strong>${r.tmo.toFixed(2)}</strong></td>
-    <td>${devFmt(r.dev)}</td>
+    <td>${metaTxt}</td>
+    <td>${devFmt(devReal)}</td>
     <td>${r.min.toFixed(2)}</td><td>${r.max.toFixed(2)}</td>
-  </tr>`).join('');
+  </tr>`;}).join('');
 }
 
 // ---- Q4 TABLE ----
@@ -1420,8 +1422,10 @@ function showPage(id, el) {
 
 // ---- DADOS MAIO 2026 ----
 // Valores validados contra pipeline HALO (CONSOLIDADO_KPI_LDAP)
+// Meta oficial ponderada por volume: CHAT ~39.58 min, C2C ~21.31 min → global ~35.6 min
+const META_CHAT = 39.58, META_C2C = 21.31, META_GLOBAL = 35.6;
 const KPIS = {
-  '2026-04': {tmo:28.78, tmoCaso:null, volume:21525, reps:60, desvio:1.78, pct:6.6, label:'Abril 2026', partial:false},
+  '2026-04': {tmo:28.78, tmoCaso:null, volume:21525, reps:60, desvio:-6.82, pct:19.1, label:'Abril 2026', partial:false},
   '2026-05': {tmo:27.34, tmoCaso:null, volume:3598,  reps:51, desvio:0.34, pct:1.3, label:'Maio 2026', partial:true}
 };
 const CANAL_DATA = {
@@ -2879,9 +2883,9 @@ function setMonth(m) {
   cLiderChart.data.labels = ld.map(r=>r.l);
   cLiderChart.data.datasets[0].data = ld.map(r=>r.t);
   cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>27?'#e63946':'#2dc653');
-  cLiderChart.data.datasets[1].data = Array(ld.length).fill(27);
+  cLiderChart.data.datasets[1].data = ld.map(r=>r.l.includes('C2C')?21.31:39.58);
   cCanalChart.data.labels = CANAL_DATA[m].map(r=>r.c);
-  cCanalChart.data.datasets[1].data = Array(CANAL_DATA[m].length).fill(27);
+  cCanalChart.data.datasets[1].data = m==='2026-04' ? [39.58,21.31] : [39.58,21.31];
   cLiderChart.update();
   cCanalChart.update();
   // atualiza todas as abas
@@ -2915,7 +2919,7 @@ cCanalChart = new Chart(document.getElementById('cCanal'),{
     labels:['MULTICANAL CHAT','MULTICANAL C2C'],
     datasets:[
       {label:'TMO (min)',data:[29.24,26.98],backgroundColor:['#457b9d','#e76f51'],borderRadius:6},
-      {label:'Meta 27 min',data:[27,27],type:'line',borderColor:'#e63946',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+      {label:'Meta Oficial',data:[39.58,21.31],type:'line',borderColor:'#e63946',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
     ]
   },
   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:35,grid:{color:'#f0f0f0'}}}}
