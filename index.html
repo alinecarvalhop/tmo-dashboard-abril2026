@@ -970,6 +970,52 @@ tr:last-child td { border-bottom: none; }
       💡 <strong>Padrão identificado:</strong> Reps NEWBIE têm Estilo médio de <strong>40,5%</strong> vs <strong>52,9%</strong> dos EXPERT — e TMO médio 43 min vs 28 min. A correlação sugere que <strong>menor adesão ao Estilo Meli está associada a maior TMO</strong>, especialmente em C2C (vitnasciment: Estilo 31%, TMO 41 min).
     </div>
   </div>
+
+  <!-- CASOS: TMO alto + Estilo baixo -->
+  <div class="card" style="margin-top:20px">
+    <div class="card-title">🔍 Casos de Exemplo — TMO Alto com Baixa Adesão ao Estilo Meli (Estilo &lt; 45%) · Abril 2026</div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Representante</label>
+        <select id="fest2-rep" onchange="filterEstiloCasos()">
+          <option value="">Todos</option>
+          <option>adysantos</option>
+          <option>albarbosa</option>
+          <option>amarquini</option>
+          <option>camcsilva</option>
+          <option>cccsousa</option>
+          <option>ccnnasciment</option>
+          <option>gabrielaaiol</option>
+          <option>giselesosant</option>
+          <option>kavalle</option>
+          <option>kroza</option>
+          <option>ulissouza</option>
+          <option>vitnasciment</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fest2-canal" onchange="filterEstiloCasos()">
+          <option value="">Todos</option>
+          <option>MULTICANAL C2C</option>
+          <option>MULTICANAL CHAT</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Processo</label>
+        <select id="fest2-proc" onchange="filterEstiloCasos()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-count" id="fest2-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-estilo-casos">
+        <thead><tr><th>Caso</th><th>Data</th><th>Rep</th><th>Estilo %</th><th>Canal</th><th>Processo</th><th>TMO</th></tr></thead>
+        <tbody id="tbody-estilo-casos"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <!-- ===================== PÁGINA 5: DIAGNÓSTICO ===================== -->
@@ -1545,7 +1591,80 @@ function renderExecSummary(m) {
     </div>`).join('');
 }
 
+// ---- DADOS: CASOS ESTILO BAIXO × TMO ALTO ----
+const estiloCasosData = [
+  {caso:'453611691',data:'30/04',rep:'gabrielaaiol',canal:'MULTICANAL C2C',proc:'PR - Propiedad intelectual',tmo:358.22},
+  {caso:'453189249',data:'28/04',rep:'amarquini',canal:'MULTICANAL C2C',proc:'PR - Propiedad intelectual',tmo:357.25},
+  {caso:'448780580',data:'13/04',rep:'gabrielaaiol',canal:'MULTICANAL C2C',proc:'Reputación',tmo:356.42},
+  {caso:'452253897',data:'23/04',rep:'albarbosa',canal:'MULTICANAL C2C',proc:'Reputación ME',tmo:355.78},
+  {caso:'452452052',data:'24/04',rep:'gabrielaaiol',canal:'MULTICANAL C2C',proc:'Gestión de Publicación',tmo:354.57},
+  {caso:'453147952',data:'28/04',rep:'vitnasciment',canal:'MULTICANAL C2C',proc:'Reputación',tmo:350.45},
+  {caso:'453404973',data:'29/04',rep:'kavalle',canal:'MULTICANAL C2C',proc:'Gestión de Publicación',tmo:348.73},
+  {caso:'452190697',data:'23/04',rep:'gabrielaaiol',canal:'MULTICANAL C2C',proc:'Reputación',tmo:328.80},
+  {caso:'452038829',data:'23/04',rep:'vitnasciment',canal:'MULTICANAL C2C',proc:'Reputación',tmo:326.42},
+  {caso:'453148989',data:'28/04',rep:'gabrielaaiol',canal:'MULTICANAL C2C',proc:'Gestión de Publicación',tmo:324.02},
+  {caso:'451079140',data:'17/04',rep:'gabrielaaiol',canal:'MULTICANAL C2C',proc:'PR - Propiedad intelectual',tmo:321.57},
+  {caso:'453369519',data:'29/04',rep:'vitnasciment',canal:'MULTICANAL C2C',proc:'Reputación',tmo:320.60},
+  {caso:'450700211',data:'20/04',rep:'kavalle',canal:'MULTICANAL C2C',proc:'PR - Propiedad intelectual',tmo:319.50},
+  {caso:'451840074',data:'23/04',rep:'adysantos',canal:'MULTICANAL C2C',proc:'PR - Artículos prohibidos',tmo:318.87},
+  {caso:'453146552',data:'28/04',rep:'kavalle',canal:'MULTICANAL C2C',proc:'Reputación',tmo:317.75},
+  {caso:'446768285',data:'16/04',rep:'kavalle',canal:'MULTICANAL C2C',proc:'Reputación ME',tmo:316.87},
+  {caso:'428100239',data:'30/04',rep:'kavalle',canal:'MULTICANAL C2C',proc:'PR - Técnica prohibida',tmo:314.02},
+  {caso:'452895066',data:'27/04',rep:'kavalle',canal:'MULTICANAL C2C',proc:'Potenciar Ventas',tmo:309.72},
+  {caso:'450231422',data:'14/04',rep:'vitnasciment',canal:'MULTICANAL C2C',proc:'Reputación',tmo:308.95},
+  {caso:'451121045',data:'17/04',rep:'giselesosant',canal:'MULTICANAL C2C',proc:'PR - Propiedad intelectual',tmo:257.35},
+  {caso:'452950374',data:'27/04',rep:'adysantos',canal:'MULTICANAL C2C',proc:'Reputación',tmo:257.77},
+  {caso:'450289509',data:'14/04',rep:'giselesosant',canal:'MULTICANAL C2C',proc:'PR - Técnica prohibida',tmo:236.95},
+  {caso:'451840074',data:'23/04',rep:'adysantos',canal:'MULTICANAL C2C',proc:'PR - Artículos prohibidos',tmo:216.08},
+  {caso:'452303533',data:'24/04',rep:'giselesosant',canal:'MULTICANAL C2C',proc:'Gestión de Publicación',tmo:203.68},
+  {caso:'450828242',data:'17/04',rep:'albarbosa',canal:'MULTICANAL C2C',proc:'Gestión de Publicación',tmo:227.72},
+  {caso:'451997834',data:'22/04',rep:'albarbosa',canal:'MULTICANAL C2C',proc:'Reputación',tmo:276.92},
+  {caso:'451956804',data:'22/04',rep:'amarquini',canal:'MULTICANAL C2C',proc:'Reputación',tmo:217.52},
+  {caso:'450022899',data:'13/04',rep:'amarquini',canal:'MULTICANAL C2C',proc:'Reputación ME',tmo:248.75},
+  {caso:'450348332',data:'14/04',rep:'amarquini',canal:'MULTICANAL C2C',proc:'PR - Propiedad intelectual',tmo:277.65},
+  // CHAT reps com Estilo baixo
+  {caso:'453146890',data:'28/04',rep:'kroza',canal:'MULTICANAL CHAT',proc:'PR - Técnica prohibida',tmo:81.20},
+  {caso:'450105527',data:'13/04',rep:'cccsousa',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',tmo:72.07},
+  {caso:'452227842',data:'23/04',rep:'camcsilva',canal:'MULTICANAL CHAT',proc:'Reputación ME',tmo:56.40},
+  {caso:'451624064',data:'20/04',rep:'ulissouza',canal:'MULTICANAL CHAT',proc:'Potenciar Ventas',tmo:55.18},
+  {caso:'451103170',data:'17/04',rep:'ccnnasciment',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',tmo:48.95},
+];
+
 // ---- TMO × ESTILO MELI ----
+function populateEstiloCasosProc() {
+  const procs = [...new Set(estiloCasosData.map(r=>r.proc))].sort();
+  const sel = document.getElementById('fest2-proc');
+  procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sel.appendChild(o); });
+}
+
+function filterEstiloCasos() {
+  const r = document.getElementById('fest2-rep').value;
+  const c = document.getElementById('fest2-canal').value;
+  const p = document.getElementById('fest2-proc').value;
+  const rows = estiloCasosData.filter(x =>
+    (!r || x.rep===r) && (!c || x.canal===c) && (!p || x.proc===p)
+  ).sort((a,b)=>b.tmo-a.tmo);
+  const tb = document.getElementById('tbody-estilo-casos');
+  document.getElementById('fest2-count').textContent = `${rows.length} caso(s)`;
+  if (!rows.length) { tb.innerHTML = emptyRow(7); return; }
+  // Mapear estilo % por rep
+  const estiloMap = {};
+  estiloData.forEach(e=>{ estiloMap[e.rep] = e.estilo; });
+  tb.innerHTML = rows.map(x => {
+    const est = estiloMap[x.rep] || 0;
+    const estCor = est<40?'#e63946':est<45?'#f4a261':'#856404';
+    return `<tr>
+      <td><code style="font-size:11px">${x.caso}</code></td>
+      <td>${x.data}/2026</td>
+      <td><strong>${x.rep}</strong> ${senBadge(x.rep)}</td>
+      <td><span style="background:#f8d7da;color:${estCor};padding:2px 8px;border-radius:4px;font-weight:700;font-size:12px">${est.toFixed(1)}%</span></td>
+      <td>${canalBadge(x.canal)}</td>
+      <td style="font-size:12px">${x.proc}</td>
+      <td class="pos"><strong>${x.tmo.toFixed(2)} min</strong></td>
+    </tr>`;
+  }).join('');
+}
+
 function filterEstilo() {
   const c = document.getElementById('fest-canal').value;
   const s = document.getElementById('fest-sen').value;
@@ -2860,6 +2979,7 @@ filterEvolucao();
 updateAllKpis('2026-04');
 renderExecSummary('2026-04');
 filterEstilo();
+populateEstiloCasosProc(); filterEstiloCasos();
 updateNpsKpis('2026-04'); populateCorrelacaoFilters(); filterCorrelacao();
 renderProdTime(); populateProdTipoReps(); filterProdTipo();
 filterProdu();
