@@ -2753,7 +2753,6 @@ function setMonth(m) {
   document.getElementById('kpi-desvio').textContent = (k.desvio>0?'+':'')+k.desvio.toFixed(2)+' min';
   document.getElementById('kpi-desvio-sub').textContent = (k.desvio>0?'+':'')+k.pct+'% '+(k.partial?'(parcial)':'fora do objetivo');
   // canal chart
-  const cd = CANAL_DATA[m];
   cCanalChart.data.datasets[0].data = cd.map(r=>r.t);
   cCanalChart.update();
   // líder chart
