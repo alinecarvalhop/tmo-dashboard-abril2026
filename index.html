@@ -1084,6 +1084,48 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+
+  <!-- Soluções Ofensoras dos Reps Q4 -->
+  <div class="card" style="margin-top:20px">
+    <div class="card-title">🔴 Soluções Ofensoras — Processos que mais aparecem nos Reps Q4
+      <span style="font-size:11px;font-weight:400;color:#6c757d"> · soluções ordenadas por TMO médio Q4 · filtráveis por canal e rep</span>
+    </div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fd-sol-canal" onchange="renderSolucoesQ4()">
+          <option value="">Todos</option>
+          <option>MULTICANAL CHAT</option>
+          <option>MULTICANAL C2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Rep Q4</label>
+        <select id="fd-sol-rep" onchange="renderSolucoesQ4()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Processo</label>
+        <select id="fd-sol-proc" onchange="renderSolucoesQ4()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-count" id="fd-sol-count"></div>
+    </div>
+    <div class="tbl-wrap">
+      <table id="tbl-sol-q4">
+        <thead>
+          <tr>
+            <th>#</th><th>Processo (Solução)</th><th>Canal</th>
+            <th>Rep</th><th>Seniority</th><th>Líder</th>
+            <th>TMO Q4</th><th>Meta</th><th>Desvio</th><th>Severidade</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-sol-q4"></tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
 <!-- ===================== PÁGINA 5: DIAGNÓSTICO ===================== -->
@@ -2301,6 +2343,70 @@ function renderDispersao() {
 }
 
 
+// ---- SOLUÇÕES OFENSORAS Q4 ----
+function populateSolucoesFilters() {
+  const q4 = getQ4Data();
+  const reps  = [...new Set(q4.map(r=>r.rep))].sort();
+  const procs = [...new Set(q4.map(r=>r.proc))].sort();
+  const sr = document.getElementById('fd-sol-rep');
+  const sp = document.getElementById('fd-sol-proc');
+  if (!sr || !sp) return;
+  sr.innerHTML = '<option value="">Todos</option>';
+  sp.innerHTML = '<option value="">Todos</option>';
+  reps.forEach(r=>{const o=document.createElement('option');o.value=r;o.textContent=r;sr.appendChild(o);});
+  procs.forEach(p=>{const o=document.createElement('option');o.value=p;o.textContent=p;sp.appendChild(o);});
+}
+
+function renderSolucoesQ4() {
+  const c = document.getElementById('fd-sol-canal').value;
+  const r = document.getElementById('fd-sol-rep').value;
+  const p = document.getElementById('fd-sol-proc').value;
+  const q4 = getQ4Data();
+
+  // Enriquecer com meta da processoData
+  const pdMap = {};
+  getProcessoData().forEach(pd => { pdMap[pd.proc+'|'+pd.canal] = pd.meta || 0; });
+
+  let rows = q4.filter(x => {
+    const cNorm = normCanal(x.canal);
+    if (c && cNorm !== c) return false;
+    if (r && x.rep !== r) return false;
+    if (p && x.proc !== p) return false;
+    return true;
+  }).map(x => {
+    const cNorm = normCanal(x.canal);
+    const meta = pdMap[x.proc+'|'+cNorm] || 0;
+    const dev = meta > 0 ? Math.round((x.tmo - meta)*100)/100 : null;
+    return {...x, cNorm, meta, dev};
+  }).sort((a,b) => b.tmo - a.tmo);
+
+  const tb = document.getElementById('tbody-sol-q4');
+  document.getElementById('fd-sol-count').textContent = rows.length + ' ocorrência(s)';
+  if (!rows.length) { tb.innerHTML = emptyRow(10); return; }
+
+  tb.innerHTML = rows.map((x,i) => {
+    const dev = x.dev;
+    const sev = dev === null ? '—' :
+      dev > 30 ? '<span style="background:#f8d7da;color:#721c24;padding:2px 8px;border-radius:4px;font-weight:700;font-size:11px">🔴 CRÍTICO</span>' :
+      dev > 15 ? '<span style="background:#fff3cd;color:#856404;padding:2px 8px;border-radius:4px;font-weight:700;font-size:11px">🟠 ALTO</span>' :
+      dev > 5  ? '<span style="background:#ffeaa7;color:#856404;padding:2px 8px;border-radius:4px;font-weight:700;font-size:11px">🟡 MÉDIO</span>' :
+                 '<span style="background:#d4edda;color:#155724;padding:2px 8px;border-radius:4px;font-weight:700;font-size:11px">🟢 OK</span>';
+    const metaTxt = x.meta > 0 ? `<span style="background:#e8f4f8;color:#0077b6;padding:2px 6px;border-radius:4px;font-size:11px">${x.meta} min</span>` : '—';
+    return `<tr>
+      <td><strong>${i+1}</strong></td>
+      <td><strong>${x.proc}</strong></td>
+      <td>${canalBadge(x.cNorm)}</td>
+      <td><strong>${x.rep}</strong></td>
+      <td>${senBadge(x.rep)}</td>
+      <td>${x.lider || '—'}</td>
+      <td class="pos"><strong>${x.tmo.toFixed(2)} min</strong></td>
+      <td>${metaTxt}</td>
+      <td>${dev !== null ? devFmt(dev) : '—'}</td>
+      <td>${sev}</td>
+    </tr>`;
+  }).join('');
+}
+
 // ---- EVOLUÇÃO SEMANAL ----
 function buildEvolucaoData() {
   const map = {};
@@ -3428,6 +3534,7 @@ function setMonth(m) {
   filterEvolucao();
   computeEvolucaoKPIs(m);
   renderDispersao();
+  populateSolucoesFilters(); renderSolucoesQ4();
   renderExecSummary(m);
   filterEstilo();
   updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
@@ -3509,6 +3616,7 @@ filterMulti();
 filterEvolucao();
 computeEvolucaoKPIs('2026-04');
 renderDispersao();
+populateSolucoesFilters(); renderSolucoesQ4();
 updateAllKpis('2026-04');
 renderExecSummary('2026-04');
 filterEstilo();
