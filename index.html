@@ -146,6 +146,13 @@ tr:last-child td { border-bottom: none; }
 
 <div class="body-wrap">
 <nav class="nav">
+  <div class="nav-mes" style="border-top:none;border-bottom:1px solid #e9ecef;margin-bottom:4px">
+    <span>Mês</span>
+    <select id="mes-selector" onchange="setMonth(this.value)">
+      <option value="2026-04">Abril 2026</option>
+      <option value="2026-05">Maio 2026 ⚡</option>
+    </select>
+  </div>
   <div class="nav-section">Visão</div>
   <div class="nav-tab active" onclick="showPage('resumo',this)">📈 Visão Geral</div>
   <div class="nav-section">TMO</div>
@@ -161,13 +168,6 @@ tr:last-child td { border-bottom: none; }
   <div class="nav-tab" onclick="showPage('produ',this)">🏆 Produtividade</div>
   <div class="nav-section">Análise</div>
   <div class="nav-tab" onclick="showPage('diagnostico',this)">🔍 Diagnóstico</div>
-  <div class="nav-mes">
-    <span>Mês</span>
-    <select id="mes-selector" onchange="setMonth(this.value)">
-      <option value="2026-04">Abril 2026</option>
-      <option value="2026-05">Maio 2026 ⚡</option>
-    </select>
-  </div>
 </nav>
 <div class="pages-wrap">
 
@@ -176,28 +176,28 @@ tr:last-child td { border-bottom: none; }
   <div class="kpi-row">
     <div class="kpi red">
       <div class="kpi-lbl">TMO Médio (Assign)</div>
-      <div class="kpi-val">29,34</div>
-      <div class="kpi-sub" style="color:#e63946;font-weight:700">+8,7% vs meta</div>
+      <div class="kpi-val" id="kpi-tmo">29,34</div>
+      <div class="kpi-sub" id="kpi-tmo-sub" style="color:#e63946;font-weight:700">+8,7% vs meta</div>
     </div>
     <div class="kpi red">
       <div class="kpi-lbl">TMO por Caso</div>
-      <div class="kpi-val">38,35</div>
+      <div class="kpi-val" id="kpi-tmocaso">38,35</div>
       <div class="kpi-sub">múltiplos assigns/caso</div>
     </div>
     <div class="kpi gray">
       <div class="kpi-lbl">Volume Total</div>
-      <div class="kpi-val">16.455</div>
-      <div class="kpi-sub">contatos em Abril</div>
+      <div class="kpi-val" id="kpi-volume">16.455</div>
+      <div class="kpi-sub" id="kpi-volume-sub">contatos em Abril</div>
     </div>
     <div class="kpi gray">
       <div class="kpi-lbl">Reps Ativos</div>
-      <div class="kpi-val">61</div>
+      <div class="kpi-val" id="kpi-reps">61</div>
       <div class="kpi-sub">30 acima da meta</div>
     </div>
     <div class="kpi yellow">
       <div class="kpi-lbl">Desvio da Meta</div>
-      <div class="kpi-val">+2,34 min</div>
-      <div class="kpi-sub">+8,7% fora do objetivo</div>
+      <div class="kpi-val" id="kpi-desvio">+2,34 min</div>
+      <div class="kpi-sub" id="kpi-desvio-sub">+8,7% fora do objetivo</div>
     </div>
   </div>
 
@@ -2186,15 +2186,14 @@ function setMonth(m) {
   document.getElementById('mes-selector').value = m;
   // KPIs
   const k = KPIS[m];
-  const kpiVals = document.querySelectorAll('.kpi-val');
-  const kpiSubs = document.querySelectorAll('.kpi-sub');
-  kpiVals[0].textContent = k.tmo.toFixed(2);
-  kpiSubs[0].innerHTML = `<strong style="color:#e63946">${k.desvio>0?'+':''}${k.pct}% vs meta</strong>`;
-  kpiVals[1].textContent = k.tmoCaso ? k.tmoCaso.toFixed(2) : 'parcial';
-  kpiVals[2].textContent = k.volume.toLocaleString('pt-BR');
-  kpiVals[3].textContent = k.reps;
-  kpiVals[4].textContent = `${k.desvio>0?'+':''}${k.desvio.toFixed(2)} min`;
-  kpiSubs[4].textContent = `${k.desvio>0?'+':''}${k.pct}% ${k.partial?'(parcial)':'fora do objetivo'}`;
+  document.getElementById('kpi-tmo').textContent = k.tmo.toFixed(2);
+  document.getElementById('kpi-tmo-sub').innerHTML = '<strong style="color:#e63946">'+(k.desvio>0?'+':'')+k.pct+'% vs meta</strong>';
+  document.getElementById('kpi-tmocaso').textContent = k.tmoCaso ? k.tmoCaso.toFixed(2) : 'parcial';
+  document.getElementById('kpi-volume').textContent = k.volume.toLocaleString('pt-BR');
+  document.getElementById('kpi-volume-sub').textContent = 'contatos em '+k.label;
+  document.getElementById('kpi-reps').textContent = k.reps;
+  document.getElementById('kpi-desvio').textContent = (k.desvio>0?'+':'')+k.desvio.toFixed(2)+' min';
+  document.getElementById('kpi-desvio-sub').textContent = (k.desvio>0?'+':'')+k.pct+'% '+(k.partial?'(parcial)':'fora do objetivo');
   // canal chart
   const cd = CANAL_DATA[m];
   cCanalChart.data.datasets[0].data = cd.map(r=>r.t);
