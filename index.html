@@ -2428,7 +2428,7 @@ function renderSolucoesQ4() {
       <td>${canalBadge(x.canal)}</td>
       <td><strong>${x.rep}</strong></td>
       <td>${senBadge(x.rep)}</td>
-      <td>${x.lider || lider_of(x.rep)}</td>
+      <td>${getLiderJS(x.rep)}</td>
       <td class="pos"><strong>${x.tmo.toFixed(2)} min</strong></td>
       <td>${metaTxt}</td>
       <td>${dev !== null ? devFmt(dev) : '—'}</td>
@@ -3442,6 +3442,17 @@ const SENIORITY_MAP = {
   raisacsantos:'NEWBIE', renataperei:'NEWBIE', vitnasciment:'NEWBIE', wgomdsouza:'NEWBIE',
   // todos os demais são EXPERT
 };
+function getLiderJS(rep) {
+  const bk="aldmelo,gbmontilha,blvicente,camcsilva,polivdaraujo,vdpiedade,fenunes,kroza,lecandido,czago,leibarcelos,maybalazshaz".split(",");
+  const ac="stdiniz,cafarias,aaugustinho,lyalves,losouza,lianadsilva,phegoncalves,uizfsilva,marlaraujo,vfarias".split(",");
+  const th="amcaldeira,kperrone,jamonteiro,marfreitas,cchimenez,ulissouza,casbarreiros,bemarques,acruz".split(",");
+  const is="mrmarques,vfonorio,amcandido,mandoliveira,renataperei,mfvieira,elaoliveira,mariasilva,ccnnasciment,cccsousa".split(",");
+  if(bk.includes(rep)) return "bkaroline";
+  if(ac.includes(rep)) return "alicarvalho";
+  if(th.includes(rep)) return "thaidossanto";
+  if(is.includes(rep)) return "isabmot";
+  return "lrossetto";
+}
 function getSeniority(rep) { return SENIORITY_MAP[rep] || 'EXPERT'; }
 function senBadge(rep) {
   const s = getSeniority(rep);
