@@ -260,11 +260,6 @@ tr:last-child td { border-bottom: none; }
         <label>Líder</label>
         <select id="fq-lider" onchange="filterQuartil()">
           <option value="">Todos</option>
-          <option>thaidossanto</option>
-          <option>alicarvalho</option>
-          <option>bkaroline</option>
-          <option>isabmot</option>
-          <option>lrossetto</option>
         </select>
       </div>
       <div class="filter-group">
@@ -1435,6 +1430,16 @@ function devFmt(d) { return d>=0 ? `<span class="pos">+${d.toFixed(2)}</span>` :
 function emptyRow(cols) { return `<tr class="empty-row"><td colspan="${cols}">Nenhum resultado para os filtros selecionados.</td></tr>`; }
 
 // ---- QUARTIL TABLE ----
+function populateQuartilFilters() {
+  const data = getQuartilData();
+  const lideres = [...new Set(data.map(r=>r.lider).filter(l=>l&&l!=='—'))].sort();
+  const sel = document.getElementById('fq-lider');
+  const prev = sel.value;
+  sel.innerHTML = '<option value="">Todos</option>';
+  lideres.forEach(l => { const o=document.createElement('option'); o.value=l; o.textContent=l; sel.appendChild(o); });
+  if (lideres.includes(prev)) sel.value = prev;
+}
+
 function filterQuartil() {
   const c = document.getElementById('fq-canal').value;
   const l = document.getElementById('fq-lider').value;
@@ -3844,6 +3849,7 @@ function setMonth(m) {
   cLiderChart.update();
   cCanalChart.update();
   // atualiza todas as abas
+  populateQuartilFilters(); filterQuartil();
   populateProcFilter(); filterProcesso();
   populateQ4Filters(); filterQ4();
   filterQuartil(); filterMulti();
@@ -3891,6 +3897,7 @@ function setFila(fila) {
   const meta = FILAS_META[fila];
   document.getElementById('header-title').textContent = info.label;
   document.getElementById('meta-badge').textContent = 'META: CHAT '+meta.chat+' min · C2C '+meta.c2c+' min';
+  populateQuartilFilters();
   setMonth(currentMonth);
 }
 
@@ -3958,7 +3965,7 @@ function buildRepsChart(m) {
 buildProcessoChart('2026-04');
 buildRepsChart('2026-04');
 
-filterQuartil();
+populateQuartilFilters(); filterQuartil();
 populateProcFilter(); filterProcesso();
 populateQ4Filters(); filterQ4();
 filterMulti();
