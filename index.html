@@ -1482,7 +1482,7 @@ function renderProdTime() {
 }
 
 function populateProdTipoReps() {
-  const reps = [...new Set(prodRepData.map(r=>r.rep))].sort();
+  const reps = [...new Set(getProdTData().map(r=>r.rep))].sort();
   const sel = document.getElementById('fpt-rep');
   reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sel.appendChild(o); });
 }
@@ -1491,7 +1491,7 @@ function filterProdTipo() {
   const c = document.getElementById('fpt-canal').value;
   const l = document.getElementById('fpt-lider').value;
   const r = document.getElementById('fpt-rep').value;
-  const rows = prodRepData.filter(x =>
+  const rows = getProdTData().filter(x =>
     (!c || x.canal===c) && (!l || x.lider===l) && (!r || x.rep===r)
   ).sort((a,b) => b.tmo - a.tmo);
   const tb = document.getElementById('tbody-prodtipo');
@@ -1592,7 +1592,7 @@ function filterEvolucao() {
 function filterProdu() {
   const c = document.getElementById('fp2-canal').value;
   const l = document.getElementById('fp2-lider').value;
-  const rows = produRepData
+  const rows = getProduData()
     .filter(r => (!c || r.canal===c) && (!l || r.lider===l))
     .sort((a,b) => b.produ - a.produ);
   const tb = document.getElementById('tbody-produ');
@@ -1621,10 +1621,14 @@ function filterProdu() {
 }
 
 // ---- TOQUE FUNCTIONS ----
+function getToqueData()  { return currentMonth==='2026-04' ? toqueRepData  : MAY_toqueRepData;  }
+function getProduData()  { return currentMonth==='2026-04' ? produRepData  : MAY_produRepData;  }
+function getProdTData()  { return currentMonth==='2026-04' ? prodRepData   : MAY_prodRepData;   }
+
 function filterToque() {
   const c = document.getElementById('ft-canal').value;
   const l = document.getElementById('ft-lider').value;
-  const rows = toqueRepData.filter(r => (!c || r.canal===c) && (!l || r.lider===l));
+  const rows = getToqueData().filter(r => (!c || r.canal===c) && (!l || r.lider===l));
   const tb = document.getElementById('tbody-toque');
   document.getElementById('ft-count').textContent = `${rows.length} representante(s)`;
   if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
@@ -1722,6 +1726,127 @@ function filterMulti() {
     </tr>`;
   }).join('');
 }
+
+// ---- DADOS MAIO — TOQUE / PRODU / PRODTIPO ----
+const MAY_toqueRepData = [
+  {rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:35,tmo:53.63,toque:29.55,toqueMax:0,tmo_medio:53.63},
+  {rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:38,tmo:49.66,toque:29.61,toqueMax:0,tmo_medio:49.66},
+  {rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:34,tmo:44.63,toque:21.58,toqueMax:0,tmo_medio:44.63},
+  {rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:30,tmo:44.46,toque:22.31,toqueMax:0,tmo_medio:44.46},
+  {rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:28,tmo:42.61,toque:24.24,toqueMax:0,tmo_medio:42.61},
+  {rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:67,tmo:42.64,toque:14.66,toqueMax:0,tmo_medio:42.64},
+  {rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:30,tmo:41.71,toque:21.83,toqueMax:0,tmo_medio:41.71},
+  {rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:75,tmo:39.62,toque:11.60,toqueMax:0,tmo_medio:39.62},
+  {rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:38,tmo:36.66,toque:17.60,toqueMax:0,tmo_medio:36.66},
+  {rep:'cccsousa',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:70,tmo:37.84,toque:12.28,toqueMax:0,tmo_medio:37.84},
+  {rep:'fenunes',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:87,tmo:34.68,toque:8.16,toqueMax:0,tmo_medio:34.68},
+  {rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:59,tmo:34.34,toque:18.38,toqueMax:0,tmo_medio:34.34},
+  {rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:79,tmo:33.45,toque:7.59,toqueMax:0,tmo_medio:33.45},
+  {rep:'renataperei',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:87,tmo:32.96,toque:7.84,toqueMax:0,tmo_medio:32.96},
+  {rep:'gbmontilha',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:106,tmo:32.04,toque:7.40,toqueMax:0,tmo_medio:32.04},
+  {rep:'vfarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:73,tmo:31.52,toque:5.95,toqueMax:0,tmo_medio:31.52},
+  {rep:'bemarques',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:54,tmo:31.24,toque:6.14,toqueMax:0,tmo_medio:31.24},
+  {rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:108,tmo:31.06,toque:7.15,toqueMax:0,tmo_medio:31.06},
+  {rep:'cafarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:84,tmo:30.80,toque:8.01,toqueMax:0,tmo_medio:30.80},
+  {rep:'lianadsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:79,tmo:29.83,toque:4.61,toqueMax:0,tmo_medio:29.83},
+  {rep:'amcandido',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:86,tmo:29.68,toque:7.92,toqueMax:0,tmo_medio:29.68},
+  {rep:'kroza',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:26,tmo:29.28,toque:4.86,toqueMax:0,tmo_medio:29.28},
+  {rep:'marlaraujo',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:69,tmo:28.83,toque:8.18,toqueMax:0,tmo_medio:28.83},
+  {rep:'lyalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:68,tmo:28.59,toque:4.69,toqueMax:0,tmo_medio:28.59},
+  {rep:'casbarreiros',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:62,tmo:28.29,toque:6.61,toqueMax:0,tmo_medio:28.29},
+  {rep:'cchimenez',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:101,tmo:28.17,toque:5.95,toqueMax:0,tmo_medio:28.17},
+  {rep:'uizfsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:67,tmo:27.30,toque:4.72,toqueMax:0,tmo_medio:27.30},
+  {rep:'camcsilva',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:69,tmo:27.26,toque:7.03,toqueMax:0,tmo_medio:27.26},
+  {rep:'luciagarcia',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:60,tmo:23.32,toque:10.55,toqueMax:0,tmo_medio:23.32},
+  {rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:65,tmo:22.93,toque:13.20,toqueMax:0,tmo_medio:22.93},
+  {rep:'mudiniz',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:49,tmo:20.92,toque:7.66,toqueMax:0,tmo_medio:20.92},
+  {rep:'mandoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:138,tmo:20.99,toque:3.52,toqueMax:0,tmo_medio:20.99},
+  {rep:'aldmelo',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:138,tmo:20.96,toque:3.93,toqueMax:0,tmo_medio:20.96},
+  {rep:'mrmarques',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:121,tmo:20.84,toque:4.51,toqueMax:0,tmo_medio:20.84},
+  {rep:'wgomdsouza',lider:'lrossetto',canal:'C2C',assigns:106,tmo:20.78,toque:6.05,toqueMax:0,tmo_medio:20.78},
+  {rep:'stdiniz',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:96,tmo:22.56,toque:4.04,toqueMax:0,tmo_medio:22.56},
+  {rep:'amcaldeira',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:76,tmo:18.75,toque:2.44,toqueMax:0,tmo_medio:18.75},
+  {rep:'kperrone',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:34,tmo:16.73,toque:2.83,toqueMax:0,tmo_medio:16.73},
+];
+
+const MAY_produRepData = [
+  {rep:'marcovenicio',lider:'lrossetto',canal:'MULTICANAL C2C',produ:6.04,tmo:12.54},
+  {rep:'mandoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',produ:5.29,tmo:20.99},
+  {rep:'vltrevizan',lider:'lrossetto',canal:'MULTICANAL C2C',produ:4.36,tmo:15.44},
+  {rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',produ:4.36,tmo:22.93},
+  {rep:'gbmontilha',lider:'bkaroline',canal:'MULTICANAL CHAT',produ:4.15,tmo:32.04},
+  {rep:'kperrone',lider:'thaidossanto',canal:'MULTICANAL CHAT',produ:4.11,tmo:16.73},
+  {rep:'polivdaraujo',lider:'bkaroline',canal:'MULTICANAL CHAT',produ:3.93,tmo:26.12},
+  {rep:'lyalves',lider:'alicarvalho',canal:'MULTICANAL CHAT',produ:3.93,tmo:28.59},
+  {rep:'amcaldeira',lider:'thaidossanto',canal:'MULTICANAL CHAT',produ:3.93,tmo:18.75},
+  {rep:'marfreitas',lider:'thaidossanto',canal:'MULTICANAL CHAT',produ:3.88,tmo:21.41},
+  {rep:'blvicente',lider:'bkaroline',canal:'MULTICANAL CHAT',produ:3.87,tmo:24.65},
+  {rep:'claudoliveir',lider:'lrossetto',canal:'MULTICANAL C2C',produ:3.78,tmo:18.69},
+  {rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',produ:3.65,tmo:31.06},
+  {rep:'amcandido',lider:'isabmot',canal:'MULTICANAL CHAT',produ:3.64,tmo:29.68},
+  {rep:'mudiniz',lider:'lrossetto',canal:'MULTICANAL C2C',produ:3.63,tmo:20.92},
+  {rep:'wgomdsouza',lider:'lrossetto',canal:'C2C',produ:3.62,tmo:20.78},
+  {rep:'mrmarques',lider:'isabmot',canal:'MULTICANAL CHAT',produ:3.54,tmo:20.84},
+  {rep:'aldmelo',lider:'bkaroline',canal:'MULTICANAL CHAT',produ:3.44,tmo:20.96},
+  {rep:'cccsousa',lider:'isabmot',canal:'MULTICANAL CHAT',produ:3.44,tmo:37.84},
+  {rep:'stdiniz',lider:'alicarvalho',canal:'MULTICANAL CHAT',produ:3.30,tmo:22.56},
+  {rep:'ulissouza',lider:'thaidossanto',canal:'MULTICANAL CHAT',produ:3.19,tmo:25.94},
+  {rep:'bemarques',lider:'thaidossanto',canal:'MULTICANAL CHAT',produ:3.09,tmo:31.24},
+  {rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',produ:2.98,tmo:33.45},
+  {rep:'cafarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',produ:2.96,tmo:30.80},
+  {rep:'renataperei',lider:'isabmot',canal:'MULTICANAL CHAT',produ:3.41,tmo:32.96},
+  {rep:'uizfsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',produ:2.85,tmo:27.30},
+  {rep:'lianadsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',produ:2.79,tmo:29.83},
+  {rep:'fenunes',lider:'bkaroline',canal:'MULTICANAL CHAT',produ:2.58,tmo:34.68},
+  {rep:'casbarreiros',lider:'thaidossanto',canal:'MULTICANAL CHAT',produ:2.20,tmo:28.29},
+  {rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',produ:1.99,tmo:39.62},
+  {rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',produ:1.91,tmo:42.61},
+  {rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',produ:1.78,tmo:42.64},
+  {rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',produ:1.67,tmo:44.46},
+  {rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',produ:1.57,tmo:41.71},
+  {rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',produ:1.57,tmo:36.66},
+  {rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',produ:1.55,tmo:44.63},
+  {rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',produ:1.48,tmo:49.66},
+  {rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',produ:2.35,tmo:34.34},
+  {rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',produ:0.83,tmo:53.63},
+];
+
+const MAY_prodRepData = [
+  {rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:35,tmo:53.63,prod:29.55,np:24.08,hold:0,acw:0.45},
+  {rep:'gabrielaaiol',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:38,tmo:49.66,prod:29.61,np:20.05,hold:0.04,acw:0.43},
+  {rep:'albarbosa',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:34,tmo:44.63,prod:21.58,np:23.05,hold:4.55,acw:-3.36},
+  {rep:'raisacsantos',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:30,tmo:44.46,prod:22.31,np:22.15,hold:0,acw:0.85},
+  {rep:'kavalle',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:28,tmo:42.61,prod:24.24,np:18.37,hold:0,acw:0.31},
+  {rep:'maybalazshaz',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:67,tmo:42.64,prod:14.66,np:27.98,hold:0,acw:2.85},
+  {rep:'linessousa',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:30,tmo:41.71,prod:21.83,np:19.89,hold:3.65,acw:0.29},
+  {rep:'lecandido',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:75,tmo:39.62,prod:11.60,np:28.02,hold:0,acw:2.12},
+  {rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:38,tmo:36.66,prod:17.60,np:19.06,hold:0.01,acw:0.31},
+  {rep:'cccsousa',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:70,tmo:37.84,prod:12.28,np:25.56,hold:0,acw:1.31},
+  {rep:'fenunes',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:87,tmo:34.68,prod:8.16,np:26.53,hold:0,acw:2.63},
+  {rep:'giselesosant',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:59,tmo:34.34,prod:18.38,np:15.96,hold:0.02,acw:0.28},
+  {rep:'losouza',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:79,tmo:33.45,prod:7.59,np:25.85,hold:0,acw:1.27},
+  {rep:'renataperei',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:87,tmo:32.96,prod:7.84,np:25.12,hold:0,acw:1.81},
+  {rep:'vfonorio',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:108,tmo:31.06,prod:7.15,np:23.92,hold:0,acw:1.23},
+  {rep:'vfarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:73,tmo:31.52,prod:5.95,np:25.57,hold:0,acw:2.60},
+  {rep:'bemarques',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:54,tmo:31.24,prod:6.14,np:25.11,hold:0,acw:3.31},
+  {rep:'cafarias',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:84,tmo:30.80,prod:8.01,np:22.79,hold:0,acw:1.98},
+  {rep:'lianadsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:79,tmo:29.83,prod:4.61,np:25.22,hold:0,acw:1.95},
+  {rep:'amcandido',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:86,tmo:29.68,prod:7.92,np:21.76,hold:0,acw:1.68},
+  {rep:'marlaraujo',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:69,tmo:28.83,prod:8.18,np:20.65,hold:0,acw:0.56},
+  {rep:'casbarreiros',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:62,tmo:28.29,prod:6.61,np:21.68,hold:0,acw:1.47},
+  {rep:'cchimenez',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:101,tmo:28.17,prod:5.95,np:22.22,hold:0,acw:2.27},
+  {rep:'uizfsilva',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:67,tmo:27.30,prod:4.72,np:22.58,hold:0,acw:1.60},
+  {rep:'luciagarcia',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:60,tmo:23.32,prod:10.55,np:12.76,hold:0.04,acw:0.06},
+  {rep:'jecosta',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:65,tmo:22.93,prod:13.20,np:9.73,hold:0.32,acw:0.60},
+  {rep:'stdiniz',lider:'alicarvalho',canal:'MULTICANAL CHAT',assigns:96,tmo:22.56,prod:4.04,np:18.51,hold:0,acw:1.69},
+  {rep:'mudiniz',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:49,tmo:20.92,prod:7.66,np:13.26,hold:0,acw:0.21},
+  {rep:'mandoliveira',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:138,tmo:20.99,prod:3.52,np:17.47,hold:0,acw:1.14},
+  {rep:'aldmelo',lider:'bkaroline',canal:'MULTICANAL CHAT',assigns:138,tmo:20.96,prod:3.93,np:17.03,hold:0,acw:1.68},
+  {rep:'mrmarques',lider:'isabmot',canal:'MULTICANAL CHAT',assigns:121,tmo:20.84,prod:4.51,np:16.33,hold:0,acw:1.52},
+  {rep:'wgomdsouza',lider:'lrossetto',canal:'C2C',assigns:106,tmo:20.78,prod:6.05,np:14.73,hold:0,acw:1.21},
+  {rep:'amcaldeira',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:76,tmo:18.75,prod:2.44,np:16.31,hold:0,acw:1.35},
+  {rep:'kperrone',lider:'thaidossanto',canal:'MULTICANAL CHAT',assigns:34,tmo:16.73,prod:2.83,np:13.90,hold:0,acw:1.32},
+];
 
 // ---- DADOS TMO × NPS ----
 const detratoresData = [
@@ -2204,12 +2329,17 @@ function setMonth(m) {
   cLiderChart.data.datasets[0].data = ld.map(r=>r.t);
   cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>27?'#e63946':'#2dc653');
   cLiderChart.update();
-  // tabelas
+  // atualiza todas as abas
   populateProcFilter(); filterProcesso();
   populateQ4Filters(); filterQ4();
   filterQuartil(); filterMulti();
-  // nota parcial
-  document.getElementById('last-updated').textContent = k.partial ? `⚡ Dados de 01-06/05 · atualizado ${new Date().toLocaleDateString('pt-BR')}` : 'Fechamento completo';
+  filterToque();
+  populateProdTipoReps(); filterProdTipo();
+  filterProdu();
+  filterEvolucao();
+  document.getElementById('last-updated').textContent = k.partial
+    ? `⚡ Dados parciais 01-08/05 · ${new Date().toLocaleDateString('pt-BR')}`
+    : 'Fechamento completo — Abril 2026';
 }
 
 function getQuartilData()  { return currentMonth==='2026-04' ? quartilData  : MAY_quartilData; }
