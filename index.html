@@ -417,29 +417,29 @@ tr:last-child td { border-bottom: none; }
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
     <div class="kpi red">
       <div class="kpi-lbl">Toque Médio — MC2C</div>
-      <div class="kpi-val">14,23</div>
-      <div class="kpi-sub">min · maior canal ofensor</div>
+      <div class="kpi-val" id="toque-mc2c-val">14,23</div>
+      <div class="kpi-sub" id="toque-mc2c-sub">min · maior canal ofensor</div>
     </div>
     <div class="kpi yellow">
       <div class="kpi-lbl">Toque Médio — CHAT</div>
-      <div class="kpi-val">7,45</div>
-      <div class="kpi-sub">min · Abril 2026</div>
+      <div class="kpi-val" id="toque-chat-val">7,45</div>
+      <div class="kpi-sub" id="toque-chat-sub">min</div>
     </div>
     <div class="kpi gray">
-      <div class="kpi-lbl">Casos com Toque &gt; 40 min</div>
-      <div class="kpi-val">50</div>
-      <div class="kpi-sub">Abril 2026</div>
+      <div class="kpi-lbl">Casos com TMO &gt; 40 min</div>
+      <div class="kpi-val" id="toque-casos-val">50</div>
+      <div class="kpi-sub" id="toque-casos-sub">Abril 2026</div>
     </div>
     <div class="kpi red">
       <div class="kpi-lbl">Maior Toque Registrado</div>
-      <div class="kpi-val">358 min</div>
-      <div class="kpi-sub">gabrielaaiol · 30/04</div>
+      <div class="kpi-val" id="toque-max-val">358 min</div>
+      <div class="kpi-sub" id="toque-max-sub">gabrielaaiol · 30/04</div>
     </div>
   </div>
 
   <!-- Toque por rep -->
   <div class="card" style="margin-bottom:20px">
-    <div class="card-title">Tempo de Toque Médio por Representante — Abril 2026</div>
+    <div class="card-title" id="toque-card-title">Tempo de Toque Médio por Representante — Abril 2026</div>
     <div class="filters">
       <div class="filter-group">
         <label>Canal</label>
@@ -524,28 +524,28 @@ tr:last-child td { border-bottom: none; }
   <div class="kpi-row" style="grid-template-columns:repeat(5,1fr);margin-bottom:20px">
     <div class="kpi blue" style="border-left-color:#1a1a2e">
       <div class="kpi-lbl">Produtividade Geral — Fila</div>
-      <div class="kpi-val">2,89</div>
-      <div class="kpi-sub">num/den · Abril 2026 · 61 reps</div>
+      <div class="kpi-val" id="produ-geral-val">2,89</div>
+      <div class="kpi-sub" id="produ-geral-sub">num/den · Abril 2026 · 61 reps</div>
     </div>
     <div class="kpi green">
       <div class="kpi-lbl">🟢 ON — MULTICANAL CHAT</div>
-      <div class="kpi-val">3,05</div>
-      <div class="kpi-sub">42 reps</div>
+      <div class="kpi-val" id="produ-chat-val">3,05</div>
+      <div class="kpi-sub" id="produ-chat-sub">42 reps</div>
     </div>
     <div class="kpi red">
       <div class="kpi-lbl">🔴 OFF — MULTICANAL C2C</div>
-      <div class="kpi-val">2,43</div>
-      <div class="kpi-sub">18 reps</div>
+      <div class="kpi-val" id="produ-c2c-val">2,43</div>
+      <div class="kpi-sub" id="produ-c2c-sub">18 reps</div>
     </div>
     <div class="kpi green">
       <div class="kpi-lbl">Melhor Produtividade (rep)</div>
-      <div class="kpi-val">5,02</div>
-      <div class="kpi-sub">acruz · CHAT · thaidossanto</div>
+      <div class="kpi-val" id="produ-best-val">5,02</div>
+      <div class="kpi-sub" id="produ-best-sub">acruz · CHAT · thaidossanto</div>
     </div>
     <div class="kpi red">
       <div class="kpi-lbl">Menor Produtividade (rep)</div>
-      <div class="kpi-val">1,10</div>
-      <div class="kpi-sub">adysantos · C2C · lrossetto</div>
+      <div class="kpi-val" id="produ-worst-val">1,10</div>
+      <div class="kpi-sub" id="produ-worst-sub">adysantos · C2C · lrossetto</div>
     </div>
   </div>
 
@@ -712,29 +712,29 @@ tr:last-child td { border-bottom: none; }
   <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
     <div class="kpi green">
       <div class="kpi-lbl">⚡ TMO Produtivo — MULTICANAL CHAT</div>
-      <div class="kpi-val">6,58 min</div>
-      <div class="kpi-sub">Touch Time médio · 12.832 contatos</div>
+      <div class="kpi-val" id="pt-chat-prod-val">6,58 min</div>
+      <div class="kpi-sub" id="pt-chat-prod-sub">Touch Time médio · 12.832 contatos</div>
     </div>
     <div class="kpi blue">
       <div class="kpi-lbl">⚡ TMO Produtivo — MULTICANAL C2C</div>
-      <div class="kpi-val">13,66 min</div>
-      <div class="kpi-sub">Touch Time médio · 4.073 contatos</div>
+      <div class="kpi-val" id="pt-c2c-prod-val">13,66 min</div>
+      <div class="kpi-sub" id="pt-c2c-prod-sub">Touch Time médio · 4.073 contatos</div>
     </div>
     <div class="kpi red">
       <div class="kpi-lbl">🔇 TMO Não Produtivo — MULTICANAL CHAT</div>
-      <div class="kpi-val">22,96 min</div>
-      <div class="kpi-sub">Não Touch médio · 12.832 contatos</div>
+      <div class="kpi-val" id="pt-chat-np-val">22,96 min</div>
+      <div class="kpi-sub" id="pt-chat-np-sub">Não Touch médio · 12.832 contatos</div>
     </div>
     <div class="kpi yellow">
       <div class="kpi-lbl">🔇 TMO Não Produtivo — MULTICANAL C2C</div>
-      <div class="kpi-val">15,14 min</div>
-      <div class="kpi-sub">Não Touch médio · 4.073 contatos</div>
+      <div class="kpi-val" id="pt-c2c-np-val">15,14 min</div>
+      <div class="kpi-sub" id="pt-c2c-np-sub">Não Touch médio · 4.073 contatos</div>
     </div>
   </div>
 
   <!-- Por time -->
   <div class="card" style="margin-bottom:20px">
-    <div class="card-title">👥 Por Time (Líder) — Abril 2026</div>
+    <div class="card-title" id="pt-time-title">👥 Por Time (Líder) — Abril 2026</div>
     <div class="tbl-wrap">
       <table>
         <thead><tr><th>Líder</th><th>Canal</th><th>Reps</th><th>TMO Total</th><th>⚡ Touch Time (Produtivo)</th><th>🔇 Não Touch (NP)</th><th>Hold Médio</th><th>ACW Médio</th></tr></thead>
@@ -813,37 +813,14 @@ tr:last-child td { border-bottom: none; }
 
   <!-- Canal TMO x NPS -->
   <div class="card" style="margin-bottom:20px">
-    <div class="card-title">📊 Canal × TMO × NPS — Abril 2026 <span style="font-size:11px;font-weight:400;color:#6c757d">· Fonte: DM_CX_TMO + DM_CX_BILLING_NPS</span></div>
+    <div class="card-title" id="nps-canal-title">📊 Canal × TMO × NPS — Abril 2026 <span style="font-size:11px;font-weight:400;color:#6c757d">· Fonte: DM_CX_TMO + DM_CX_BILLING_NPS</span></div>
     <div class="tbl-wrap">
       <table>
         <thead><tr><th>Canal</th><th>TMO Médio</th><th>vs Meta (27 min)</th><th>NPS Real</th><th>Meta NPS</th><th>Status NPS</th><th>Surveys</th><th>Insight</th></tr></thead>
-        <tbody>
-          <tr style="background:#fff5f5">
-            <td><span class="chat">MULTICANAL CHAT</span></td>
-            <td><strong>29,34 min</strong></td>
-            <td class="pos">+2,34 min</td>
-            <td><strong style="font-size:16px">59,4%</strong></td>
-            <td>62%</td>
-            <td><span class="q4">Abaixo da meta</span></td>
-            <td>192</td>
-            <td style="font-size:12px;color:#6c757d">TMO alto + NPS abaixo → correlação direta</td>
-          </tr>
-          <tr style="background:#f0fdf4">
-            <td><span class="mc2c">MULTICANAL C2C</span></td>
-            <td><strong>28,80 min</strong></td>
-            <td class="pos">+1,80 min</td>
-            <td><strong style="font-size:16px">86,7%</strong></td>
-            <td>45,9%</td>
-            <td><span class="q1">Acima da meta</span></td>
-            <td>15</td>
-            <td style="font-size:12px;color:#6c757d">TMO alto MAS NPS excelente → canal voz resolve melhor</td>
-          </tr>
-        </tbody>
+        <tbody id="tbody-nps-canal"></tbody>
       </table>
     </div>
-    <div style="margin-top:14px;padding:12px 16px;background:#f8f9fa;border-radius:8px;font-size:13px;color:#495057;border-left:4px solid #457b9d">
-      💡 <strong>Insight central:</strong> Chat e C2C têm TMO similar (~29 min), mas NPS radicalmente diferente (59% vs 87%). O TMO isolado não explica o NPS — a <strong>capacidade de resolução no primeiro contato</strong> e o <strong>canal de comunicação</strong> têm peso maior. Casos de voz (C2C) resolvem mais e geram mais satisfação.
-    </div>
+    <div id="nps-insight-box" style="margin-top:14px;padding:12px 16px;background:#f8f9fa;border-radius:8px;font-size:13px;color:#495057;border-left:4px solid #457b9d"></div>
   </div>
 
   <!-- Casos detratores -->
@@ -2347,6 +2324,127 @@ const casosAltoToque = [
   {caso:'451468075',data:'20/04',rep:'vitnasciment',lider:'lrossetto',canal:'MULTICANAL C2C',proc:'PR - Artículos prohibidos',toque:253.48,tmo:253.50},
 ];
 
+// ---- STATS POR MÊS ----
+const STATS = {
+  '2026-04': {
+    label: 'Abril 2026',
+    // Toque
+    toque_mc2c: 14.23, toque_chat: 7.45, toque_casos_alto: 50, toque_max: 358, toque_max_rep: 'gabrielaaiol · 30/04',
+    toque_chat_vol: '12.832', toque_c2c_vol: '4.073',
+    // Produtividade
+    produ_geral: 2.89, produ_chat: 3.05, produ_chat_reps: 42,
+    produ_c2c: 2.43, produ_c2c_reps: 18,
+    produ_best: 5.02, produ_best_sub: 'acruz · CHAT · thaidossanto',
+    produ_worst: 1.10, produ_worst_sub: 'adysantos · C2C · lrossetto',
+    // TMO Produtivo/NP
+    pt_chat_prod: 6.58, pt_c2c_prod: 13.66, pt_chat_np: 22.96, pt_c2c_np: 15.14,
+    // Tabela por time (prodtipo)
+    prodtime: [
+      {lider:'isabmot',canal:'MULTICANAL CHAT',reps:10,assigns:3492,tmo:34.24,prod:8.40,np:25.84,hold:0.00,acw:1.55},
+      {lider:'bkaroline',canal:'MULTICANAL CHAT',reps:12,assigns:5462,tmo:29.34,prod:6.84,np:22.50,hold:0.00,acw:2.00},
+      {lider:'lrossetto',canal:'MULTICANAL C2C',reps:18,assigns:4215,tmo:28.80,prod:13.66,np:15.14,hold:1.37,acw:0.46},
+      {lider:'alicarvalho',canal:'MULTICANAL CHAT',reps:10,assigns:4451,tmo:28.45,prod:6.02,np:22.43,hold:0.00,acw:1.91},
+      {lider:'thaidossanto',canal:'MULTICANAL CHAT',reps:10,assigns:3741,tmo:26.78,prod:5.19,np:21.59,hold:0.00,acw:1.80},
+      {lider:'lrossetto',canal:'C2C',reps:1,assigns:142,tmo:20.78,prod:9.53,np:11.25,hold:0.02,acw:0.55},
+    ],
+    // NPS tabela canal
+    nps_canal: [
+      {canal:'MULTICANAL CHAT',tmo:29.34,dev:'+2,34',nps:59.4,meta:62,status:'Abaixo da meta',surveys:192,insight:'TMO alto + NPS abaixo → correlação direta',bg:'#fff5f5',cls:'q4'},
+      {canal:'MULTICANAL C2C',tmo:28.80,dev:'+1,80',nps:86.7,meta:45.9,status:'Acima da meta',surveys:15,insight:'TMO alto MAS NPS excelente → canal voz resolve melhor',bg:'#f0fdf4',cls:'q1'},
+    ],
+    nps_insight: 'Chat e C2C têm TMO similar (~29 min), mas NPS radicalmente diferente (59% vs 87%). O TMO isolado não explica o NPS — a <strong>capacidade de resolução no primeiro contato</strong> e o <strong>canal de comunicação</strong> têm peso maior.',
+  },
+  '2026-05': {
+    label: 'Maio 2026 ⚡ (parcial)',
+    // Toque
+    toque_mc2c: 13.12, toque_chat: 6.05, toque_casos_alto: 823, toque_max: 356, toque_max_rep: 'MC2C · Maio',
+    toque_chat_vol: '2.748', toque_c2c_vol: '811',
+    // Produtividade
+    produ_geral: 3.00, produ_chat: 3.17, produ_chat_reps: 33,
+    produ_c2c: 2.59, produ_c2c_reps: 17,
+    produ_best: 6.04, produ_best_sub: 'marcovenicio · C2C · lrossetto',
+    produ_worst: 0.83, produ_worst_sub: 'adysantos · C2C · lrossetto',
+    // TMO Produtivo/NP
+    pt_chat_prod: 6.05, pt_c2c_prod: 13.12, pt_chat_np: 21.77, pt_c2c_np: 13.88,
+    // Tabela por time (prodtipo)
+    prodtime: [
+      {lider:'bkaroline',canal:'MULTICANAL CHAT',reps:10,assigns:612,tmo:29.31,prod:7.08,np:22.23,hold:0.00,acw:1.94},
+      {lider:'alicarvalho',canal:'MULTICANAL CHAT',reps:10,assigns:462,tmo:28.60,prod:5.50,np:23.10,hold:0.00,acw:1.59},
+      {lider:'isabmot',canal:'MULTICANAL CHAT',reps:7,assigns:555,tmo:27.50,prod:6.49,np:21.02,hold:0.00,acw:1.43},
+      {lider:'lrossetto',canal:'MULTICANAL C2C',reps:17,assigns:811,tmo:26.99,prod:13.12,np:13.88,hold:0.60,acw:0.21},
+      {lider:'thaidossanto',canal:'MULTICANAL CHAT',reps:7,assigns:323,tmo:24.63,prod:4.51,np:20.12,hold:0.00,acw:1.84},
+      {lider:'lrossetto',canal:'C2C',reps:1,assigns:106,tmo:20.78,prod:6.05,np:14.73,hold:0.00,acw:1.21},
+    ],
+    // NPS tabela canal
+    nps_canal: [
+      {canal:'MULTICANAL CHAT',tmo:27.82,dev:'+0,82',nps:60.0,meta:62,status:'Abaixo da meta',surveys:20,insight:'TMO abaixo da meta porém NPS ainda abaixo',bg:'#fff5f5',cls:'q4'},
+      {canal:'MULTICANAL C2C',tmo:26.99,dev:'-0,01',nps:100.0,meta:45.9,status:'Acima da meta',surveys:3,insight:'C2C dentro da meta — amostra reduzida (3 surveys)',bg:'#f0fdf4',cls:'q1'},
+    ],
+    nps_insight: 'Maio parcial (01-08/05): Chat TMO caiu para 27,82 min (quase na meta) mas NPS continua abaixo (60%). C2C mantém padrão superior.',
+  }
+};
+
+function updateAllKpis(m) {
+  const s = STATS[m];
+  const lbl = s.label;
+  // Toque
+  document.getElementById('toque-mc2c-val').textContent = s.toque_mc2c.toFixed(2);
+  document.getElementById('toque-chat-val').textContent = s.toque_chat.toFixed(2);
+  document.getElementById('toque-chat-sub').textContent = 'min';
+  document.getElementById('toque-casos-val').textContent = s.toque_casos_alto.toLocaleString('pt-BR');
+  document.getElementById('toque-casos-sub').textContent = lbl;
+  document.getElementById('toque-max-val').textContent = s.toque_max+' min';
+  document.getElementById('toque-max-sub').textContent = s.toque_max_rep;
+  document.getElementById('toque-card-title').textContent = 'Tempo de Toque Médio por Representante — '+lbl;
+  // Produtividade
+  document.getElementById('produ-geral-val').textContent = s.produ_geral.toFixed(2);
+  document.getElementById('produ-geral-sub').textContent = 'num/den · '+lbl+' · '+((m==='2026-04'?61:51))+' reps';
+  document.getElementById('produ-chat-val').textContent = s.produ_chat.toFixed(2);
+  document.getElementById('produ-chat-sub').textContent = s.produ_chat_reps+' reps';
+  document.getElementById('produ-c2c-val').textContent = s.produ_c2c.toFixed(2);
+  document.getElementById('produ-c2c-sub').textContent = s.produ_c2c_reps+' reps';
+  document.getElementById('produ-best-val').textContent = s.produ_best.toFixed(2);
+  document.getElementById('produ-best-sub').textContent = s.produ_best_sub;
+  document.getElementById('produ-worst-val').textContent = s.produ_worst.toFixed(2);
+  document.getElementById('produ-worst-sub').textContent = s.produ_worst_sub;
+  // TMO Produtivo/NP
+  document.getElementById('pt-chat-prod-val').textContent = s.pt_chat_prod.toFixed(2)+' min';
+  document.getElementById('pt-chat-prod-sub').textContent = 'Touch Time médio · '+s.toque_chat_vol+' contatos';
+  document.getElementById('pt-c2c-prod-val').textContent = s.pt_c2c_prod.toFixed(2)+' min';
+  document.getElementById('pt-c2c-prod-sub').textContent = 'Touch Time médio · '+s.toque_c2c_vol+' contatos';
+  document.getElementById('pt-chat-np-val').textContent = s.pt_chat_np.toFixed(2)+' min';
+  document.getElementById('pt-chat-np-sub').textContent = 'Não Touch médio · '+s.toque_chat_vol+' contatos';
+  document.getElementById('pt-c2c-np-val').textContent = s.pt_c2c_np.toFixed(2)+' min';
+  document.getElementById('pt-c2c-np-sub').textContent = 'Não Touch médio · '+s.toque_c2c_vol+' contatos';
+  document.getElementById('pt-time-title').textContent = '👥 Por Time (Líder) — '+lbl;
+  // Tabela por time (prodtipo)
+  prodTimeData.length = 0; s.prodtime.forEach(r=>prodTimeData.push(r));
+  renderProdTime();
+  // NPS canal
+  document.getElementById('nps-canal-title').innerHTML = '📊 Canal × TMO × NPS — '+lbl+' <span style="font-size:11px;font-weight:400;color:#6c757d">· Fonte: DM_CX_TMO + DM_CX_BILLING_NPS</span>';
+  document.getElementById('tbody-nps-canal').innerHTML = s.nps_canal.map(r=>`
+    <tr style="background:${r.bg}">
+      <td>${canalBadge(r.canal)}</td>
+      <td><strong>${r.tmo.toFixed(2)} min</strong></td>
+      <td class="pos">${r.dev} min</td>
+      <td><strong style="font-size:16px">${r.nps.toFixed(1)}%</strong></td>
+      <td>${r.meta}%</td>
+      <td><span class="${r.cls}">${r.status}</span></td>
+      <td>${r.surveys}</td>
+      <td style="font-size:12px;color:#6c757d">${r.insight}</td>
+    </tr>`).join('');
+  document.getElementById('nps-insight-box').innerHTML = '💡 <strong>Insight:</strong> '+s.nps_insight;
+  // Títulos dinâmicos restantes
+  const el476 = document.querySelectorAll('.card-title');
+  el476.forEach(el => {
+    if (el.textContent.includes('Casos de Exemplo')) el.textContent = '🔍 Casos de Exemplo — Toque Alto (≥ 40 min) · '+lbl;
+    if (el.textContent.includes('Casos Detratores')) el.innerHTML = '🔴 Casos Detratores com TMO Alto — Exemplos Reais · '+lbl;
+    if (el.textContent.includes('Por Representante — ')) el.textContent = el.textContent.replace(/— .*/, '— '+lbl);
+  });
+  // Header
+  document.querySelector('header p').textContent = lbl+' · Fonte: meli-bi-data.WHOWNER.DM_CX_TMO · sem outliers · sem drop · com toque';
+}
+
 // ---- MÊS ATIVO ----
 let currentMonth = '2026-04';
 
@@ -2377,6 +2475,9 @@ function setMonth(m) {
   populateProcFilter(); filterProcesso();
   populateQ4Filters(); filterQ4();
   filterQuartil(); filterMulti();
+  updateAllKpis(m);
+  buildProcessoChart(m);
+  buildRepsChart(m);
   filterToque();
   populateProdTipoReps(); filterProdTipo();
   filterProdu();
@@ -2417,43 +2518,49 @@ cLiderChart = new Chart(document.getElementById('cLider'),{
   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:38,grid:{color:'#f0f0f0'}}}}
 });
 
-const topProcs = processoData.slice(0,12);
-new Chart(document.getElementById('cProcesso'),{
-  type:'bar',
-  data:{
-    labels:topProcs.map(r=>r.proc+' ('+r.canal.replace('MULTICANAL ','')+')'),
-    datasets:[
-      {label:'TMO (min)',data:topProcs.map(r=>r.tmo),backgroundColor:topProcs.map(r=>r.tmo>35?'#e63946':r.tmo>27?'#f4a261':'#2dc653'),borderRadius:4},
-      {label:'Meta',data:Array(12).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
-    ]
-  },
-  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{x:{min:0,max:60},y:{ticks:{font:{size:10}}}}}
-});
-
-const topRepsList = [
-  {rep:'adysantos',tmo:59.90},{rep:'maybalazshaz',tmo:53.51},{rep:'raisacsantos',tmo:49.66},
-  {rep:'kavalle',tmo:49.09},{rep:'linessousa',tmo:45.89},{rep:'vitnasciment',tmo:44.37},
-  {rep:'cccsousa',tmo:41.67},{rep:'gabrielaaiol',tmo:41.55},{rep:'amcandido',tmo:38.16},
-  {rep:'lecandido',tmo:35.95},{rep:'bemarques',tmo:36.07},{rep:'vfonorio',tmo:35.35},
-  {rep:'giselesosant',tmo:35.52},{rep:'albarbosa',tmo:33.87},{rep:'renataperei',tmo:32.65}
-];
-new Chart(document.getElementById('cReps'),{
-  type:'bar',
-  data:{
-    labels:topRepsList.map(r=>r.rep),
-    datasets:[
-      {label:'TMO (min)',data:topRepsList.map(r=>r.tmo),backgroundColor:'#e63946',borderRadius:4},
-      {label:'Meta',data:Array(15).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
-    ]
-  },
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:70,grid:{color:'#f0f0f0'}},x:{ticks:{font:{size:10}}}}}
-});
+// Charts processo e reps — atualizáveis por mês
+let cProcessoChart, cRepsChart;
+function buildProcessoChart(m) {
+  const tp = getProcessoData().slice(0,12);
+  if (cProcessoChart) { cProcessoChart.destroy(); }
+  cProcessoChart = new Chart(document.getElementById('cProcesso'),{
+    type:'bar',
+    data:{
+      labels:tp.map(r=>r.proc+' ('+r.canal.replace('MULTICANAL ','')+')'),
+      datasets:[
+        {label:'TMO (min)',data:tp.map(r=>r.tmo),backgroundColor:tp.map(r=>r.tmo>35?'#e63946':r.tmo>27?'#f4a261':'#2dc653'),borderRadius:4},
+        {label:'Meta',data:Array(tp.length).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+      ]
+    },
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{x:{min:0,max:60},y:{ticks:{font:{size:10}}}}}
+  });
+}
+function buildRepsChart(m) {
+  const src = m==='2026-04'
+    ? [{rep:'adysantos',tmo:59.90},{rep:'maybalazshaz',tmo:53.51},{rep:'raisacsantos',tmo:49.66},{rep:'kavalle',tmo:49.09},{rep:'linessousa',tmo:45.89},{rep:'vitnasciment',tmo:44.37},{rep:'cccsousa',tmo:41.67},{rep:'gabrielaaiol',tmo:41.55},{rep:'amcandido',tmo:38.16},{rep:'lecandido',tmo:35.95},{rep:'bemarques',tmo:36.07},{rep:'vfonorio',tmo:35.35},{rep:'giselesosant',tmo:35.52},{rep:'albarbosa',tmo:33.87},{rep:'renataperei',tmo:32.65}]
+    : [{rep:'adysantos',tmo:53.63},{rep:'gabrielaaiol',tmo:49.66},{rep:'albarbosa',tmo:44.63},{rep:'raisacsantos',tmo:44.46},{rep:'kavalle',tmo:42.61},{rep:'maybalazshaz',tmo:42.64},{rep:'linessousa',tmo:41.71},{rep:'lecandido',tmo:39.62},{rep:'vitnasciment',tmo:36.66},{rep:'cccsousa',tmo:37.84},{rep:'fenunes',tmo:34.68},{rep:'giselesosant',tmo:34.34},{rep:'losouza',tmo:33.45},{rep:'renataperei',tmo:32.96},{rep:'vfonorio',tmo:31.06}];
+  if (cRepsChart) { cRepsChart.destroy(); }
+  cRepsChart = new Chart(document.getElementById('cReps'),{
+    type:'bar',
+    data:{
+      labels:src.map(r=>r.rep),
+      datasets:[
+        {label:'TMO (min)',data:src.map(r=>r.tmo),backgroundColor:'#e63946',borderRadius:4},
+        {label:'Meta',data:Array(src.length).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+      ]
+    },
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:70,grid:{color:'#f0f0f0'}},x:{ticks:{font:{size:10}}}}}
+  });
+}
+buildProcessoChart('2026-04');
+buildRepsChart('2026-04');
 
 filterQuartil();
 populateProcFilter(); filterProcesso();
 populateQ4Filters(); filterQ4();
 filterMulti();
 filterEvolucao();
+updateAllKpis('2026-04');
 updateNpsKpis('2026-04'); populateCorrelacaoFilters(); filterCorrelacao();
 renderProdTime(); populateProdTipoReps(); filterProdTipo();
 filterProdu();
