@@ -161,6 +161,7 @@ tr:last-child td { border-bottom: none; }
   <div class="nav-tab" onclick="showPage('quartil',this)">🔢 Quartilização</div>
   <div class="nav-tab" onclick="showPage('processo',this)">⚙️ Por Processo</div>
   <div class="nav-tab" onclick="showPage('q4reps',this)">🔴 Reps Q4</div>
+  <div class="nav-tab" onclick="showPage('dispersao',this)">📊 Dispersão Q1→Q4</div>
   <div class="nav-tab" onclick="showPage('multiofensores',this)">🔥 Multi-Ofensores</div>
   <div class="nav-tab" onclick="showPage('toque',this)">⏱️ Tempo de Toque</div>
   <div class="nav-tab" onclick="showPage('evolucao',this)">📅 Evolução Semanal</div>
@@ -1017,6 +1018,55 @@ tr:last-child td { border-bottom: none; }
       <table id="tbl-estilo-casos">
         <thead><tr><th>Caso</th><th>Data</th><th>Rep</th><th>Estilo %</th><th>Canal</th><th>Processo</th><th>TMO</th></tr></thead>
         <tbody id="tbody-estilo-casos"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== PÁGINA 13: DISPERSÃO Q1→Q4 ===================== -->
+<div id="page-dispersao" class="page">
+
+  <!-- KPIs resumo dispersão -->
+  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px" id="disp-kpis"></div>
+
+  <!-- Gráfico de bolhas: Processo × TMO Q4 × Volume -->
+  <div class="card" style="margin-bottom:20px">
+    <div class="card-title" id="disp-chart-title">📊 Dispersão TMO por Processo — Q1 → Q4 · Abril 2026
+      <span style="font-size:11px;font-weight:400;color:#6c757d"> · cada bolha = processo×canal · tamanho = volume · cor = quartil dominante</span>
+    </div>
+    <div class="filters">
+      <div class="filter-group">
+        <label>Canal</label>
+        <select id="fd-canal" onchange="renderDispersao()">
+          <option value="">Todos</option>
+          <option>MULTICANAL CHAT</option>
+          <option>MULTICANAL C2C</option>
+        </select>
+      </div>
+      <div class="filter-count" id="fd-count"></div>
+    </div>
+    <div style="height:340px"><canvas id="cDispersao"></canvas></div>
+    <div style="margin-top:10px;display:flex;gap:16px;justify-content:center;font-size:12px">
+      <span><span style="background:#2dc653;display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px"></span>Q1 — Melhor</span>
+      <span><span style="background:#457b9d;display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px"></span>Q2</span>
+      <span><span style="background:#f4a261;display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px"></span>Q3</span>
+      <span><span style="background:#e63946;display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px"></span>Q4 — Pior</span>
+    </div>
+  </div>
+
+  <!-- Ranking: Processos mais ofensores -->
+  <div class="card">
+    <div class="card-title">🏴 Ranking de Processos Ofensores — por % de Reps em Q4</div>
+    <div class="tbl-wrap">
+      <table id="tbl-dispersao-rank">
+        <thead>
+          <tr>
+            <th>#</th><th>Processo</th><th>Canal</th>
+            <th>Reps Q4</th><th>TMO Médio Q4</th><th>Meta</th>
+            <th>Desvio Q4</th><th>Volume Total</th><th>% Reps Q4 vs Total</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-dispersao-rank"></tbody>
       </table>
     </div>
   </div>
@@ -1939,6 +1989,173 @@ function computeEvolucaoKPIs(m) {
   </div>`;
 
   document.getElementById('evolucao-kpis').innerHTML = html;
+}
+
+// ---- DISPERSÃO Q1→Q4 ----
+let cDispersaoChart = null;
+
+function buildDispersaoData(m) {
+  const qd = getQuartilData();    // reps × canal × quartil × tmo
+  const pd = getProcessoData();   // processo × canal × tmo × meta × vol
+  const q4 = getQ4Data();         // processo × canal × rep × tmo
+
+  // 1. Montar mapa: processo+canal → {q1_reps,q2_reps,q3_reps,q4_reps, tmos_por_quartil}
+  const procMap = {};
+  qd.forEach(r => {
+    // precisamos cruzar rep com seus processos via q4Data
+    // usamos processoData para TMO geral do processo
+  });
+
+  // Agregar q4Data por processo+canal
+  const q4map = {};
+  q4.forEach(r => {
+    const key = r.proc + '|' + r.canal;
+    if (!q4map[key]) q4map[key] = {proc:r.proc, canal:r.canal, reps:[], tmos:[]};
+    q4map[key].reps.push(r.rep);
+    q4map[key].tmos.push(r.tmo);
+  });
+
+  // Juntar com processoData para ter volume total e meta
+  const result = [];
+  pd.forEach(p => {
+    const key = p.proc + '|' + p.canal;
+    const q4info = q4map[key] || {reps:[], tmos:[]};
+    const q4count = q4info.reps.length;
+    const tmoQ4avg = q4info.tmos.length > 0
+      ? q4info.tmos.reduce((a,b)=>a+b,0) / q4info.tmos.length : 0;
+
+    // Contar Q1/Q2/Q3 reps para este processo usando quartilData
+    // (aproximação: reps do quartil 1 têm tmo < 25th percentile do processo)
+    // Simplificado: mostramos Q4 count vs total volume
+    const totalVol = p.vol;
+    const pctQ4 = totalVol > 0 ? (q4count / totalVol * 100) : 0;
+    const devQ4 = tmoQ4avg > 0 ? round2(tmoQ4avg - (p.meta || 27)) : 0;
+
+    result.push({
+      proc: p.proc,
+      canal: p.canal,
+      tmo_geral: p.tmo,
+      tmo_q4: round2(tmoQ4avg),
+      meta: p.meta || 0,
+      vol: totalVol,
+      q4count,
+      pctQ4: round2(pctQ4),
+      devQ4,
+      desvio_geral: p.dev
+    });
+  });
+
+  return result.sort((a,b) => b.q4count - a.q4count);
+}
+
+function round2(v) { return Math.round(v * 100) / 100; }
+
+function renderDispersao() {
+  const canal = document.getElementById('fd-canal').value;
+  const m = currentMonth;
+  const data = buildDispersaoData(m).filter(r => !canal || r.canal === canal);
+
+  document.getElementById('fd-count').textContent = data.length + ' processo(s)';
+
+  // KPIs
+  const totalQ4 = data.reduce((s,r) => s + r.q4count, 0);
+  const totalVol = data.reduce((s,r) => s + r.vol, 0);
+  const worstProc = data[0] || {};
+  const chatData = data.filter(r => r.canal.includes('CHAT'));
+  const c2cData  = data.filter(r => r.canal.includes('C2C'));
+  const avgQ4Chat = chatData.length ? round2(chatData.reduce((s,r)=>s+r.tmo_q4,0)/chatData.length) : 0;
+  const avgQ4C2C  = c2cData.length  ? round2(c2cData.reduce((s,r)=>s+r.tmo_q4,0)/c2cData.length)  : 0;
+  const mes = m === '2026-04' ? 'Abril 2026' : 'Maio 2026 ⚡';
+
+  document.getElementById('disp-chart-title').innerHTML =
+    `📊 Dispersão TMO por Processo — Q1 → Q4 · ${mes} <span style="font-size:11px;font-weight:400;color:#6c757d"> · cada ponto = processo×canal · tamanho = volume · cor = nível de desvio</span>`;
+
+  document.getElementById('disp-kpis').innerHTML = `
+    <div class="kpi red"><div class="kpi-lbl">Processo mais ofensor</div>
+      <div class="kpi-val" style="font-size:14px">${worstProc.proc || '—'}</div>
+      <div class="kpi-sub">${worstProc.q4count || 0} reps Q4 · ${worstProc.canal || ''}</div></div>
+    <div class="kpi red"><div class="kpi-lbl">TMO Q4 Médio — CHAT</div>
+      <div class="kpi-val">${avgQ4Chat} min</div>
+      <div class="kpi-sub">média dos processos CHAT em Q4</div></div>
+    <div class="kpi yellow"><div class="kpi-lbl">TMO Q4 Médio — C2C</div>
+      <div class="kpi-val">${avgQ4C2C} min</div>
+      <div class="kpi-sub">média dos processos C2C em Q4</div></div>
+    <div class="kpi gray"><div class="kpi-lbl">Total Reps Q4 × Processo</div>
+      <div class="kpi-val">${totalQ4}</div>
+      <div class="kpi-sub">ocorrências Q4 em ${data.length} processos</div></div>`;
+
+  // Gráfico de bolhas
+  const bubbleData = data.map(r => ({
+    x: r.tmo_geral,
+    y: r.tmo_q4 || r.tmo_geral,
+    r: Math.max(4, Math.min(20, r.vol / 200)),
+    proc: r.proc,
+    canal: r.canal,
+    q4: r.q4count,
+    meta: r.meta,
+    vol: r.vol
+  }));
+
+  // Separar por nível de desvio
+  const dsQ4  = bubbleData.filter(d => (d.y - d.meta) > 5);
+  const dsQ3  = bubbleData.filter(d => (d.y - d.meta) > 0 && (d.y - d.meta) <= 5);
+  const dsQ2  = bubbleData.filter(d => (d.y - d.meta) > -5 && (d.y - d.meta) <= 0);
+  const dsQ1  = bubbleData.filter(d => (d.y - d.meta) <= -5);
+
+  if (cDispersaoChart) { cDispersaoChart.destroy(); }
+  cDispersaoChart = new Chart(document.getElementById('cDispersao'), {
+    type: 'bubble',
+    data: {
+      datasets: [
+        {label:'Desvio alto (Q4)', data:dsQ4,  backgroundColor:'rgba(230,57,70,0.65)',  borderColor:'#e63946'},
+        {label:'Desvio médio (Q3)',data:dsQ3,  backgroundColor:'rgba(244,162,97,0.65)', borderColor:'#f4a261'},
+        {label:'Dentro da meta',   data:dsQ2,  backgroundColor:'rgba(69,123,157,0.65)', borderColor:'#457b9d'},
+        {label:'Abaixo da meta',   data:dsQ1,  backgroundColor:'rgba(45,198,83,0.65)',  borderColor:'#2dc653'},
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: {position:'bottom', labels:{font:{size:11}}},
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const d = ctx.raw;
+              return [`${d.proc} (${d.canal.replace('MULTICANAL ','')})`,'TMO geral: '+d.x.toFixed(2)+' min','TMO Q4: '+d.y.toFixed(2)+' min','Meta: '+d.meta+' min','Volume: '+d.vol,'Reps Q4: '+d.q4];
+            }
+          }
+        }
+      },
+      scales: {
+        x: { title:{display:true,text:'TMO Médio Geral (min)',font:{size:11}}, min:0 },
+        y: { title:{display:true,text:'TMO Médio Q4 (min)',font:{size:11}}, min:0 }
+      }
+    }
+  });
+
+  // Tabela ranking
+  const tb = document.getElementById('tbody-dispersao-rank');
+  const sorted = [...data].sort((a,b) => b.q4count - a.q4count || b.devQ4 - a.devQ4);
+  tb.innerHTML = sorted.map((r,i) => {
+    if (!r.q4count) return '';
+    const meta = r.meta || 0;
+    const pct = r.vol > 0 ? ((r.q4count / r.vol) * 100).toFixed(1) : '—';
+    const pctBar = `<div style="display:flex;align-items:center;gap:6px">
+      <div style="width:60px;height:6px;background:#f0f2f5;border-radius:3px;overflow:hidden">
+        <div style="width:${Math.min(parseFloat(pct),100)}%;height:100%;background:${parseFloat(pct)>20?'#e63946':parseFloat(pct)>10?'#f4a261':'#2dc653'};border-radius:3px"></div>
+      </div><strong>${pct}%</strong></div>`;
+    return `<tr>
+      <td><strong>${i+1}º</strong></td>
+      <td>${r.proc}</td>
+      <td>${canalBadge(r.canal)}</td>
+      <td><strong style="color:#e63946">${r.q4count}</strong></td>
+      <td class="${r.tmo_q4>meta?'pos':''}">${r.tmo_q4>0?r.tmo_q4.toFixed(2)+' min':'—'}</td>
+      <td><span style="background:#e8f4f8;color:#0077b6;padding:2px 6px;border-radius:4px;font-size:11px">${meta>0?meta+' min':'—'}</span></td>
+      <td>${devFmt(r.devQ4)}</td>
+      <td>${r.vol.toLocaleString('pt-BR')}</td>
+      <td>${pctBar}</td>
+    </tr>`;
+  }).filter(Boolean).join('');
 }
 
 // ---- EVOLUÇÃO SEMANAL ----
@@ -3067,6 +3284,7 @@ function setMonth(m) {
   filterProdu();
   filterEvolucao();
   computeEvolucaoKPIs(m);
+  renderDispersao();
   renderExecSummary(m);
   filterEstilo();
   updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
@@ -3147,6 +3365,7 @@ populateQ4Filters(); filterQ4();
 filterMulti();
 filterEvolucao();
 computeEvolucaoKPIs('2026-04');
+renderDispersao();
 updateAllKpis('2026-04');
 renderExecSummary('2026-04');
 filterEstilo();
