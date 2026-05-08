@@ -138,7 +138,7 @@ tr:last-child td { border-bottom: none; }
     <h1>📊 TMO/PRODU - Publicações</h1>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
-    <div class="badge">META: CHAT ~39 min · C2C ~21 min</div>
+    <div class="badge">META: CHAT 27,54 min · C2C 21,31 min</div>
     <div id="last-updated" style="font-size:11px;opacity:0.6"></div>
   </div>
 </header>
@@ -1423,14 +1423,14 @@ function showPage(id, el) {
 // ---- DADOS MAIO 2026 ----
 // Valores validados contra pipeline HALO (CONSOLIDADO_KPI_LDAP)
 // Meta oficial ponderada por volume: CHAT ~39.58 min, C2C ~21.31 min → global ~35.6 min
-const META_CHAT = 39.58, META_C2C = 21.31, META_GLOBAL = 35.6;
+const META_CHAT = 27.54, META_C2C = 21.31, META_GLOBAL = 26.0;
 const KPIS = {
-  '2026-04': {tmo:28.78, tmoCaso:null, volume:21525, reps:60, desvio:-6.82, pct:19.1, label:'Abril 2026', partial:false},
-  '2026-05': {tmo:27.34, tmoCaso:null, volume:3598,  reps:51, desvio:0.34, pct:1.3, label:'Maio 2026', partial:true}
+  '2026-04': {tmo:28.78, tmoCaso:null, volume:21525, reps:60, desvio:2.78, pct:10.7, label:'Abril 2026', partial:false},
+  '2026-05': {tmo:27.34, tmoCaso:null, volume:3598,  reps:51, desvio:1.34, pct:5.2, label:'Maio 2026', partial:true}
 };
 const CANAL_DATA = {
   '2026-04': [{c:'MULTICANAL CHAT',v:17180,t:29.24,d:2.24},{c:'MULTICANAL C2C',v:4345,t:26.98,d:-0.02}],
-  '2026-05': [{c:'MULTICANAL CHAT',v:2749,t:27.83,d:0.83},{c:'MULTICANAL C2C',v:849,t:25.77,d:-1.23}]
+  '2026-05': [{c:'MULTICANAL CHAT',v:2749,t:28.83,d:1.29},{c:'MULTICANAL C2C',v:849,t:25.77,d:-1.23}]
 };
 const LIDER_DATA = {
   '2026-04': [{l:'isabmot',t:33.35},{l:'bkaroline',t:29.17},{l:'alicarvalho',t:28.33},{l:'lrossetto C2C',t:26.98},{l:'thaidossanto',t:26.60}],
@@ -2885,7 +2885,7 @@ function setMonth(m) {
   cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>27?'#e63946':'#2dc653');
   cLiderChart.data.datasets[1].data = ld.map(r=>r.l.includes('C2C')?21.31:39.58);
   cCanalChart.data.labels = CANAL_DATA[m].map(r=>r.c);
-  cCanalChart.data.datasets[1].data = m==='2026-04' ? [39.58,21.31] : [39.58,21.31];
+  cCanalChart.data.datasets[1].data = m==='2026-04' ? [27.54,21.31] : [27.54,21.31];
   cLiderChart.update();
   cCanalChart.update();
   // atualiza todas as abas
@@ -2919,7 +2919,7 @@ cCanalChart = new Chart(document.getElementById('cCanal'),{
     labels:['MULTICANAL CHAT','MULTICANAL C2C'],
     datasets:[
       {label:'TMO (min)',data:[29.24,26.98],backgroundColor:['#457b9d','#e76f51'],borderRadius:6},
-      {label:'Meta Oficial',data:[39.58,21.31],type:'line',borderColor:'#e63946',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+      {label:'Meta Oficial',data:[27.54,21.31],type:'line',borderColor:'#e63946',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
     ]
   },
   options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:35,grid:{color:'#f0f0f0'}}}}
