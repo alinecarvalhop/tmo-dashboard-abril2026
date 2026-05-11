@@ -185,7 +185,7 @@ tr:last-child td { border-bottom: none; }
   <!-- NÚMEROS GERAIS -->
   <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
     <div class="kpi red">
-      <div class="kpi-lbl">TMO Geral — Publicações</div>
+      <div class="kpi-lbl" id="kpi-tmo-geral-lbl">TMO Geral — Publicações</div>
       <div class="kpi-val" id="kpi-tmo">28,78</div>
       <div class="kpi-sub" id="kpi-tmo-sub" style="color:#e63946;font-weight:700">+6,6% vs meta</div>
     </div>
@@ -6797,6 +6797,8 @@ function setFila(fila) {
   const meta = FILAS_META[fila];
   document.getElementById('header-title').textContent = info.label;
   document.getElementById('meta-badge').textContent = 'META: CHAT '+meta.chat+' min · C2C '+meta.c2c+' min';
+  const _lbl = document.getElementById('kpi-tmo-geral-lbl');
+  if (_lbl) _lbl.textContent = fila==='publi' ? 'TMO Geral — Publicações' : 'TMO Geral — '+info.short;
   populateQuartilFilters();
   populateToqueFilters();
   populateProduFilters();
