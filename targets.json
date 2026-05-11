@@ -1,19 +1,67 @@
 {
-  "_info": "Atualizar quando grid.adminml.com mostrar novos targets. Source: https://grid.adminml.com/d/01KQ7PT60VCDG3Q91HA8M1YQG0/view",
+  "_info": "Source: https://grid.adminml.com/d/01KQ7PT60VCDG3Q91HA8M1YQG0/view",
   "_updated": "2026-05-10",
+  "_note": "Canais CHAT/C2C confirmados do grid. Processos Publi confirmados do grid. Processos Vendas/ME: estimados pela proporcao (target_global/tmo_real) ate confirmacao.",
   "BR_Publicaciones_Sellers_Mature": {
     "chat": 27.54,
     "c2c": 19.73,
-    "global": 26.0
+    "global": 26.0,
+    "processos": {
+      "Reputación|MULTICANAL CHAT": 38.17,
+      "Reputación|MULTICANAL C2C": 20.08,
+      "Gestión de Publicación|MULTICANAL CHAT": 40.92,
+      "Gestión de Publicación|MULTICANAL C2C": 20.63,
+      "Reputación ME|MULTICANAL CHAT": 38.47,
+      "Reputación ME|MULTICANAL C2C": 22.73,
+      "Potenciar Ventas|MULTICANAL CHAT": 41.58,
+      "Potenciar Ventas|MULTICANAL C2C": 22.38,
+      "PR - Propiedad intelectual|MULTICANAL CHAT": 41.73,
+      "PR - Propiedad intelectual|MULTICANAL C2C": 24.03,
+      "PR - Técnica prohibida|MULTICANAL CHAT": 39.07,
+      "PR - Técnica prohibida|MULTICANAL C2C": 22.65,
+      "PR - Artículos prohibidos|MULTICANAL CHAT": 45.73,
+      "PR - Artículos prohibidos|MULTICANAL C2C": 22.18,
+      "Antes de publicar|MULTICANAL CHAT": 39.82,
+      "Antes de publicar|MULTICANAL C2C": 19.72,
+      "Calidad de foto|MULTICANAL CHAT": 33.22,
+      "Calidad de foto|MULTICANAL C2C": 15.48
+    }
   },
   "BR_Ventas_Sellers_Mature": {
     "chat": 28.89,
     "c2c": 16.91,
-    "global": 24.0
+    "global": 24.0,
+    "processos": {
+      "Post Compra Funcionalidades Vendedor|MULTICANAL C2C": 17.8,
+      "Reputación|MULTICANAL C2C": 14.78,
+      "Reputación ME|MULTICANAL C2C": 14.7,
+      "Asignación del contáctanos Mature Ventas|MULTICANAL C2C": 23.68,
+      "Post Compra Funcionalidades Vendedor|MULTICANAL CHAT": 28.47,
+      "Reputación|MULTICANAL CHAT": 29.27,
+      "Reputación ME|MULTICANAL CHAT": 30.03,
+      "Asignación del contáctanos Mature Ventas|MULTICANAL CHAT": 34.28
+    }
   },
   "BR_ME_Sellers_Mature": {
     "chat": 22.0,
     "c2c": 17.0,
-    "global": 20.5
+    "global": 20.5,
+    "processos": {
+      "Despacho Ventas y Publicaciones|MULTICANAL C2C": 16.3,
+      "Gestiones Operativas|MULTICANAL C2C": 15.53,
+      "Reputación|MULTICANAL C2C": 17.2,
+      "Reversa|MULTICANAL C2C": 18.51,
+      "Asignación del contáctanos Mature ME|MULTICANAL C2C": 19.71,
+      "Reputación ME|MULTICANAL C2C": 17.6,
+      "Viaje del paquete - Vendedor|MULTICANAL C2C": 18.84,
+      "Despacho Ventas y Publicaciones|MULTICANAL CHAT": 21.43,
+      "Reputación|MULTICANAL CHAT": 22.83,
+      "Gestiones Operativas|MULTICANAL CHAT": 22.52,
+      "Reversa|MULTICANAL CHAT": 19.45,
+      "Reputación ME|MULTICANAL CHAT": 23.35,
+      "Viaje del paquete - Vendedor|MULTICANAL CHAT": 24.53,
+      "Asignación del contáctanos Mature ME|MULTICANAL CHAT": 22.07,
+      "Asignacion del Contactanos ME Pre Despacho Top ON|MULTICANAL CHAT": 20.88
+    }
   }
 }

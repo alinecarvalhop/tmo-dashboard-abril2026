@@ -261,21 +261,12 @@ def get_processo_data_js(queue_name, mes_ini, meta_chat, meta_c2c):
         GROUP BY 1,2 ORDER BY tmo DESC
         LIMIT 50
     """, max_rows=100)
-    META_PROC_PUBLI = {
-        "Reputación|MULTICANAL CHAT": 38.17, "Reputación|MULTICANAL C2C": 20.08,
-        "Gestión de Publicación|MULTICANAL CHAT": 40.92, "Gestión de Publicación|MULTICANAL C2C": 20.63,
-        "Reputación ME|MULTICANAL CHAT": 38.47, "Reputación ME|MULTICANAL C2C": 22.73,
-        "Potenciar Ventas|MULTICANAL CHAT": 41.58, "Potenciar Ventas|MULTICANAL C2C": 22.38,
-        "PR - Propiedad intelectual|MULTICANAL CHAT": 41.73, "PR - Propiedad intelectual|MULTICANAL C2C": 24.03,
-        "PR - Técnica prohibida|MULTICANAL CHAT": 39.07, "PR - Técnica prohibida|MULTICANAL C2C": 22.65,
-        "PR - Artículos prohibidos|MULTICANAL CHAT": 45.73, "PR - Artículos prohibidos|MULTICANAL C2C": 22.18,
-        "Antes de publicar|MULTICANAL CHAT": 39.82, "Antes de publicar|MULTICANAL C2C": 19.72,
-        "Calidad de foto|MULTICANAL CHAT": 33.22, "Calidad de foto|MULTICANAL C2C": 15.48,
-    }
+    # Process-level targets: read from targets.json
+    proc_targets = TARGETS.get(queue_name, {}).get("processos", {})
     lines = []
     for r in rows:
         key = f"{r['proc']}|{r['canal']}"
-        meta = META_PROC_PUBLI.get(key, meta_chat if "CHAT" in r["canal"] else meta_c2c)
+        meta = proc_targets.get(key, meta_chat if "CHAT" in r["canal"] else meta_c2c)
         dev = round(fmt(r["tmo"]) - meta, 2)
         proc = r["proc"].replace("'", "\\'")
         lines.append(f"  {{proc:'{proc}',canal:'{r['canal']}',vol:{r['vol']},tmo:{r['tmo']},meta:{meta},dev:{dev},min:0,max:0}},")
