@@ -1,7 +1,7 @@
 {
   "_info": "Source: https://grid.adminml.com/d/01KQ7PT60VCDG3Q91HA8M1YQG0/view",
   "_updated": "2026-05-10",
-  "_note": "Canais CHAT/C2C confirmados do grid. Processos Publi confirmados do grid. Processos Vendas/ME: estimados pela proporcao (target_global/tmo_real) ate confirmacao.",
+  "_note": "Canais CHAT/C2C confirmados do grid. Processos Publi confirmados do grid. ME CHAT/C2C confirmados do grid (screenshots 2026-05-10). Processos ME recalculados com ratio correto. Processos Vendas estimados - aguardando confirmacao.",
   "BR_Publicaciones_Sellers_Mature": {
     "chat": 27.54,
     "c2c": 19.73,
@@ -43,25 +43,25 @@
     }
   },
   "BR_ME_Sellers_Mature": {
-    "chat": 22.0,
-    "c2c": 17.0,
-    "global": 20.5,
+    "chat": 29.29,
+    "c2c": 11.9,
+    "global": 22.31,
     "processos": {
-      "Despacho Ventas y Publicaciones|MULTICANAL C2C": 16.3,
-      "Gestiones Operativas|MULTICANAL C2C": 15.53,
-      "Reputación|MULTICANAL C2C": 17.2,
-      "Reversa|MULTICANAL C2C": 18.51,
-      "Asignación del contáctanos Mature ME|MULTICANAL C2C": 19.71,
-      "Reputación ME|MULTICANAL C2C": 17.6,
-      "Viaje del paquete - Vendedor|MULTICANAL C2C": 18.84,
-      "Despacho Ventas y Publicaciones|MULTICANAL CHAT": 21.43,
-      "Reputación|MULTICANAL CHAT": 22.83,
-      "Gestiones Operativas|MULTICANAL CHAT": 22.52,
-      "Reversa|MULTICANAL CHAT": 19.45,
-      "Reputación ME|MULTICANAL CHAT": 23.35,
-      "Viaje del paquete - Vendedor|MULTICANAL CHAT": 24.53,
-      "Asignación del contáctanos Mature ME|MULTICANAL CHAT": 22.07,
-      "Asignacion del Contactanos ME Pre Despacho Top ON|MULTICANAL CHAT": 20.88
+      "Asignacion del Contactanos ME Pre Despacho Top ON|MULTICANAL CHAT": 27.8,
+      "Asignación del contáctanos Mature ME|MULTICANAL C2C": 13.8,
+      "Asignación del contáctanos Mature ME|MULTICANAL CHAT": 29.38,
+      "Despacho Ventas y Publicaciones|MULTICANAL C2C": 11.42,
+      "Despacho Ventas y Publicaciones|MULTICANAL CHAT": 28.53,
+      "Gestiones Operativas|MULTICANAL C2C": 10.87,
+      "Gestiones Operativas|MULTICANAL CHAT": 29.98,
+      "Reputación ME|MULTICANAL C2C": 12.32,
+      "Reputación ME|MULTICANAL CHAT": 31.09,
+      "Reputación|MULTICANAL C2C": 12.04,
+      "Reputación|MULTICANAL CHAT": 30.39,
+      "Reversa|MULTICANAL C2C": 12.96,
+      "Reversa|MULTICANAL CHAT": 25.89,
+      "Viaje del paquete - Vendedor|MULTICANAL C2C": 13.19,
+      "Viaje del paquete - Vendedor|MULTICANAL CHAT": 32.65
     }
   }
 }
