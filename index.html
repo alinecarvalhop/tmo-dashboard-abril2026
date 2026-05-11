@@ -935,18 +935,6 @@ tr:last-child td { border-bottom: none; }
         <label>Representante</label>
         <select id="fest2-rep" onchange="filterEstiloCasos()">
           <option value="">Todos</option>
-          <option>adysantos</option>
-          <option>albarbosa</option>
-          <option>amarquini</option>
-          <option>camcsilva</option>
-          <option>cccsousa</option>
-          <option>ccnnasciment</option>
-          <option>gabrielaaiol</option>
-          <option>giselesosant</option>
-          <option>kavalle</option>
-          <option>kroza</option>
-          <option>ulissouza</option>
-          <option>vitnasciment</option>
         </select>
       </div>
       <div class="filter-group">
@@ -2444,9 +2432,16 @@ const ME_estiloData = [
 
 // ---- TMO × ESTILO MELI ----
 function populateEstiloCasosProc() {
+  const selProc = document.getElementById('fest2-proc');
+  const selRep  = document.getElementById('fest2-rep');
+  if (!selProc || !selRep) return;
+  selProc.innerHTML = '<option value="">Todos</option>';
+  selRep.innerHTML  = '<option value="">Todos</option>';
+  if (currentFila !== 'publi') return;
   const procs = [...new Set(estiloCasosData.map(r=>r.proc))].sort();
-  const sel = document.getElementById('fest2-proc');
-  procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sel.appendChild(o); });
+  const reps  = [...new Set(estiloCasosData.map(r=>r.rep))].sort();
+  procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; selProc.appendChild(o); });
+  reps.forEach(r=>{  const o=document.createElement('option'); o.value=r; o.textContent=r; selRep.appendChild(o);  });
 }
 
 function filterEstiloCasos() {
@@ -2532,6 +2527,9 @@ function populateCorrelacaoFilters() {
   const procs = [...new Set(src.map(r=>r.proc))].sort();
   const sr = document.getElementById('fnps-rep');
   const sp = document.getElementById('fnps-proc');
+  if (!sr || !sp) return;
+  sr.innerHTML = '<option value="">Todos</option>';
+  sp.innerHTML = '<option value="">Todos</option>';
   reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sr.appendChild(o); });
   procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sp.appendChild(o); });
 }
@@ -2644,6 +2642,8 @@ function renderProdTime() {
 function populateProdTipoReps() {
   const reps = [...new Set(getProdTData().map(r=>r.rep))].sort();
   const sel = document.getElementById('fpt-rep');
+  if (!sel) return;
+  sel.innerHTML = '<option value="">Todos</option>';
   reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sel.appendChild(o); });
 }
 
@@ -3442,10 +3442,18 @@ function filterToque() {
 }
 
 function populateCasosFilters() {
+  if (currentFila !== 'publi') {
+    const sr = document.getElementById('fc-rep'); if (sr) sr.innerHTML = '<option value="">Todos</option>';
+    const sp = document.getElementById('fc-proc'); if (sp) sp.innerHTML = '<option value="">Todos</option>';
+    return;
+  }
   const reps  = [...new Set(casosAltoToque.map(r=>r.rep))].sort();
   const procs = [...new Set(casosAltoToque.map(r=>r.proc))].sort();
   const sr = document.getElementById('fc-rep');
   const sp = document.getElementById('fc-proc');
+  if (!sr || !sp) return;
+  sr.innerHTML = '<option value="">Todos</option>';
+  sp.innerHTML = '<option value="">Todos</option>';
   reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sr.appendChild(o); });
   procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sp.appendChild(o); });
 }
@@ -5828,6 +5836,7 @@ function setMonth(m) {
   renderDispersao();
   populateSolucoesFilters(); renderSolucoesQ4();
   renderExecSummary(m);
+  populateEstiloCasosProc(); filterEstiloCasos();
   filterEstilo();
   updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
 
@@ -5868,7 +5877,9 @@ function setFila(fila) {
   populateProdTFilters();
   populateMultiFilters();
   populateEvolucaoFilters();
+  populateCasosFilters();
   populateCasosFiltersLider();
+  populateEstiloCasosProc();
   setMonth(currentMonth);
 }
 
