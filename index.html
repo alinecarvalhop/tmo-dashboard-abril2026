@@ -2132,8 +2132,8 @@ const VENTAS_EXEC_SUMMARY = {
 
 const ME_EXEC_SUMMARY = {
   '2026-04': [
-    {peso:1, cor:'#2dc653', icon:'🟢', titulo:'CHAT TMO bem abaixo da meta (23,1 min vs 29,3 min)',
-     texto:'Canal CHAT com <strong>TMO médio 23,1 min — 21% abaixo da meta</strong>. Fila mais eficiente das 3 colas. Produtividade média 4,56 (vs 3,59 Vendas). Performance referência para as demais filas.'},
+    {peso:1, cor:'#2dc653', icon:'🟢', titulo:'CHAT TMO bem abaixo da meta (23,1 min vs meta 29,3 min)',
+     texto:'Canal CHAT com <strong>TMO médio 23,1 min — 21% abaixo da meta de 29,3 min</strong>. Produtividade média 4,56 · NPS CHAT 63,9% acima da meta 62%. Desempenho consistente em todos os indicadores da fila.'},
     {peso:2, cor:'#e63946', icon:'🔴', titulo:'nherreratorr — Multi-ofensor CHAT (11 processos, 46,1 min)',
      texto:'TMO <strong>46,1 min</strong> em <strong>11 processos diferentes</strong>. Maior multi-ofensor da fila ME. Gap transversal — requer plano de desenvolvimento individual urgente.'},
     {peso:3, cor:'#e63946', icon:'🔴', titulo:'midalgo — Rep NEWBIE crítico (36,3 min, 409 contatos)',
@@ -2152,8 +2152,8 @@ const ME_EXEC_SUMMARY = {
      texto:'C2C subiu para 12,7 min vs meta 11,9 min (+0,84 min, +7%). Monitorar: pode ser impacto sazonal ou mudança de mix de processos. pgomezrincon é o principal outlier C2C.'},
     {peso:3, cor:'#f4a261', icon:'🟡', titulo:'Manter foco em NEWBIEs — gap de NPS persiste',
      texto:'NEWBIEs com NPS 36% em Abril vs EXPERTs 65,2%. Garantir que acompanhamento de onboarding continue em Maio para manter/melhorar a tendência positiva do NPS geral.'},
-    {peso:4, cor:'#457b9d', icon:'🔵', titulo:'Fila ME — Melhor desempenho geral das 3 colas',
-     texto:'Produtividade 4,56, NPS acima das metas, TMO CHAT 21% abaixo da meta. Usar como benchmark para identificar boas práticas replicáveis em Vendas e Publicações.'},
+    {peso:4, cor:'#457b9d', icon:'🔵', titulo:'Tendência positiva — Manter e evoluir o padrão',
+     texto:'Produtividade 4,56, NPS acima das metas, TMO CHAT 21% abaixo da meta. Foco em manter o nível de EXPERT e acelerar o desenvolvimento de NEWBIEs para preservar o padrão alcançado.'},
   ]
 };
 
@@ -2336,10 +2336,10 @@ const DIAG_CONTENT = {
       <h3>🟢 <span class="tag-green">REFERÊNCIA</span> CHAT TMO 21% abaixo da meta (23,1 vs 29,3 min)</h3>
       <ul>
         <li><strong>CHAT TMO:</strong> 23,1 min vs meta 29,3 min · 43.354 contatos</li>
-        <li><strong>Produtividade:</strong> 4,56 — melhor das 3 filas Mature</li>
+        <li><strong>Produtividade:</strong> 4,56 (média da fila)</li>
         <li><strong>NPS CHAT:</strong> 63,9% vs meta 62% ✅</li>
       </ul>
-      <p style="margin-top:10px"><strong>Destaque:</strong> ME demonstra que é possível ter TMO baixo + NPS acima da meta simultaneamente. Principal benchmark para Publicações e Vendas. Investigar boas práticas para replicação.</p>
+      <p style="margin-top:10px"><strong>Destaque:</strong> TMO baixo e NPS acima da meta simultaneamente — todos os indicadores dentro dos objetivos. Manter foco na consistência e no desenvolvimento dos NEWBIEs para sustentar o resultado.</p>
     </div>
     <div class="diag-card">
       <h3>🔴 <span class="tag-red">CRÍTICO</span> nherreratorr — Multi-ofensor (11 processos, 46,1 min)</h3>
@@ -2372,7 +2372,7 @@ const DIAG_CONTENT = {
       <ul>
         <li><strong>NEWBIE NPS:</strong> 36,0% · 25 surveys</li>
         <li><strong>EXPERT NPS:</strong> 65,2% · 437 surveys</li>
-        <li>Gap de 29pp — maior diferença entre seniority das 3 filas</li>
+        <li>Gap de 29pp — sinaliza necessidade de reforço no programa de desenvolvimento</li>
       </ul>
       <p style="margin-top:10px"><strong>Causa:</strong> NEWBIEs não estão preparados para resolver casos complexos de ME (Reputación, Despacho) com a mesma qualidade que EXPERTs. Revisão do programa de onboarding necessária.</p>
     </div>
@@ -2393,7 +2393,7 @@ const DIAG_CONTENT = {
         <tr><td>Realocar volume de midalgo — reduzir exposição a Reputación até estabilizar TMO</td><td>WFM + beabarbosa</td><td>Imediato</td><td><span class="tag-red">URGENTE</span></td></tr>
         <tr><td>Monitorar pgomezrincon C2C — verificar se tendência de alta persiste em Maio</td><td>issaraiva</td><td>Semanal</td><td><span class="tag-yellow">ALTO</span></td></tr>
         <tr><td>Revisão do onboarding NEWBIE: incluir módulo específico de Reputación e Despacho ME</td><td>T&amp;D + Líderes ME</td><td>30/05</td><td><span class="tag-yellow">ALTO</span></td></tr>
-        <tr><td>Mapear boas práticas ME CHAT para compartilhar com Vendas e Publicações</td><td>Coord. Operações</td><td>20/05</td><td><span class="tag-yellow">ALTO</span></td></tr>
+        <tr><td>Documentar boas práticas internas do CHAT para replicar nos grupos com maior desvio</td><td>Coord. Operações</td><td>20/05</td><td><span class="tag-yellow">ALTO</span></td></tr>
       </tbody></table>
     </div>`
 };
