@@ -586,14 +586,7 @@ tr:last-child td { border-bottom: none; }
       <div class="tbl-wrap">
         <table>
           <thead><tr><th>Líder</th><th>Canal</th><th>Reps</th><th>Produtividade</th><th>TMO</th></tr></thead>
-          <tbody>
-            <tr><td><strong>bkaroline</strong></td><td><span class="chat">CHAT</span></td><td>12</td><td><strong style="font-size:16px">3,26</strong></td><td class="pos">29,34</td></tr>
-            <tr><td><strong>thaidossanto</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td><strong style="font-size:16px">3,21</strong></td><td class="neg">26,78</td></tr>
-            <tr><td><strong>lrossetto</strong></td><td><span class="c2c">C2C</span></td><td>1</td><td><strong style="font-size:16px">3,17</strong></td><td class="neg">20,78</td></tr>
-            <tr><td><strong>isabmot</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td><strong style="font-size:16px">3,11</strong></td><td class="pos">34,24</td></tr>
-            <tr><td><strong>alicarvalho</strong></td><td><span class="chat">CHAT</span></td><td>10</td><td><strong style="font-size:16px">2,66</strong></td><td class="pos">28,45</td></tr>
-            <tr><td><strong>lrossetto</strong></td><td><span class="mc2c">MC2C</span></td><td>18</td><td><strong style="font-size:16px">2,43</strong></td><td class="pos">28,80</td></tr>
-          </tbody>
+          <tbody id="tbody-produ-lider"></tbody>
         </table>
       </div>
     </div>
@@ -2612,6 +2605,34 @@ function pctBar(pct, cor) {
     +'<div style="width:80px;height:8px;background:#f0f2f5;border-radius:4px;overflow:hidden">'
     +'<div style="width:'+pct+'%;height:100%;background:'+cor+';border-radius:4px"></div></div>'
     +'<strong>'+pct+'%</strong></div>';
+}
+
+function renderProduLider() {
+  const tb = document.getElementById('tbody-produ-lider');
+  if (!tb) return;
+  const data = getProduData();
+  const map = {};
+  data.forEach(r => {
+    const key = r.lider + '|' + r.canal;
+    if (!map[key]) map[key] = {lider:r.lider,canal:r.canal,reps:0,produ_sum:0,tmo_sum:0};
+    map[key].reps++;
+    map[key].produ_sum += r.produ;
+    map[key].tmo_sum   += r.tmo;
+  });
+  const rows = Object.values(map).sort((a,b)=>(b.produ_sum/b.reps)-(a.produ_sum/a.reps));
+  const _mc = FILAS_META[currentFila].chat;
+  tb.innerHTML = rows.map(r => {
+    const produ = r.produ_sum / r.reps;
+    const tmo   = r.tmo_sum / r.reps;
+    const cls   = tmo > _mc ? 'pos' : 'neg';
+    return `<tr>
+      <td><strong>${r.lider}</strong></td>
+      <td>${canalBadge(r.canal)}</td>
+      <td>${r.reps}</td>
+      <td><strong style="font-size:16px">${produ.toFixed(2)}</strong></td>
+      <td class="${cls}">${tmo.toFixed(2)}</td>
+    </tr>`;
+  }).join('');
 }
 
 function renderProdTime() {
@@ -5339,8 +5360,9 @@ const VENTAS_STATS = {
       {lider:'bnavas',canal:'MULTICANAL C2C',reps:9,assigns:0,tmo:19.53,prod:9.32,np:10.21,hold:0.00,acw:0.57},
       {lider:'musantos',canal:'MULTICANAL C2C',reps:10,assigns:0,tmo:15.78,prod:6.92,np:8.86,hold:0.00,acw:0.35},
     ],
-    nps_canal: [],
-    nps_insight: 'Dados de NPS não disponíveis para BR_Ventas_Sellers_Mature.',
+    nps_canal: [{canal:'MULTICANAL CHAT',tmo:26.51,dev:'-2,38',nps:65.0,meta:55.6,status:'Acima da meta',surveys:20,insight:'CHAT NPS acima da meta em Maio. Amostra parcial.',bg:'#f0fdf4',cls:'q1'},
+      {canal:'MULTICANAL C2C',tmo:17.72,dev:'+0,81',nps:54.5,meta:56.3,status:'Abaixo da meta',surveys:11,insight:'C2C abaixo da meta — amostra reduzida',bg:'#fff5f5',cls:'q4'}],
+    nps_insight: 'Maio parcial — CHAT NPS 65% (acima da meta 55,6%). C2C 54,5% levemente abaixo da meta.',
   }
 };
 
@@ -5387,8 +5409,9 @@ const ME_STATS = {
       {lider:'referreira',canal:'MULTICANAL C2C',reps:8,assigns:0,tmo:12.48,prod:6.38,np:6.10,hold:0.00,acw:0.36},
       {lider:'nrocha',canal:'MULTICANAL C2C',reps:11,assigns:0,tmo:11.71,prod:6.54,np:5.17,hold:0.00,acw:0.48},
     ],
-    nps_canal: [],
-    nps_insight: 'Dados de NPS não disponíveis para BR_ME_Sellers_Mature.',
+    nps_canal: [{canal:'MULTICANAL CHAT',tmo:28.40,dev:'-0,89',nps:91.8,meta:62.0,status:'Acima da meta',surveys:49,insight:'CHAT NPS excepcional 91,8%. Amostra parcial.',bg:'#f0fdf4',cls:'q1'},
+      {canal:'MULTICANAL C2C',tmo:12.74,dev:'+0,84',nps:60.0,meta:45.4,status:'Acima da meta',surveys:10,insight:'C2C acima da meta. TMO levemente acima do target.',bg:'#f0fdf4',cls:'q1'}],
+    nps_insight: 'Maio parcial — CHAT NPS excepcional 91,8% (meta 62%). C2C também acima da meta (60% vs 45,4%).',
   }
 };
 
@@ -5614,7 +5637,7 @@ function setMonth(m) {
   buildRepsChart(m);
   filterToque();
   renderProdTime(); populateProdTipoReps(); filterProdTipo();
-  filterProdu();
+  filterProdu(); renderProduLider();
   filterEvolucao();
   computeEvolucaoKPIs(m);
   renderDispersao();
@@ -5804,7 +5827,7 @@ filterEstilo();
 populateEstiloCasosProc(); filterEstiloCasos();
 updateNpsKpis('2026-04'); populateCorrelacaoFilters(); filterCorrelacao();
 renderProdTime(); populateProdTipoReps(); filterProdTipo();
-populateProduFilters(); filterProdu();
+populateProduFilters(); filterProdu(); renderProduLider();
 populateToqueFilters(); filterToque();
 populateProdTFilters();
 populateCasosFilters(); populateCasosFiltersLider(); filterCasos();
