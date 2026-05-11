@@ -3027,8 +3027,8 @@ function buildEvolucaoData() {
 
 function tmoCell(tmo) {
   if (tmo == null) return '<td style="color:#ccc;text-align:center">—</td>';
-  const bg = tmo > 35 ? '#f8d7da' : tmo > 27 ? '#fff3cd' : '#d4edda';
-  const color = tmo > 35 ? '#721c24' : tmo > 27 ? '#856404' : '#155724';
+  const _mc=FILAS_META[currentFila].chat; const bg = tmo > _mc*1.3 ? "#f8d7da" : tmo > _mc ? '#fff3cd' : '#d4edda';
+  const color = tmo > _mc*1.3 ? "#721c24" : tmo > _mc ? '#856404' : '#155724';
   return `<td style="background:${bg};color:${color};font-weight:700;text-align:center;border-radius:4px">${tmo.toFixed(1)}</td>`;
 }
 
@@ -3107,7 +3107,7 @@ function filterProdu() {
   if (!rows.length) { tb.innerHTML = emptyRow(5); return; }
   const max = rows[0].produ;
   tb.innerHTML = rows.map((r,i) => {
-    const tmoClass = r.tmo > 27 ? 'pos' : 'neg';
+    const tmoClass = r.tmo > FILAS_META[currentFila].chat ? 'pos' : 'neg';
     const bar = Math.round(r.produ / max * 100);
     const cor = r.produ >= 4 ? '#2dc653' : r.produ >= 3 ? '#457b9d' : r.produ >= 2 ? '#f4a261' : '#e63946';
     return `<tr>
