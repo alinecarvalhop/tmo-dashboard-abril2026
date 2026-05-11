@@ -1,0 +1,19 @@
+{
+  "_info": "Atualizar quando grid.adminml.com mostrar novos targets. Source: https://grid.adminml.com/d/01KQ7PT60VCDG3Q91HA8M1YQG0/view",
+  "_updated": "2026-05-10",
+  "BR_Publicaciones_Sellers_Mature": {
+    "chat": 27.54,
+    "c2c": 19.73,
+    "global": 26.0
+  },
+  "BR_Ventas_Sellers_Mature": {
+    "chat": 28.89,
+    "c2c": 16.91,
+    "global": 24.0
+  },
+  "BR_ME_Sellers_Mature": {
+    "chat": 22.0,
+    "c2c": 17.0,
+    "global": 20.5
+  }
+}
