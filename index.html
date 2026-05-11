@@ -339,19 +339,12 @@ tr:last-child td { border-bottom: none; }
         <label>Canal</label>
         <select id="f4-canal" onchange="filterQ4()">
           <option value="">Todos</option>
-          <option>CHAT</option>
-          <option>MC2C</option>
         </select>
       </div>
       <div class="filter-group">
         <label>Líder</label>
         <select id="f4-lider" onchange="filterQ4()">
           <option value="">Todos</option>
-          <option>lrossetto</option>
-          <option>isabmot</option>
-          <option>bkaroline</option>
-          <option>thaidossanto</option>
-          <option>alicarvalho</option>
         </select>
       </div>
       <div class="filter-group">
@@ -394,19 +387,12 @@ tr:last-child td { border-bottom: none; }
         <label>Canal</label>
         <select id="fm-canal" onchange="filterMulti()">
           <option value="">Todos</option>
-          <option>CHAT</option>
-          <option>MC2C</option>
         </select>
       </div>
       <div class="filter-group">
         <label>Líder</label>
         <select id="fm-lider" onchange="filterMulti()">
           <option value="">Todos</option>
-          <option>isabmot</option>
-          <option>bkaroline</option>
-          <option>thaidossanto</option>
-          <option>alicarvalho</option>
-          <option>lrossetto</option>
         </select>
       </div>
       <div class="filter-group">
@@ -482,11 +468,6 @@ tr:last-child td { border-bottom: none; }
         <label>Líder</label>
         <select id="ft-lider" onchange="filterToque()">
           <option value="">Todos</option>
-          <option>lrossetto</option>
-          <option>isabmot</option>
-          <option>bkaroline</option>
-          <option>thaidossanto</option>
-          <option>alicarvalho</option>
         </select>
       </div>
       <div class="filter-count" id="ft-count"></div>
@@ -515,11 +496,6 @@ tr:last-child td { border-bottom: none; }
         <label>Líder</label>
         <select id="fc-lider" onchange="filterCasos()">
           <option value="">Todos</option>
-          <option>lrossetto</option>
-          <option>isabmot</option>
-          <option>bkaroline</option>
-          <option>thaidossanto</option>
-          <option>alicarvalho</option>
         </select>
       </div>
       <div class="filter-group">
@@ -663,11 +639,6 @@ tr:last-child td { border-bottom: none; }
         <label>Líder</label>
         <select id="fp2-lider" onchange="filterProdu()">
           <option value="">Todos</option>
-          <option>bkaroline</option>
-          <option>alicarvalho</option>
-          <option>lrossetto</option>
-          <option>thaidossanto</option>
-          <option>isabmot</option>
         </select>
       </div>
       <div class="filter-count" id="fp2-count"></div>
@@ -704,11 +675,6 @@ tr:last-child td { border-bottom: none; }
         <label>Líder</label>
         <select id="fe-lider" onchange="filterEvolucao()">
           <option value="">Todos</option>
-          <option>bkaroline</option>
-          <option>alicarvalho</option>
-          <option>lrossetto</option>
-          <option>thaidossanto</option>
-          <option>isabmot</option>
         </select>
       </div>
       <div class="filter-group">
@@ -791,11 +757,6 @@ tr:last-child td { border-bottom: none; }
         <label>Líder</label>
         <select id="fpt-lider" onchange="filterProdTipo()">
           <option value="">Todos</option>
-          <option>bkaroline</option>
-          <option>alicarvalho</option>
-          <option>lrossetto</option>
-          <option>thaidossanto</option>
-          <option>isabmot</option>
         </select>
       </div>
       <div class="filter-group">
@@ -2988,6 +2949,11 @@ const solucoesQ4Data = [
 
 // ---- SOLUÇÕES OFENSORAS Q4 ----
 function populateSolucoesFilters() {
+  if (currentFila !== 'publi') {
+    const sr=document.getElementById('fd-sol-rep'); if(sr) sr.innerHTML='<option value="">Todos</option>';
+    const sp=document.getElementById('fd-sol-proc'); if(sp) sp.innerHTML='<option value="">Todos</option>';
+    return;
+  }
   const reps  = [...new Set(solucoesQ4Data.map(r=>r.rep))].sort();
   const procs = [...new Set(solucoesQ4Data.map(r=>r.proc))].sort();
   const sr = document.getElementById('fd-sol-rep');
@@ -3007,6 +2973,11 @@ function renderSolucoesQ4() {
   const pdMap = {};
   getProcessoData().forEach(pd => { pdMap[pd.proc+'|'+pd.canal] = pd.meta || 0; });
 
+  if (currentFila !== 'publi') {
+    const tb=document.getElementById('tbody-sol-q4');
+    if(tb) tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:#adb5bd;padding:20px">Soluções Q4 disponíveis apenas para BR_Publicaciones_Sellers_Mature.</td></tr>';
+    document.getElementById('fd-sol-count').textContent='0 ocorrência(s)'; return;
+  }
   let rows = solucoesQ4Data.filter(x =>
     (!c || x.canal === c) && (!r || x.rep === r) && (!p || x.proc === p)
   ).map(x => {
@@ -3212,6 +3183,11 @@ function filterCasos() {
   const l = document.getElementById('fc-lider').value;
   const r = document.getElementById('fc-rep').value;
   const p = document.getElementById('fc-proc').value;
+  if (currentFila !== 'publi') {
+    const tb=document.getElementById('tbody-casos');
+    if(tb) tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:#adb5bd;padding:20px">Casos de alto toque disponíveis apenas para BR_Publicaciones_Sellers_Mature.</td></tr>';
+    document.getElementById('fc-count').textContent='0 caso(s)'; return;
+  }
   const rows = casosAltoToque.filter(x =>
     (!c || x.canal===c) && (!l || x.lider===l) && (!r || x.rep===r) && (!p || x.proc===p)
   );
@@ -5322,11 +5298,10 @@ const SENIORITY_MAP = {
 
 // Lider lookup multi-fila usando dados do quartilData
 function getLiderJS(rep) {
-  // Primeiro tenta nos arrays das outras filas
-  const allQ = [...(currentFila==='ventas'?VENTAS_quartilData:currentFila==='me'?ME_quartilData:[])];
-  const found = allQ.find(r=>r.rep===rep);
+  const found = getQuartilData().find(r=>r.rep===rep);
   if (found && found.lider && found.lider!=='—') return found.lider;
-  // Fallback: mapeamento Publicações
+  if (currentFila !== 'publi') return '—';
+  // Fallback Publicações
   const bk="aldmelo,gbmontilha,blvicente,camcsilva,polivdaraujo,vdpiedade,fenunes,kroza,lecandido,czago,leibarcelos,maybalazshaz".split(",");
   const ac="stdiniz,cafarias,aaugustinho,lyalves,losouza,lianadsilva,phegoncalves,uizfsilva,marlaraujo,vfarias".split(",");
   const th="amcaldeira,kperrone,jamonteiro,marfreitas,cchimenez,ulissouza,casbarreiros,bemarques,acruz".split(",");
@@ -5509,6 +5484,9 @@ function setFila(fila) {
   populateToqueFilters();
   populateProduFilters();
   populateProdTFilters();
+  populateMultiFilters();
+  populateEvolucaoFilters();
+  populateCasosFiltersLider();
   setMonth(currentMonth);
 }
 
@@ -5534,6 +5512,37 @@ function populateProdTFilters() {
   const data = getProdTData();
   const liders = [...new Set(data.map(r=>r.lider).filter(Boolean))].sort();
   const sl = document.getElementById('fpt-lider');
+  if (!sl) return;
+  sl.innerHTML = '<option value="">Todos</option>';
+  liders.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sl.appendChild(o); });
+}
+
+function populateMultiFilters() {
+  const data = buildMultiData();
+  const canais = [...new Set(data.map(r=>r.canal))].sort();
+  const liders = [...new Set(data.map(r=>r.lider).filter(Boolean))].sort();
+  const sc = document.getElementById('fm-canal');
+  const sl = document.getElementById('fm-lider');
+  if (!sc || !sl) return;
+  sc.innerHTML = '<option value="">Todos</option>';
+  sl.innerHTML = '<option value="">Todos</option>';
+  canais.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; sc.appendChild(o); });
+  liders.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sl.appendChild(o); });
+}
+
+function populateEvolucaoFilters() {
+  const data = getSemanalRaw();
+  const liders = [...new Set(data.map(r=>r[1]).filter(Boolean))].sort();
+  const sl = document.getElementById('fe-lider');
+  if (!sl) return;
+  sl.innerHTML = '<option value="">Todos</option>';
+  liders.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sl.appendChild(o); });
+}
+
+function populateCasosFiltersLider() {
+  if (currentFila !== 'publi') return;
+  const liders = [...new Set(casosAltoToque.map(r=>r.lider).filter(Boolean))].sort();
+  const sl = document.getElementById('fc-lider');
   if (!sl) return;
   sl.innerHTML = '<option value="">Todos</option>';
   liders.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sl.appendChild(o); });
@@ -5620,7 +5629,9 @@ renderProdTime(); populateProdTipoReps(); filterProdTipo();
 populateProduFilters(); filterProdu();
 populateToqueFilters(); filterToque();
 populateProdTFilters();
-populateCasosFilters(); filterCasos();
+populateCasosFilters(); populateCasosFiltersLider(); filterCasos();
+populateMultiFilters();
+populateEvolucaoFilters();
 
 </script>
 </div><!-- /pages-wrap -->
