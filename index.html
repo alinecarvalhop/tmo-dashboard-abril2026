@@ -2529,7 +2529,7 @@ function notaBadge(n) {
 }
 
 function populateCorrelacaoFilters() {
-  const src   = currentMonth==='2026-04' ? detratoresData : MAY_detratoresData;
+  const src   = getDetratoresData(currentMonth);
   const reps  = [...new Set(src.map(r=>r.rep))].sort();
   const procs = [...new Set(src.map(r=>r.proc))].sort();
   const sr = document.getElementById('fnps-rep');
@@ -2557,17 +2557,11 @@ function updateNpsKpis(m) {
 }
 
 function filterCorrelacao() {
-  if (currentFila !== 'publi') {
-    const tb = document.getElementById('tbody-correlacao');
-    if (tb) tb.innerHTML = '<tr><td colspan="8" style="text-align:center;color:#adb5bd;padding:20px">Correlação TMO×NPS disponível apenas para BR_Publicaciones_Sellers_Mature.</td></tr>';
-    document.getElementById('fnps-count').textContent = '0 caso(s)';
-    return;
-  }
   const c  = document.getElementById('fnps-canal').value;
   const r  = document.getElementById('fnps-rep').value;
   const p  = document.getElementById('fnps-proc').value;
   const n  = document.getElementById('fnps-nota').value;
-  const src = currentMonth==='2026-04' ? detratoresData : MAY_detratoresData;
+  const src = getDetratoresData(currentMonth);
   let rows = src.filter(x => {
     if (c && x.canal !== c) return false;
     if (r && x.rep !== r)   return false;
@@ -3329,6 +3323,11 @@ function getEstiloData() {
 function getNpsKpis() {
   return currentFila==='ventas' ? VENTAS_NPS_KPIS : currentFila==='me' ? ME_NPS_KPIS : NPS_KPIS;
 }
+function getDetratoresData(m) {
+  if (currentFila==='ventas') return VENTAS_detratoresData;
+  if (currentFila==='me')     return ME_detratoresData;
+  return m==='2026-04' ? detratoresData : MAY_detratoresData;
+}
 
 function filterToque() {
   const c = document.getElementById('ft-canal').value;
@@ -3602,6 +3601,107 @@ const NPS_KPIS = {
     insight:'Maio parcial (1-8/05): Chat 60% vs meta 62% (abaixo). C2C 100% — volume baixo (3 surveys). Padrão de C2C superior ao Chat se mantém.'
   }
 };
+
+// ---- CASOS NPS DETRATORES VENDAS (Abril 2026) ----
+const VENTAS_detratoresData = [
+  {caso:'451506209',data:'20/04',rep:'nasousa',canal:'MULTICANAL CHAT',proc:'Reputación',nota:5,tmo:74.28,comentario:''},
+  {caso:'453148750',data:'28/04',rep:'cfurquim',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:2,tmo:74.13,comentario:'Me ajudou de nada'},
+  {caso:'448555518',data:'06/04',rep:'tolourenco',canal:'MULTICANAL CHAT',proc:'Reputación',nota:0,tmo:73.82,comentario:'péssima avaliação da minha venda'},
+  {caso:'451570893',data:'20/04',rep:'icoelho',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:2,tmo:67.57,comentario:''},
+  {caso:'453715833',data:'30/04',rep:'jhgoncalves',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:0,tmo:64.32,comentario:'O cliente quer devolver o produto, e por escolher errado na tratativa de devolução, nossa reputação foi prejudicada. O s'},
+  {caso:'448867640',data:'07/04',rep:'jebarros',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:0,tmo:61.00,comentario:'Acabamos de receber um golpe e o mercado livre está apoiando o BANDIDO'},
+  {caso:'450660878',data:'15/04',rep:'tamdias',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',nota:0,tmo:59.48,comentario:'Não solucionou o problema!'},
+  {caso:'448565362',data:'06/04',rep:'monteixeira',canal:'MULTICANAL CHAT',proc:'Reputación',nota:1,tmo:59.45,comentario:''},
+  {caso:'448128957',data:'02/04',rep:'jebarros',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:0,tmo:57.83,comentario:''},
+  {caso:'448837563',data:'07/04',rep:'abonfim',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:5,tmo:55.20,comentario:'Falou a mesma coisa que a IA, não agregou, porém muito educada'},
+  {caso:'452506896',data:'24/04',rep:'mafelix',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:6,tmo:53.67,comentario:'Atendente ótima, porém, problema não resolvido, infelizmente.'},
+  {caso:'450881215',data:'16/04',rep:'caddias',canal:'MULTICANAL CHAT',proc:'Reputación',nota:0,tmo:53.28,comentario:'a atendente não se prontificou a resolver o meu problema, agiu com sarcasmo e falta de educação.'},
+  {caso:'453415616',data:'29/04',rep:'calsiqueira',canal:'MULTICANAL CHAT',proc:'Reputación',nota:3,tmo:53.28,comentario:'Cliente fez uma reclamação improcedente, e o mercado livre não reconhece que o cliente reclamou do produto sem ter razão'},
+  {caso:'449161920',data:'08/04',rep:'tpaula',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:5,tmo:51.53,comentario:'meu problema não foi solucionado, apenas extendido'},
+  {caso:'448591878',data:'06/04',rep:'guiscarneiro',canal:'MULTICANAL CHAT',proc:'Reputación',nota:1,tmo:51.18,comentario:''},
+  {caso:'448621086',data:'06/04',rep:'aoliveiras',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:2,tmo:46.52,comentario:''},
+  {caso:'450272295',data:'14/04',rep:'aavviana',canal:'MULTICANAL CHAT',proc:'Reputación',nota:5,tmo:46.28,comentario:'Sempre pode melhorar.'},
+  {caso:'450674216',data:'15/04',rep:'tamdias',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:5,tmo:46.28,comentario:''},
+  {caso:'448682634',data:'06/04',rep:'pwpena',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:4,tmo:45.78,comentario:''},
+  {caso:'448800253',data:'07/04',rep:'caddias',canal:'MULTICANAL CHAT',proc:'Anulación de Venta',nota:0,tmo:44.83,comentario:'O sistema de compatibilidade não funciona e a atendente finge que tá ajudando mas te cansa 1 hora de bla bla bla pra não'},
+  {caso:'450364250',data:'14/04',rep:'caddias',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:1,tmo:44.25,comentario:'Não foi resolvido o meu problema mesmo enviando todas as evidencias necessárias'},
+  {caso:'451948600',data:'22/04',rep:'tatianesanto',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',nota:0,tmo:43.48,comentario:'Injusta com nós vendedores'},
+  {caso:'450605300',data:'15/04',rep:'tamdias',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:0,tmo:43.30,comentario:'Horrivel'},
+  {caso:'449344944',data:'09/04',rep:'rdlira',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:6,tmo:42.40,comentario:'Problema ainda não foi solucionado, estou no aguardo da solução! assim que for feito consigo avaliar 10!'},
+  {caso:'448125665',data:'02/04',rep:'mafelix',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:5,tmo:41.48,comentario:'Aguardo o reembolso'},
+  {caso:'450125868',data:'13/04',rep:'tamdias',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:4,tmo:40.57,comentario:'Não foi resolvido'},
+  {caso:'450271900',data:'14/04',rep:'ailoliveira',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:5,tmo:39.88,comentario:'não resolveu um problema que esta a meses parado, no qual o transporte do mercado livre extravio a mercadoria'},
+  {caso:'453743089',data:'30/04',rep:'martins',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:2,tmo:39.77,comentario:'A mensagem enviada foi simpatica e bem apresentada, porém citou que não condiz com código de defesa do consumidor.'},
+  {caso:'449822606',data:'13/04',rep:'tolourenco',canal:'MULTICANAL C2C',proc:'Reputación ME',nota:4,tmo:39.67,comentario:''},
+  {caso:'448620973',data:'06/04',rep:'ccalvalhan',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:6,tmo:37.03,comentario:'Otima atendiente merece um aumwnto de salario bem generoso'},
+  {caso:'452448734',data:'24/04',rep:'ailoliveira',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:0,tmo:36.23,comentario:'ridiculamente ruim, devolveram o valor de uma venda de mais de 5 mil reais mesmo o comprador ter recebido o produto!'},
+  {caso:'447962513',data:'01/04',rep:'tacosta',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:34.97,comentario:''},
+  {caso:'452984054',data:'27/04',rep:'addamico',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:3,tmo:34.38,comentario:'.'},
+  {caso:'452255920',data:'23/04',rep:'lmazelli',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:0,tmo:33.73,comentario:''},
+  {caso:'447937162',data:'01/04',rep:'addamico',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:32.87,comentario:'Impossivel resolver os problemas abrindo só um chamado, tem que ficar questinando no chat varias vezes até que o problem'},
+  {caso:'450272295',data:'14/04',rep:'aavviana',canal:'MULTICANAL CHAT',proc:'Reputación',nota:5,tmo:32.75,comentario:'Sempre pode melhorar.'},
+  {caso:'448577456',data:'06/04',rep:'ailbarbosa',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:3,tmo:31.18,comentario:'O atendente muito competente, porém limitado pelas burocracias da plataforma. O ML está perdendo a preferência pelos log'},
+  {caso:'453743089',data:'30/04',rep:'martins',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:2,tmo:21.63,comentario:'A mensagem enviada foi simpatica e bem apresentada, porém citou que não condiz com código de defesa do consumidor.'},
+  {caso:'451209499',data:'17/04',rep:'ailbarbosa',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:0,tmo:21.07,comentario:'não consegui resolver o problema'},
+  {caso:'450865558',data:'16/04',rep:'vbonilha',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:0,tmo:20.42,comentario:'O VENDEDOR SEMPRE É LESADO, MESMO COM TODAS AS PROVAS, ENCERRAM AS MEDIAÇÕES SEM NOS DAR CHANCE DE DEFESA.'},
+  {caso:'447934232',data:'01/04',rep:'siaraujo',canal:'MULTICANAL C2C',proc:'Reputación',nota:5,tmo:20.18,comentario:'continuei meu atendimento por ligação'},
+];
+
+// ---- CASOS NPS DETRATORES ME (Abril 2026) ----
+const ME_detratoresData = [
+  {caso:'447904312',data:'01/04',rep:'biasilva',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:5,tmo:72.12,comentario:'Demora no atendimento + de 25 min para iniciar o 1 contato'},
+  {caso:'451140187',data:'17/04',rep:'siddelima',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:0,tmo:67.60,comentario:'nao resvolveu meu problema e so fechou o chat'},
+  {caso:'452273679',data:'23/04',rep:'midalgo',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:0,tmo:66.38,comentario:'Não ajudou e não entendeu o problema, não indico.'},
+  {caso:'449312999',data:'10/04',rep:'junogueira',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:2,tmo:64.50,comentario:''},
+  {caso:'453693539',data:'30/04',rep:'brunaso',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:1,tmo:64.32,comentario:''},
+  {caso:'449142742',data:'08/04',rep:'jacisilva',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:3,tmo:56.73,comentario:''},
+  {caso:'449118448',data:'15/04',rep:'ledeoliveira',canal:'MULTICANAL C2C',proc:'Despacho Ventas y Publicaciones',nota:0,tmo:54.27,comentario:'Não resolveu nada!'},
+  {caso:'447883370',data:'01/04',rep:'jbmeneses',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:0,tmo:53.28,comentario:''},
+  {caso:'450093745',data:'13/04',rep:'rafrsilva',canal:'MULTICANAL CHAT',proc:'Reputación',nota:0,tmo:52.07,comentario:'Péssimo! Horrível! Tudo essa merda de IA! Uma bosta! Os atendentes nem analisam mais nada!'},
+  {caso:'450871504',data:'16/04',rep:'prpmmacedo',canal:'MULTICANAL CHAT',proc:'Gestiones Operativas',nota:1,tmo:50.27,comentario:'Não resolveram meu problema'},
+  {caso:'450348728',data:'14/04',rep:'esssferreira',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:0,tmo:50.23,comentario:'Não resolveu'},
+  {caso:'447970680',data:'01/04',rep:'cctavares',canal:'MULTICANAL CHAT',proc:'Reputación',nota:0,tmo:49.60,comentario:'Demora absurda de resposta de outro atendente quando deu problema e só pq eu cobrei'},
+  {caso:'448562554',data:'06/04',rep:'vivhsouza',canal:'MULTICANAL CHAT',proc:'Gestiones Operativas',nota:5,tmo:46.80,comentario:''},
+  {caso:'447941511',data:'01/04',rep:'kaumedeiros',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:0,tmo:46.40,comentario:'ESTÁ SENDO FEITO ATUALIZAÇÕES A CADA HORA. CADA HORA ESTÁ DE UM JEITO DIFERENTE E NADA É INFORMADO. PÉSSIMAS ATUALIZAÇÕE'},
+  {caso:'448111368',data:'02/04',rep:'ssgarcia',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:5,tmo:45.23,comentario:'Nao resolveram nada'},
+  {caso:'452015578',data:'22/04',rep:'welisboa',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:6,tmo:44.75,comentario:'foi bom'},
+  {caso:'450015244',data:'13/04',rep:'albezerra',canal:'MULTICANAL CHAT',proc:'Reversa',nota:4,tmo:44.55,comentario:'meu problema não foi resolvido. A plataforma não atualizou o rastreio como ENTREGUE e eu estou sem o produto e sem o val'},
+  {caso:'449388544',data:'09/04',rep:'luanunes',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:5,tmo:44.33,comentario:''},
+  {caso:'448111173',data:'02/04',rep:'savsouza',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:0,tmo:44.10,comentario:'Não oferece suporte necessário aos vendedores. Atendimento se nega a fazer o trabalho e atrasa tuso o que pode, nos prej'},
+  {caso:'451507472',data:'20/04',rep:'albezerra',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:5,tmo:42.68,comentario:''},
+  {caso:'449415463',data:'10/04',rep:'prfmarques',canal:'MULTICANAL CHAT',proc:'Gestiones Operativas',nota:0,tmo:41.63,comentario:'Atendentes quem leiam e interpretem o texto escrito. Parecem analfabetos funcionais. Estou há 10 dias com problemas no s'},
+  {caso:'452897696',data:'27/04',rep:'gaquintela',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:4,tmo:40.73,comentario:'Nao resovleu'},
+  {caso:'450664438',data:'15/04',rep:'yldamasceno',canal:'MULTICANAL CHAT',proc:'Reversa',nota:1,tmo:40.50,comentario:'Não resolveu meu problema'},
+  {caso:'453145612',data:'28/04',rep:'rafrsilva',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:4,tmo:39.25,comentario:''},
+  {caso:'449059267',data:'08/04',rep:'biasilva',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:5,tmo:39.10,comentario:''},
+  {caso:'449055958',data:'08/04',rep:'jacisilva',canal:'MULTICANAL CHAT',proc:'Reputación',nota:1,tmo:38.93,comentario:''},
+  {caso:'452890117',data:'27/04',rep:'miriaoliveir',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:2,tmo:36.78,comentario:'O atendente não ajudou a solucinar de forma positiva'},
+  {caso:'450858689',data:'16/04',rep:'yldamasceno',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:6,tmo:36.03,comentario:''},
+  {caso:'449151705',data:'08/04',rep:'ttaalencar',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:5,tmo:35.85,comentario:'O atendimento foi bom, a plataforma que é uma porcaria mesmo'},
+  {caso:'451140190',data:'17/04',rep:'cctavares',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:0,tmo:35.72,comentario:'Infelizmente a plataforma NUNCA resolveu nenhum problema relatado no chat.'},
+  {caso:'448673595',data:'06/04',rep:'mvezetiev',canal:'MULTICANAL CHAT',proc:'Reputación',nota:0,tmo:34.78,comentario:''},
+  {caso:'451506769',data:'20/04',rep:'gaquintela',canal:'MULTICANAL CHAT',proc:'Reputación',nota:0,tmo:34.62,comentario:''},
+  {caso:'449641455',data:'10/04',rep:'yldamasceno',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:0,tmo:33.68,comentario:''},
+  {caso:'453439235',data:'29/04',rep:'ssgarcia',canal:'MULTICANAL CHAT',proc:'Reputación',nota:3,tmo:33.18,comentario:''},
+  {caso:'448131355',data:'02/04',rep:'beloliveira',canal:'MULTICANAL CHAT',proc:'Reputación',nota:0,tmo:32.75,comentario:'Não concordo com a decisão. Escolhi apenas as reclamações em que realmente não houve erro da nossa parte, expliquei deta'},
+  {caso:'448823286',data:'07/04',rep:'jbmeneses',canal:'MULTICANAL CHAT',proc:'Reversa',nota:5,tmo:32.30,comentario:'BOA'},
+  {caso:'448650161',data:'06/04',rep:'mariangesant',canal:'MULTICANAL CHAT',proc:'Reputación',nota:0,tmo:31.15,comentario:'O Mercado Livre não respeita as próprias regras.'},
+  {caso:'453261132',data:'28/04',rep:'ttaalencar',canal:'MULTICANAL CHAT',proc:'Reversa',nota:0,tmo:30.57,comentario:'Cada reclamação por produto não entregue e não devolvido é me passada uma informação diferente, o prazo passado agora de'},
+  {caso:'450867450',data:'16/04',rep:'andrelopes',canal:'MULTICANAL CHAT',proc:'Reputación',nota:1,tmo:29.42,comentario:'Atendente não sabe o que faz'},
+  {caso:'448125234',data:'02/04',rep:'anajulirocha',canal:'MULTICANAL CHAT',proc:'Reputación',nota:3,tmo:28.72,comentario:'Falta de vontade'},
+  {caso:'448803811',data:'07/04',rep:'ffelippa',canal:'MULTICANAL CHAT',proc:'Reputación',nota:0,tmo:25.50,comentario:'mesmo com provas de que o anuncio foi pausado, não obtive ajuda e ainda encerrou o contato sem esperar minha resposta. M'},
+  {caso:'447944912',data:'01/04',rep:'yldamasceno',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:6,tmo:25.02,comentario:''},
+  {caso:'447977452',data:'01/04',rep:'alisilva',canal:'MULTICANAL CHAT',proc:'Reversa',nota:0,tmo:24.83,comentario:''},
+  {caso:'451623869',data:'22/04',rep:'lepessoa',canal:'MULTICANAL CHAT',proc:'Reversa',nota:0,tmo:24.42,comentario:'não me ajudou em nada, me recusou algo de meu direito, Mesmo eu estando dentro do prazo e com tudo legal. Horrível!'},
+  {caso:'449146307',data:'08/04',rep:'cctavares',canal:'MULTICANAL CHAT',proc:'Viaje del paquete - Vendedor',nota:3,tmo:23.43,comentario:'informações divergentes. Levou muito tempo para ter uma resposta.'},
+  {caso:'452485829',data:'24/04',rep:'siddelima',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:0,tmo:21.92,comentario:'não resolveu o poblema e aparentemente nem tentou'},
+  {caso:'448172827',data:'02/04',rep:'prfmarques',canal:'MULTICANAL CHAT',proc:'Reputación',nota:6,tmo:21.67,comentario:'.'},
+  {caso:'449047746',data:'08/04',rep:'ssgarcia',canal:'MULTICANAL CHAT',proc:'Reversa',nota:0,tmo:21.48,comentario:''},
+  {caso:'453159034',data:'28/04',rep:'prfmarques',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:0,tmo:21.28,comentario:'Não cumpriu com o serviço completo'},
+  {caso:'450641089',data:'15/04',rep:'imgiraldi',canal:'MULTICANAL C2C',proc:'Despacho Ventas y Publicaciones',nota:5,tmo:21.08,comentario:''},
+  {caso:'447873157',data:'01/04',rep:'carolinenuso',canal:'MULTICANAL C2C',proc:'Reputación ME',nota:0,tmo:21.03,comentario:'PESSIMA'},
+  {caso:'451153645',data:'17/04',rep:'yldamasceno',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:0,tmo:20.78,comentario:'Nao terminei a conversa e o atendimento foi encerrado?! Isso esta me acontecendo pela 2x ja!!!!'},
+];
 
 const MAY_detratoresData = [
   {caso:'454494234',data:'06/05',rep:'ext_joscaua',canal:'MULTICANAL C2C',proc:'Potenciar Ventas',nota:4,tmo:151.52,comentario:'Não conseguimos finalizar o assunto'},
@@ -5453,7 +5553,8 @@ function updateAllKpis(m) {
   prodTimeData.length = 0; s.prodtime.forEach(r=>prodTimeData.push(r));
   renderProdTime();
   // NPS canal
-  document.getElementById('nps-canal-title').innerHTML = '📊 Canal × TMO × NPS — '+lbl+' <span style="font-size:11px;font-weight:400;color:#6c757d">· Fonte: DM_CX_TMO + DM_CX_BILLING_NPS</span>';
+  const _nps_fila = currentFila==='publi' ? '' : ' · '+FILAS_INFO[currentFila].short;
+  document.getElementById('nps-canal-title').innerHTML = '📊 Canal × TMO × NPS — '+lbl+_nps_fila+' <span style="font-size:11px;font-weight:400;color:#6c757d">· Fonte: DM_CX_TMO + DM_CX_BILLING_NPS</span>';
   document.getElementById('tbody-nps-canal').innerHTML = s.nps_canal.map(r=>`
     <tr style="background:${r.bg}">
       <td>${canalBadge(r.canal)}</td>
@@ -5470,7 +5571,7 @@ function updateAllKpis(m) {
   const el476 = document.querySelectorAll('.card-title');
   el476.forEach(el => {
     if (el.textContent.includes('Casos de Exemplo')) el.textContent = '🔍 Casos de Exemplo — Toque Alto (≥ 40 min) · '+lbl;
-    if (el.textContent.includes('Casos Detratores')) el.innerHTML = '🔴 Casos Detratores com TMO Alto — Exemplos Reais · '+lbl;
+    if (el.textContent.includes('Casos Detratores')) { const _fl=FILAS_INFO[currentFila].short; el.innerHTML = '🔴 Casos Detratores com TMO Alto — Exemplos Reais · '+_fl+' · '+lbl; }
     if (el.textContent.includes('Por Representante — ')) el.textContent = el.textContent.replace(/— .*/, '— '+lbl);
   });
   // Header
