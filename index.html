@@ -1519,9 +1519,9 @@ const FILAS_META = {
 };
 
 const FILAS_INFO = {
-  publi:  {label:'TMO - Mature Publicações', queue:'BR_Publicaciones_Sellers_Mature', emoji:'📢'},
-  ventas: {label:'TMO - Mature Vendas',      queue:'BR_Ventas_Sellers_Mature',        emoji:'🛒'},
-  me:     {label:'TMO - Mature ME',           queue:'BR_ME_Sellers_Mature',            emoji:'📦'},
+  publi:  {label:'TMO - Mature Publicações', queue:'BR_Publicaciones_Sellers_Mature', emoji:'📢', short:'Publi'},
+  ventas: {label:'TMO - Mature Vendas',      queue:'BR_Ventas_Sellers_Mature',        emoji:'🛒', short:'Vendas'},
+  me:     {label:'TMO - Mature ME',           queue:'BR_ME_Sellers_Mature',            emoji:'📦', short:'ME'},
 };
 
 const VENTAS_KPIS = {
@@ -2581,7 +2581,7 @@ function computeEvolucaoKPIs(m) {
 
       <!-- 1. GERAL -->
       <div style="background:#f8f9fa;border-radius:8px;padding:14px 16px;border-left:4px solid #1a1a2e">
-        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#6c757d;margin-bottom:8px">TMO Publi Geral</div>
+        <div style="font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:#6c757d;margin-bottom:8px">TMO ${FILAS_INFO[currentFila]?.short||'Geral'}</div>
         <div style="font-size:24px;font-weight:800;color:#1a1a2e">${tmoAtual != null ? tmoAtual.toFixed(2)+' min' : '—'}</div>
         <div style="margin-top:4px">${fmtDelta(delta(tmoAtual, tmoPrev), true)}
           ${tmoPrev != null ? `<span style="font-size:11px;color:#6c757d"> ant: ${tmoPrev.toFixed(2)} min</span>` : ''}</div>
@@ -3040,8 +3040,9 @@ function sparkline(vals) {
   const xs = vals.map(function(_,i){return pad + i*(w-2*pad)/(vals.length-1);});
   const ys = vals.map(function(v){return v==null ? null : h-pad-(v-mn)/(mx-mn)*(h-2*pad);});
   const pts = xs.map(function(x,i){return ys[i]!=null ? x+','+ys[i] : null;}).filter(Boolean);
-  const meta_y = h-pad-(27-mn)/(mx-mn)*(h-2*pad);
-  const color = valid[valid.length-1] > 27 ? '#e63946' : '#2dc653';
+  const _smeta = FILAS_META[currentFila].chat;
+  const meta_y = h-pad-(_smeta-mn)/(mx-mn)*(h-2*pad);
+  const color = valid[valid.length-1] > _smeta ? '#e63946' : '#2dc653';
   const circles = pts.map(function(p){
     const parts = p.split(',');
     return '<circle cx="'+parts[0]+'" cy="'+parts[1]+'" r="2" fill="'+color+'"/>';
@@ -5424,10 +5425,11 @@ function setMonth(m) {
   const ld = _LIDER[m] || _LIDER["2026-04"];
   cLiderChart.data.labels = ld.map(r=>r.l);
   cLiderChart.data.datasets[0].data = ld.map(r=>r.t);
-  cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>27?'#e63946':'#2dc653');
-  cLiderChart.data.datasets[1].data = ld.map(r=>r.l.includes('C2C')?19.73:27.54);
-  cCanalChart.data.labels = CANAL_DATA[m].map(r=>r.c);
-  cCanalChart.data.datasets[1].data = m==='2026-04' ? [27.54,19.73] : [27.54,19.73];
+  const _meta = FILAS_META[currentFila];
+  cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>_meta.chat?'#e63946':'#2dc653');
+  cLiderChart.data.datasets[1].data = ld.map(r=>r.l.includes('C2C')?_meta.c2c:_meta.chat);
+  cCanalChart.data.labels = (_CANAL[m]||_CANAL['2026-04']).map(r=>r.c);
+  cCanalChart.data.datasets[1].data = [_meta.chat, _meta.c2c];
   cLiderChart.update();
   cCanalChart.update();
   // atualiza todas as abas
@@ -5579,31 +5581,35 @@ cLiderChart = new Chart(document.getElementById('cLider'),{
 let cProcessoChart, cRepsChart;
 function buildProcessoChart(m) {
   const tp = getProcessoData().slice(0,12);
+  const procMeta = FILAS_META[currentFila].chat;
   if (cProcessoChart) { cProcessoChart.destroy(); }
   cProcessoChart = new Chart(document.getElementById('cProcesso'),{
     type:'bar',
     data:{
       labels:tp.map(r=>r.proc+' ('+r.canal.replace('MULTICANAL ','')+')'),
       datasets:[
-        {label:'TMO (min)',data:tp.map(r=>r.tmo),backgroundColor:tp.map(r=>r.tmo>35?'#e63946':r.tmo>27?'#f4a261':'#2dc653'),borderRadius:4},
-        {label:'Meta',data:Array(tp.length).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+        {label:'TMO (min)',data:tp.map(r=>r.tmo),backgroundColor:tp.map(r=>r.tmo>(r.meta||procMeta)?'#e63946':r.tmo>(r.meta||procMeta)*0.9?'#f4a261':'#2dc653'),borderRadius:4},
+        {label:'Meta',data:tp.map(r=>r.meta||procMeta),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
       ]
     },
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{x:{min:0,max:60},y:{ticks:{font:{size:10}}}}}
   });
 }
 function buildRepsChart(m) {
-  const src = m==='2026-04'
-    ? [{rep:'adysantos',tmo:59.90},{rep:'maybalazshaz',tmo:53.51},{rep:'raisacsantos',tmo:49.66},{rep:'kavalle',tmo:49.09},{rep:'linessousa',tmo:45.89},{rep:'vitnasciment',tmo:44.37},{rep:'cccsousa',tmo:41.67},{rep:'gabrielaaiol',tmo:41.55},{rep:'amcandido',tmo:38.16},{rep:'lecandido',tmo:35.95},{rep:'bemarques',tmo:36.07},{rep:'vfonorio',tmo:35.35},{rep:'giselesosant',tmo:35.52},{rep:'albarbosa',tmo:33.87},{rep:'renataperei',tmo:32.65}]
-    : [{rep:'adysantos',tmo:53.63},{rep:'gabrielaaiol',tmo:49.66},{rep:'albarbosa',tmo:44.63},{rep:'raisacsantos',tmo:44.46},{rep:'kavalle',tmo:42.61},{rep:'maybalazshaz',tmo:42.64},{rep:'linessousa',tmo:41.71},{rep:'lecandido',tmo:39.62},{rep:'vitnasciment',tmo:36.66},{rep:'cccsousa',tmo:37.84},{rep:'fenunes',tmo:34.68},{rep:'giselesosant',tmo:34.34},{rep:'losouza',tmo:33.45},{rep:'renataperei',tmo:32.96},{rep:'vfonorio',tmo:31.06}];
+  const meta = FILAS_META[currentFila].chat;
+  const allReps = getQuartilData().filter(r=>r.canal==='MULTICANAL CHAT'||r.canal==='CHAT');
+  const top = allReps.sort((a,b)=>b.tmo-a.tmo).slice(0,15);
+  const src = top.length ? top : (m==='2026-04'
+    ? [{rep:'adysantos',tmo:59.90},{rep:'maybalazshaz',tmo:53.51},{rep:'raisacsantos',tmo:49.66},{rep:'kavalle',tmo:49.09},{rep:'linessousa',tmo:45.89},{rep:'vitnasciment',tmo:44.37},{rep:'cccsousa',tmo:41.67},{rep:'gabrielaaiol',tmo:41.55},{rep:'amcandido',tmo:38.16},{rep:'lecandido',tmo:35.95}]
+    : [{rep:'adysantos',tmo:53.63},{rep:'gabrielaaiol',tmo:49.66},{rep:'albarbosa',tmo:44.63},{rep:'raisacsantos',tmo:44.46},{rep:'kavalle',tmo:42.61},{rep:'maybalazshaz',tmo:42.64},{rep:'linessousa',tmo:41.71},{rep:'lecandido',tmo:39.62},{rep:'vitnasciment',tmo:36.66},{rep:'cccsousa',tmo:37.84}]);
   if (cRepsChart) { cRepsChart.destroy(); }
   cRepsChart = new Chart(document.getElementById('cReps'),{
     type:'bar',
     data:{
       labels:src.map(r=>r.rep),
       datasets:[
-        {label:'TMO (min)',data:src.map(r=>r.tmo),backgroundColor:'#e63946',borderRadius:4},
-        {label:'Meta',data:Array(src.length).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+        {label:'TMO (min)',data:src.map(r=>r.tmo),backgroundColor:src.map(r=>r.tmo>meta?'#e63946':'#2dc653'),borderRadius:4},
+        {label:'Meta',data:Array(src.length).fill(meta),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
       ]
     },
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:70,grid:{color:'#f0f0f0'}},x:{ticks:{font:{size:10}}}}}
