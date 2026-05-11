@@ -2185,6 +2185,60 @@ const ME_q4Data = [
 
 // ---- MULTI-OFENSORES ----
 // ---- RESUMO EXECUTIVO ----
+const VENTAS_EXEC_SUMMARY = {
+  '2026-04': [
+    {peso:1, cor:'#e63946', icon:'🔴', titulo:'dyfernandes — Rep outlier crítico CHAT (68,6 min)',
+     texto:'TMO <strong>68,6 min</strong> · 90 contatos · EXPERT · Líder: lbravovunner. Desempenho 137% acima da meta CHAT (28,89 min). Principal vetor de impacto individual no canal CHAT da fila.'},
+    {peso:2, cor:'#e63946', icon:'🔴', titulo:'opandolfini — Multi-ofensor CHAT (6 processos, 58,6 min)',
+     texto:'TMO médio <strong>58,6 min</strong> em <strong>6 processos diferentes</strong> · 137 contatos. Padrão sistêmico: não é isolado em um processo, indica gap de habilidade transversal.'},
+    {peso:3, cor:'#f4a261', icon:'🟡', titulo:'NPS CHAT abaixo da meta (51,2% vs 55,6%)',
+     texto:'NPS CHAT: <strong>51,2% vs meta 55,6%</strong>. NEWBIE apenas <strong>23,1%</strong>. Casos detratores incluem "Me ajudou de nada" e "não resolve meu problema". Correlação com TMO alto em Asignación (33,5 min).'},
+    {peso:4, cor:'#f4a261', icon:'🟡', titulo:'Asignación contáctanos — Processo gargalo C2C (25,5 min)',
+     texto:'Asignación del contáctanos Mature Ventas: <strong>25,5 min · 383 contatos via C2C</strong> — 51% acima da meta C2C (16,91 min). Indica roteamento inadequado ou falta de script de triagem.'},
+    {peso:5, cor:'#f4a261', icon:'🟡', titulo:'Estilo Meli C2C abaixo — EXPERT 45,1% e NEWBIE 40%',
+     texto:'Estilo EXPERT C2C: <strong>45,1%</strong> vs meta esperada 55%. NEWBIE C2C: <strong>40%</strong>. Baixa adesão ao estilo correlacionada com TMO acima da meta nos processos de Reputación e Post Compra.'},
+    {peso:6, cor:'#457b9d', icon:'🔵', titulo:'Post Compra — Maior volume CHAT (11.472 contatos)',
+     texto:'Post Compra Funcionalidades Vendedor: <strong>27,9 min · 11.472 contatos (39% do volume CHAT)</strong>. TMO próximo da meta (28,89 min). Processo âncora — pequenas melhorias aqui têm alto impacto no TMO geral.'},
+  ],
+  '2026-05': [
+    {peso:1, cor:'#e63946', icon:'🔴', titulo:'dyfernandes — Padrão persiste em Maio',
+     texto:'TMO elevado mantido em Maio (parcial). Sem intervenção, padrão continua impactando o CHAT. Prioridade #1 para plano de ação individual.'},
+    {peso:2, cor:'#f4a261', icon:'🟡', titulo:'CHAT TMO melhorou (26,5 min vs meta 28,89 min)',
+     texto:'CHAT caiu para <strong>26,5 min em Maio</strong> — agora <strong>abaixo da meta</strong>. C2C subiu levemente para 17,7 min (+0,8 vs meta). Evolução positiva geral com atenção ao C2C.'},
+    {peso:3, cor:'#f4a261', icon:'🟡', titulo:'NPS CHAT melhorou (65% vs meta 55,6%)',
+     texto:'NPS CHAT <strong>65,0% em Maio — acima da meta 55,6%</strong>. Melhora consistente com queda do TMO. C2C NPS 54,5% ainda abaixo da meta (56,3%).'},
+    {peso:4, cor:'#457b9d', icon:'🔵', titulo:'Tendência positiva — Acompanhar evolução semanal',
+     texto:'TMO e NPS ambos melhorando em Maio. Manter monitoramento semanal para confirmar tendência. Foco em C2C (ainda acima da meta 16,91 min).'},
+  ]
+};
+
+const ME_EXEC_SUMMARY = {
+  '2026-04': [
+    {peso:1, cor:'#2dc653', icon:'🟢', titulo:'CHAT TMO bem abaixo da meta (23,1 min vs 29,3 min)',
+     texto:'Canal CHAT com <strong>TMO médio 23,1 min — 21% abaixo da meta</strong>. Fila mais eficiente das 3 colas. Produtividade média 4,56 (vs 3,59 Vendas). Performance referência para as demais filas.'},
+    {peso:2, cor:'#e63946', icon:'🔴', titulo:'nherreratorr — Multi-ofensor CHAT (11 processos, 46,1 min)',
+     texto:'TMO <strong>46,1 min</strong> em <strong>11 processos diferentes</strong>. Maior multi-ofensor da fila ME. Gap transversal — requer plano de desenvolvimento individual urgente.'},
+    {peso:3, cor:'#e63946', icon:'🔴', titulo:'midalgo — Rep NEWBIE crítico (36,3 min, 409 contatos)',
+     texto:'TMO <strong>36,3 min</strong> · <strong>409 contatos CHAT</strong> · NEWBIE. Alto volume + TMO elevado = impacto sistêmico. Processo principal: Reputación (99 contatos, 39,3 min). Necessita mentoria intensiva.'},
+    {peso:4, cor:'#f4a261', icon:'🟡', titulo:'NEWBIEs com NPS 36% vs EXPERTs 65,2%',
+     texto:'Gap de NPS por seniority: NEWBIE <strong>36%</strong> vs EXPERT <strong>65,2%</strong>. Diferença de 29pp indica que o onboarding não prepara suficientemente para qualidade de resolução.'},
+    {peso:5, cor:'#f4a261', icon:'🟡', titulo:'C2C ligeiramente acima da meta em Maio (12,7 min vs 11,9 min)',
+     texto:'C2C Abril: 11,4 min (dentro da meta). Maio parcial: <strong>12,7 min — +0,8 acima da meta 11,9 min</strong>. Monitorar tendência. pgomezrincon (C2C, 10 processos, 28,4 min) é o principal vetor.'},
+    {peso:6, cor:'#457b9d', icon:'🔵', titulo:'NPS CHAT acima da meta (63,9% vs 62%) — Referência',
+     texto:'NPS CHAT <strong>63,9% vs meta 62%</strong>. C2C 60% vs meta 45,4%. Ambos os canais acima da meta — resultado alinhado com o TMO abaixo da meta. ME demonstra que TMO baixo + boa resolução = NPS positivo.'},
+  ],
+  '2026-05': [
+    {peso:1, cor:'#2dc653', icon:'🟢', titulo:'NPS CHAT excepcional em Maio (91,8% vs meta 62%)',
+     texto:'NPS CHAT <strong>91,8% em Maio (parcial)</strong> — resultado excepcional. C2C mantém 60% (acima da meta 45,4%). Amostra ainda parcial (49 surveys CHAT), mas tendência muito positiva.'},
+    {peso:2, cor:'#f4a261', icon:'🟡', titulo:'C2C TMO ligeiramente acima da meta (12,7 vs 11,9 min)',
+     texto:'C2C subiu para 12,7 min vs meta 11,9 min (+0,84 min, +7%). Monitorar: pode ser impacto sazonal ou mudança de mix de processos. pgomezrincon é o principal outlier C2C.'},
+    {peso:3, cor:'#f4a261', icon:'🟡', titulo:'Manter foco em NEWBIEs — gap de NPS persiste',
+     texto:'NEWBIEs com NPS 36% em Abril vs EXPERTs 65,2%. Garantir que acompanhamento de onboarding continue em Maio para manter/melhorar a tendência positiva do NPS geral.'},
+    {peso:4, cor:'#457b9d', icon:'🔵', titulo:'Fila ME — Melhor desempenho geral das 3 colas',
+     texto:'Produtividade 4,56, NPS acima das metas, TMO CHAT 21% abaixo da meta. Usar como benchmark para identificar boas práticas replicáveis em Vendas e Publicações.'},
+  ]
+};
+
 const EXEC_SUMMARY = {
   '2026-04': [
     {peso:1, cor:'#e63946', icon:'🔴', titulo:'C2C NEWBIE — Grupo crítico (maior peso)',
@@ -2212,14 +2266,17 @@ const EXEC_SUMMARY = {
   ]
 };
 
+function getExecSummary() {
+  if (currentFila==='ventas') return VENTAS_EXEC_SUMMARY;
+  if (currentFila==='me')     return ME_EXEC_SUMMARY;
+  return EXEC_SUMMARY;
+}
 function renderExecSummary(m) {
-  if (currentFila !== 'publi') {
-    const b = document.getElementById('exec-body');
-    if (b) b.innerHTML = '<div style="padding:20px;color:#6c757d;text-align:center">Diagnóstico disponível apenas para BR_Publicaciones_Sellers_Mature.</div>';
-    return;
-  }
-  const items = EXEC_SUMMARY[m] || EXEC_SUMMARY['2026-04'];
-  document.getElementById('exec-mes-lbl').textContent = m==='2026-05' ? 'Maio 2026 ⚡ (parcial)' : 'Abril 2026';
+  const src = getExecSummary();
+  const items = src[m] || src['2026-04'];
+  const _fLabel = FILAS_INFO[currentFila].short;
+  const _mLabel = m==='2026-05' ? 'Maio 2026 ⚡ (parcial)' : 'Abril 2026';
+  document.getElementById('exec-mes-lbl').textContent = _fLabel + ' · ' + _mLabel;
   document.getElementById('exec-body').innerHTML = items.map(i=>`
     <div style="background:#f8f9fa;border-radius:8px;padding:12px 14px;border-left:3px solid ${i.cor}">
       <div style="font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:4px">
