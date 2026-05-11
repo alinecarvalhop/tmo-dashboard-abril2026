@@ -461,7 +461,6 @@ tr:last-child td { border-bottom: none; }
           <option value="">Todos</option>
           <option>MULTICANAL CHAT</option>
           <option>MULTICANAL C2C</option>
-          <option>C2C</option>
         </select>
       </div>
       <div class="filter-group">
@@ -661,7 +660,6 @@ tr:last-child td { border-bottom: none; }
           <option value="">Todos</option>
           <option>MULTICANAL CHAT</option>
           <option>MULTICANAL C2C</option>
-          <option>C2C</option>
         </select>
       </div>
       <div class="filter-group">
@@ -3114,15 +3112,108 @@ const solucoesQ4Data = [
   {rep:"kroza",solucao:"Potencializador (Posicionamento) - Como melhorar minha competitividade",proc:"Potenciar Ventas",canal:"MULTICANAL CHAT",n:1,tmo:19.48},
 ];
 
+// ---- SOLUÇÕES Q4 VENDAS (Abril 2026) ----
+const VENTAS_solucoesQ4Data = [
+  {rep:"nasousa",solucao:"Analisamos reputação - Reclamação afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:74.28},
+  {rep:"cfurquim",solucao:"Reclamação encerrada a favor do C - V não responde",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:74.13},
+  {rep:"tolourenco",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto defeituoso e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:73.82},
+  {rep:"icoelho",solucao:"Mediação encerrada - Mediação encerrada ao V (V)",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:67.57},
+  {rep:"jhgoncalves",solucao:"Mediação aberta com IA – Vendedor em desacordo com a culpabilidade",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:64.32},
+  {rep:"jebarros",solucao:"Mediação encerrada com IA – Desacordo com a resolução",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:61.00},
+  {rep:"tamdias",solucao:"Devolução - Dúvidas V: Produto não funciona e embalagem danificada",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL C2C",n:1,tmo:59.48},
+  {rep:"monteixeira",solucao:"Experiência de compra - Status do anúncio",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:59.45},
+  {rep:"jebarros",solucao:"Mediação encerrada - Produto danificado ou com o mesmo dano relatado pelo C",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:57.83},
+  {rep:"abonfim",solucao:"Mediação aberta com IA – Vendedor em desacordo com a culpabilidade",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:55.20},
+  {rep:"mafelix",solucao:"Reputação ME Vendas: Logistica Flex - Não excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:53.67},
+  {rep:"caddias",solucao:"Analisamos reputação - Reclamação afeta a reputação porque o vendedor não oferece suporte e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:53.28},
+  {rep:"calsiqueira",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto diferente e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:53.28},
+  {rep:"tpaula",solucao:"Devolução - Recebeu devolução fallida, orientamos sobre como iniciar reclamação",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:51.53},
+  {rep:"guiscarneiro",solucao:"Experiência de compra - Status do anúncio",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:51.18},
+  {rep:"aoliveiras",solucao:"Reputação ME Coleta XD: Coleta pendente",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:46.52},
+  {rep:"tamdias",solucao:"Custos - Não cobramos custo de envio nesta devolução",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:46.28},
+  {rep:"pwpena",solucao:"Reputação ME Coleta XD: Culpa seller - Não excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:45.78},
+  {rep:"caddias",solucao:"Cancelar venda (ME) - Não pode: Outros motivos",proc:"Anulación de Venta",canal:"MULTICANAL CHAT",n:1,tmo:44.83},
+  {rep:"caddias",solucao:"Reputação ME Vendas: Logistica Flex - Não excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:44.25},
+  {rep:"tatianesanto",solucao:"Devolução Falida sem ME - Bonificamos o Vendedor",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL C2C",n:1,tmo:43.48},
+  {rep:"rdlira",solucao:"Reputação ME Informativas: Como melhorar a reputação HT",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:42.40},
+  {rep:"tamdias",solucao:"Mediação encerrada com IA – Desacordo com a resolução",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:2,tmo:41.93},
+  {rep:"mafelix",solucao:"V pede informações sobre mediação em andamento",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:41.48},
+  {rep:"ailoliveira",solucao:"V pede informações sobre mediação em andamento",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:39.88},
+  {rep:"tolourenco",solucao:"Reputação ME Vendas: Logistica Flex - Excluimos",proc:"Reputación ME",canal:"MULTICANAL C2C",n:1,tmo:39.67},
+  {rep:"aavviana",solucao:"Analisamos reputação - Cancelamento afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:2,tmo:39.52},
+  {rep:"ccalvalhan",solucao:"Como ajudar o comprador (V)",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:37.03},
+  {rep:"ailoliveira",solucao:"Reclamação encerrada a favor do C - V não responde",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:36.23},
+  {rep:"tacosta",solucao:"Devolução com revisão (Triagem): Produto disponível para venda",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:34.97},
+  {rep:"addamico",solucao:"Mediação encerrada com IA – Desacordo com a resolução",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:34.38},
+  {rep:"lmazelli",solucao:"Reputação ME Vendas: Logistica Flex - Não excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:33.73},
+  {rep:"addamico",solucao:"Devolução - Recebeu devolução fallida, orientamos sobre como iniciar reclamação",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:32.87},
+  {rep:"ailbarbosa",solucao:"V pede informações sobre mediação em andamento",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:31.18},
+  {rep:"martins",solucao:"Mediação encerrada com IA – Desacordo com a resolução",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:2,tmo:30.70},
+  {rep:"ailbarbosa",solucao:"Reputação ME Vendas: Logística Places - Não excluímos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:21.07},
+  {rep:"vbonilha",solucao:"Mediação encerrada - Produto danificado ou com o mesmo dano relatado pelo C",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:20.42},
+  {rep:"siaraujo",solucao:"Analisamos reputação - Reclamação afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL C2C",n:1,tmo:20.18},
+];
+
+// ---- SOLUÇÕES Q4 ME (Abril 2026) ----
+const ME_solucoesQ4Data = [
+  {rep:"biasilva",solucao:"Reputação ME Vendas: Vendedor newbie - Excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:72.12},
+  {rep:"siddelima",solucao:"Mediação encerrada - Produto danificado ou com o mesmo dano relatado pelo C",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:67.60},
+  {rep:"midalgo",solucao:"Custo de envio: não se aplica bonificação",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:66.38},
+  {rep:"junogueira",solucao:"Envio pelo V: indicamos como carregar as dimensões",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:64.50},
+  {rep:"brunaso",solucao:"Demora na coleta: Despachar na próxima coleta",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:64.32},
+  {rep:"jacisilva",solucao:"O vendedor pergunta por que foi penalizado.",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:56.73},
+  {rep:"ledeoliveira",solucao:"O vendedor pergunta por que foi penalizado.",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL C2C",n:1,tmo:54.27},
+  {rep:"jbmeneses",solucao:"Envio pelo V: alteramos medidas",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:53.28},
+  {rep:"rafrsilva",solucao:"Reputação Outros: usuário em blocklist - não excluimos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:52.07},
+  {rep:"prpmmacedo",solucao:"Coleta: tudo sobre o serviço",proc:"Gestiones Operativas",canal:"MULTICANAL CHAT",n:1,tmo:50.27},
+  {rep:"esssferreira",solucao:"Envio pelo V: não alteramos medidas",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:50.23},
+  {rep:"cctavares",solucao:"Analisamos reputação - Reclamação afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:49.60},
+  {rep:"vivhsouza",solucao:"Coleta: como funciona o serviço",proc:"Gestiones Operativas",canal:"MULTICANAL CHAT",n:1,tmo:46.80},
+  {rep:"kaumedeiros",solucao:"Envio pelo V: indicamos como carregar as dimensões",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:46.40},
+  {rep:"ssgarcia",solucao:"Bug de etiqueta V: não há bug",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:45.23},
+  {rep:"welisboa",solucao:"Envio pelo V: explicamos os benefícios de usar ME",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:44.75},
+  {rep:"albezerra",solucao:"Devolução entregue: passaram 3 dias úteis - não cobrimos",proc:"Reversa",canal:"MULTICANAL CHAT",n:1,tmo:44.55},
+  {rep:"luanunes",solucao:"O vendedor pergunta por que foi penalizado.",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:44.33},
+  {rep:"savsouza",solucao:"Reputação ME Coleta XD: Culpa seller - Não excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:44.10},
+  {rep:"albezerra",solucao:"Envio pelo V: alteramos medidas",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:42.68},
+  {rep:"prfmarques",solucao:"Flex: como ativar o serviço?",proc:"Gestiones Operativas",canal:"MULTICANAL CHAT",n:1,tmo:41.63},
+  {rep:"gaquintela",solucao:"O vendedor pergunta por que foi penalizado.",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:40.73},
+  {rep:"yldamasceno",solucao:"Devolução demorada: passaram 60 dias - não bonificamos",proc:"Reversa",canal:"MULTICANAL CHAT",n:1,tmo:40.50},
+  {rep:"rafrsilva",solucao:"Desativar ME: desativamos",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:39.25},
+  {rep:"biasilva",solucao:"Reputação ME Vendas: Logistica Cross Docking - Não excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:39.10},
+  {rep:"jacisilva",solucao:"Critérios de reputação - Como funciona a reputação",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:38.93},
+  {rep:"miriaoliveir",solucao:"Reputação ME Vendas: Logística Places - Não excluímos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:36.78},
+  {rep:"yldamasceno",solucao:"Reputação ME Vendas: usuarios fraudulentos - não excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:36.03},
+  {rep:"ttaalencar",solucao:"Usar ME V: não é possível modificar o horário de corte",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:35.85},
+  {rep:"cctavares",solucao:"Envio pelo V: indicamos como carregar as dimensões",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:35.72},
+  {rep:"mvezetiev",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto incompatível e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:34.78},
+  {rep:"gaquintela",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto diferente e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:34.62},
+  {rep:"yldamasceno",solucao:"Reputação: cálculo aos sábados e feriados",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:33.68},
+  {rep:"ssgarcia",solucao:"Analisamos reputação - Cancelamento afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:33.18},
+  {rep:"beloliveira",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto diferente e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:32.75},
+  {rep:"jbmeneses",solucao:"Devolução entregue: cobrimos o vendedor",proc:"Reversa",canal:"MULTICANAL CHAT",n:1,tmo:32.30},
+  {rep:"mariangesant",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto diferente e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:31.15},
+  {rep:"ttaalencar",solucao:"Devolução demorada: passaram 60 dias - não bonificamos",proc:"Reversa",canal:"MULTICANAL CHAT",n:1,tmo:30.57},
+  {rep:"andrelopes",solucao:"Analisamos reputação - Cancelamento afeta a reputação e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:29.42},
+  {rep:"anajulirocha",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto diferente e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:28.72},
+  {rep:"ffelippa",solucao:"Analisamos reputação - Cancelamento afeta a reputação e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:25.50},
+  {rep:"yldamasceno",solucao:"Reputação ME Vendas: Vendedor newbie - Excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:25.02},
+  {rep:"alisilva",solucao:"Devoluções: informamos motivo - não bonificamos",proc:"Reversa",canal:"MULTICANAL CHAT",n:1,tmo:24.83},
+  {rep:"lepessoa",solucao:"Devolução entregue: passaram 3 dias úteis - não cobrimos",proc:"Reversa",canal:"MULTICANAL CHAT",n:1,tmo:24.42},
+  {rep:"cctavares",solucao:"Envio a caminho - está atrasado (V)",proc:"Viaje del paquete - Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:23.43},
+  {rep:"siddelima",solucao:"Etiqueta não vencida: regeneramos",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:21.92},
+  {rep:"prfmarques",solucao:"Analisamos reputação - Reclamação afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:21.67},
+  {rep:"ssgarcia",solucao:"Em devolução: dentro da promessa de entrega",proc:"Reversa",canal:"MULTICANAL CHAT",n:1,tmo:21.48},
+  {rep:"prfmarques",solucao:"Reputação ME Vendas: Logistica Flex - Excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:21.28},
+  {rep:"imgiraldi",solucao:"Etiqueta indisponível: em revisão - dentro do prazo",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL C2C",n:1,tmo:21.08},
+  {rep:"carolinenuso",solucao:"Reputação ME Vendas: usuarios fraudulentos - não excluimos",proc:"Reputación ME",canal:"MULTICANAL C2C",n:1,tmo:21.03},
+  {rep:"yldamasceno",solucao:"Envio pelo V: indicamos como carregar as dimensões",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:20.78},
+];
+
 // ---- SOLUÇÕES OFENSORAS Q4 ----
 function populateSolucoesFilters() {
-  if (currentFila !== 'publi') {
-    const sr=document.getElementById('fd-sol-rep'); if(sr) sr.innerHTML='<option value="">Todos</option>';
-    const sp=document.getElementById('fd-sol-proc'); if(sp) sp.innerHTML='<option value="">Todos</option>';
-    return;
-  }
-  const reps  = [...new Set(solucoesQ4Data.map(r=>r.rep))].sort();
-  const procs = [...new Set(solucoesQ4Data.map(r=>r.proc))].sort();
+  const reps  = [...new Set(getSolucoesQ4Data().map(r=>r.rep))].sort();
+  const procs = [...new Set(getSolucoesQ4Data().map(r=>r.proc))].sort();
   const sr = document.getElementById('fd-sol-rep');
   const sp = document.getElementById('fd-sol-proc');
   if (!sr || !sp) return;
@@ -3140,12 +3231,7 @@ function renderSolucoesQ4() {
   const pdMap = {};
   getProcessoData().forEach(pd => { pdMap[pd.proc+'|'+pd.canal] = pd.meta || 0; });
 
-  if (currentFila !== 'publi') {
-    const tb=document.getElementById('tbody-sol-q4');
-    if(tb) tb.innerHTML='<tr><td colspan="7" style="text-align:center;color:#adb5bd;padding:20px">Soluções Q4 disponíveis apenas para BR_Publicaciones_Sellers_Mature.</td></tr>';
-    document.getElementById('fd-sol-count').textContent='0 ocorrência(s)'; return;
-  }
-  let rows = solucoesQ4Data.filter(x =>
+  let rows = getSolucoesQ4Data().filter(x =>
     (!c || x.canal === c) && (!r || x.rep === r) && (!p || x.proc === p)
   ).map(x => {
     const meta = pdMap[x.proc+'|'+x.canal] || 0;
@@ -3322,6 +3408,11 @@ function getEstiloData() {
 }
 function getNpsKpis() {
   return currentFila==='ventas' ? VENTAS_NPS_KPIS : currentFila==='me' ? ME_NPS_KPIS : NPS_KPIS;
+}
+function getSolucoesQ4Data() {
+  if (currentFila==='ventas') return VENTAS_solucoesQ4Data;
+  if (currentFila==='me')     return ME_solucoesQ4Data;
+  return solucoesQ4Data;
 }
 function getDetratoresData(m) {
   if (currentFila==='ventas') return VENTAS_detratoresData;
@@ -3741,14 +3832,7 @@ const detratoresData = [
 ];
 
 // ---- DADOS TMO PRODUTIVO / NÃO PRODUTIVO ----
-const prodTimeData = [
-  {lider:'isabmot',canal:'MULTICANAL CHAT',reps:10,assigns:3492,tmo:34.24,prod:8.40,np:25.84,hold:0.00,acw:1.55},
-  {lider:'bkaroline',canal:'MULTICANAL CHAT',reps:12,assigns:5462,tmo:29.34,prod:6.84,np:22.50,hold:0.00,acw:2.00},
-  {lider:'lrossetto',canal:'MULTICANAL C2C',reps:18,assigns:4215,tmo:28.80,prod:13.66,np:15.14,hold:1.37,acw:0.46},
-  {lider:'alicarvalho',canal:'MULTICANAL CHAT',reps:10,assigns:4451,tmo:28.45,prod:6.02,np:22.43,hold:0.00,acw:1.91},
-  {lider:'thaidossanto',canal:'MULTICANAL CHAT',reps:10,assigns:3741,tmo:26.78,prod:5.19,np:21.59,hold:0.00,acw:1.80},
-  {lider:'lrossetto',canal:'C2C',reps:1,assigns:142,tmo:20.78,prod:9.53,np:11.25,hold:0.02,acw:0.55},
-];
+const prodTimeData = []; // populated dynamically by updateAllKpis() via STATS[fila][mes].prodtime
 
 const prodRepData = [
   {rep:'adysantos',lider:'lrossetto',canal:'MULTICANAL C2C',assigns:0,tmo:60.02,prod:25.05,np:34.97,hold:0,acw:0.57},
