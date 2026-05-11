@@ -141,6 +141,8 @@ tr:last-child td { border-bottom: none; }
         <button onclick="setFila('publi')" id="btn-fila-publi" style="padding:3px 10px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.6);background:rgba(255,255,255,0.25);color:white;cursor:pointer;font-size:11px;font-weight:700">📢 Publicações</button>
         <button onclick="setFila('ventas')" id="btn-fila-ventas" style="padding:3px 10px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;font-size:11px;font-weight:600">🛒 Vendas</button>
         <button onclick="setFila('me')" id="btn-fila-me" style="padding:3px 10px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;font-size:11px;font-weight:600">📦 ME</button>
+        <button onclick="setFila('melipro')" id="btn-fila-melipro" style="padding:3px 10px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;font-size:11px;font-weight:600">⭐ Pro MLB</button>
+        <button onclick="setFila('vip')" id="btn-fila-vip" style="padding:3px 10px;border-radius:5px;border:1.5px solid rgba(255,255,255,0.3);background:transparent;color:rgba(255,255,255,0.7);cursor:pointer;font-size:11px;font-weight:600">👑 VIP MLB</button>
       </div>
     </div>
   </div>
@@ -1406,21 +1408,1074 @@ function showPage(id, el) {
 
 
 // ---- DADOS MAIO 2026 ----
+// ---- DADOS PRO MLB ----
+const MELIPRO_quartilData = [
+{q:'Q1',rep:'iksilva',lider:'julioliveira',seniority:'EXPERT',canal:'MULTICANAL C2C',vol:572,tmo:4.59,dev:-7.91},
+  {q:'Q1',rep:'anprieto',lider:'acarolinarib',seniority:'EXPERT',canal:'MULTICANAL C2C',vol:487,tmo:8.99,dev:-3.51},
+  {q:'Q2',rep:'heilot',lider:'asantosdefre',seniority:'EXPERT',canal:'MULTICANAL C2C',vol:462,tmo:9.62,dev:-2.88},
+  {q:'Q2',rep:'ersoares',lider:'lemiliozzi',seniority:'EXPERT',canal:'MULTICANAL C2C',vol:263,tmo:10.96,dev:-1.54},
+  {q:'Q3',rep:'lhipolito',lider:'lemiliozzi',seniority:'EXPERT',canal:'MULTICANAL C2C',vol:499,tmo:11.09,dev:-1.41},
+  {q:'Q3',rep:'snassar',lider:'julioliveira',seniority:'EXPERT',canal:'MULTICANAL C2C',vol:571,tmo:11.98,dev:-0.52},
+  {q:'Q4',rep:'lissouza',lider:'asantosdefre',seniority:'EXPERT',canal:'MULTICANAL C2C',vol:451,tmo:16.39,dev:3.89},
+  {q:'Q4',rep:'hellerodrigu',lider:'acarolinarib',seniority:'NEWBIE',canal:'MULTICANAL C2C',vol:232,tmo:32.49,dev:19.99},
+  {q:'Q1',rep:'jlimachaves',lider:'acarolinarib',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:63,tmo:11.36,dev:-12.64},
+  {q:'Q1',rep:'ttarekmourad',lider:'asantosdefre',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:698,tmo:15.43,dev:-8.57},
+  {q:'Q1',rep:'jmiguel',lider:'acarolinarib',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:122,tmo:16.00,dev:-8.00},
+  {q:'Q1',rep:'kaysantos',lider:'asantosdefre',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:738,tmo:16.22,dev:-7.78},
+  {q:'Q1',rep:'jrosario',lider:'julioliveira',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:513,tmo:16.43,dev:-7.57},
+  {q:'Q1',rep:'lpinho',lider:'julioliveira',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:699,tmo:16.73,dev:-7.27},
+  {q:'Q1',rep:'yasasilva',lider:'lemiliozzi',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:526,tmo:18.52,dev:-5.48},
+  {q:'Q1',rep:'eansilva',lider:'julioliveira',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:197,tmo:18.69,dev:-5.31},
+  {q:'Q1',rep:'gaeldasilva',lider:'asantosdefre',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:717,tmo:18.77,dev:-5.23},
+  {q:'Q2',rep:'arcsantos',lider:'julioliveira',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:603,tmo:19.49,dev:-4.51},
+  {q:'Q2',rep:'sveloso',lider:'acarolinarib',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:632,tmo:19.78,dev:-4.22},
+  {q:'Q2',rep:'anmesquita',lider:'asantosdefre',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:255,tmo:20.30,dev:-3.70},
+  {q:'Q2',rep:'sthrosa',lider:'lemiliozzi',seniority:'NEWBIE',canal:'MULTICANAL CHAT',vol:366,tmo:20.75,dev:-3.25},
+  {q:'Q2',rep:'squintino',lider:'lemiliozzi',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:508,tmo:21.27,dev:-2.73},
+  {q:'Q2',rep:'mvidigal',lider:'julioliveira',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:525,tmo:21.81,dev:-2.19},
+  {q:'Q2',rep:'raqcosta',lider:'asantosdefre',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:418,tmo:21.93,dev:-2.07},
+  {q:'Q2',rep:'emasantos',lider:'acarolinarib',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:646,tmo:22.00,dev:-2.00},
+  {q:'Q2',rep:'milferreira',lider:'julioliveira',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:581,tmo:22.23,dev:-1.77},
+  {q:'Q3',rep:'tsouzaandrad',lider:'julioliveira',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:559,tmo:22.24,dev:-1.76},
+  {q:'Q3',rep:'gfarina',lider:'lemiliozzi',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:564,tmo:22.29,dev:-1.71},
+  {q:'Q3',rep:'jjujesusli',lider:'lemiliozzi',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:656,tmo:23.04,dev:-0.96},
+  {q:'Q3',rep:'jesoliveira',lider:'acarolinarib',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:397,tmo:23.51,dev:-0.49},
+  {q:'Q3',rep:'rodolfdasilv',lider:'asantosdefre',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:597,tmo:23.82,dev:-0.18},
+  {q:'Q3',rep:'kmeira',lider:'julioliveira',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:436,tmo:24.90,dev:0.90},
+  {q:'Q3',rep:'rrafspedroso',lider:'lemiliozzi',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:493,tmo:24.95,dev:0.95},
+  {q:'Q3',rep:'nikcosta',lider:'lemiliozzi',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:628,tmo:25.10,dev:1.10},
+  {q:'Q4',rep:'raynasilva',lider:'julioliveira',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:617,tmo:25.20,dev:1.20},
+  {q:'Q4',rep:'casena',lider:'lemiliozzi',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:534,tmo:26.18,dev:2.18},
+  {q:'Q4',rep:'rigomes',lider:'asantosdefre',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:503,tmo:27.31,dev:3.31},
+  {q:'Q4',rep:'vlacerda',lider:'asantosdefre',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:338,tmo:28.94,dev:4.94},
+  {q:'Q4',rep:'angaguilar',lider:'acarolinarib',seniority:'NEWBIE',canal:'MULTICANAL CHAT',vol:260,tmo:35.85,dev:11.85},
+  {q:'Q4',rep:'fgeraldo',lider:'acarolinarib',seniority:'NEWBIE',canal:'MULTICANAL CHAT',vol:203,tmo:45.28,dev:21.28},
+  {q:'Q4',rep:'aqumoura',lider:'lemiliozzi',seniority:'NEWBIE',canal:'MULTICANAL CHAT',vol:171,tmo:47.23,dev:23.23},
+  {q:'Q4',rep:'nielasasanto',lider:'lemiliozzi',seniority:'NEWBIE',canal:'MULTICANAL CHAT',vol:163,tmo:47.29,dev:23.29},
+];
+const MELIPRO_processoData = [
+{proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL C2C',vol:60,tmo:25.10,meta:12.50,dev:12.60,min:0,max:0},
+  {proc:'Reversa',canal:'MULTICANAL C2C',vol:120,tmo:18.32,meta:12.50,dev:5.82,min:0,max:0},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL C2C',vol:733,tmo:18.27,meta:12.50,dev:5.77,min:0,max:0},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL C2C',vol:58,tmo:13.67,meta:12.50,dev:1.17,min:0,max:0},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL C2C',vol:118,tmo:10.92,meta:12.50,dev:-1.58,min:0,max:0},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL C2C',vol:196,tmo:10.60,meta:12.50,dev:-1.90,min:0,max:0},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL C2C',vol:801,tmo:10.30,meta:12.50,dev:-2.20,min:0,max:0},
+  {proc:'Reputación',canal:'MULTICANAL C2C',vol:1050,tmo:9.44,meta:12.50,dev:-3.06,min:0,max:0},
+  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL C2C',vol:53,tmo:9.23,meta:12.50,dev:-3.27,min:0,max:0},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL C2C',vol:69,tmo:9.22,meta:12.50,dev:-3.28,min:0,max:0},
+  {proc:'Reputación ME',canal:'MULTICANAL C2C',vol:61,tmo:8.34,meta:12.50,dev:-4.16,min:0,max:0},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL C2C',vol:38,tmo:8.27,meta:12.50,dev:-4.23,min:0,max:0},
+  {proc:'Viaje del paquete - Vendedor',canal:'MULTICANAL CHAT',vol:41,tmo:32.71,meta:24.00,dev:8.71,min:0,max:0},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',vol:440,tmo:26.80,meta:24.00,dev:2.80,min:0,max:0},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',vol:3312,tmo:26.43,meta:24.00,dev:2.43,min:0,max:0},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',vol:390,tmo:25.05,meta:24.00,dev:1.05,min:0,max:0},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',vol:4472,tmo:22.85,meta:24.00,dev:-1.15,min:0,max:0},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',vol:3701,tmo:21.80,meta:24.00,dev:-2.20,min:0,max:0},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',vol:107,tmo:21.70,meta:24.00,dev:-2.30,min:0,max:0},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',vol:229,tmo:21.27,meta:24.00,dev:-2.73,min:0,max:0},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',vol:1810,tmo:20.85,meta:24.00,dev:-3.15,min:0,max:0},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',vol:277,tmo:20.41,meta:24.00,dev:-3.59,min:0,max:0},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',vol:190,tmo:18.75,meta:24.00,dev:-5.25,min:0,max:0},
+  {proc:'PR - Técnica prohibida',canal:'MULTICANAL CHAT',vol:95,tmo:17.59,meta:24.00,dev:-6.41,min:0,max:0},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL CHAT',vol:251,tmo:15.70,meta:24.00,dev:-8.30,min:0,max:0},
+  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL CHAT',vol:180,tmo:15.38,meta:24.00,dev:-8.62,min:0,max:0},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL CHAT',vol:242,tmo:14.47,meta:24.00,dev:-9.53,min:0,max:0},
+];
+const MELIPRO_q4Data = [
+{proc:'Viaje del paquete - Vendedor',canal:'MULTICANAL C2C',rep:'hellerodrigu',lider:'acarolinarib',vol:5,tmo:178.06,dev:165.56},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL C2C',rep:'hellerodrigu',lider:'acarolinarib',vol:4,tmo:109.50,dev:97.00},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',rep:'nielasasanto',lider:'lemiliozzi',vol:5,tmo:90.52,dev:66.52},
+  {proc:'Viaje del paquete - Vendedor',canal:'MULTICANAL CHAT',rep:'aqumoura',lider:'lemiliozzi',vol:4,tmo:80.24,dev:56.24},
+  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL CHAT',rep:'raynasilva',lider:'julioliveira',vol:11,tmo:78.23,dev:54.23},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'aqumoura',lider:'lemiliozzi',vol:14,tmo:76.02,dev:52.02},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'nielasasanto',lider:'lemiliozzi',vol:25,tmo:74.01,dev:50.01},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'nielasasanto',lider:'lemiliozzi',vol:6,tmo:69.65,dev:45.65},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'fgeraldo',lider:'acarolinarib',vol:4,tmo:68.08,dev:44.08},
+  {proc:'Reversa',canal:'MULTICANAL C2C',rep:'hellerodrigu',lider:'acarolinarib',vol:9,tmo:62.29,dev:49.79},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL C2C',rep:'hellerodrigu',lider:'acarolinarib',vol:17,tmo:62.01,dev:49.51},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'nielasasanto',lider:'lemiliozzi',vol:64,tmo:55.39,dev:31.39},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'aqumoura',lider:'lemiliozzi',vol:81,tmo:53.92,dev:29.92},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'fgeraldo',lider:'acarolinarib',vol:103,tmo:51.84,dev:27.84},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL CHAT',rep:'raynasilva',lider:'julioliveira',vol:19,tmo:50.48,dev:26.48},
+  {proc:'Viaje del paquete - Vendedor',canal:'MULTICANAL CHAT',rep:'tsouzaandrad',lider:'julioliveira',vol:5,tmo:47.88,dev:23.88},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'fgeraldo',lider:'acarolinarib',vol:22,tmo:46.57,dev:22.57},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'aqumoura',lider:'lemiliozzi',vol:20,tmo:45.96,dev:21.96},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'milferreira',lider:'julioliveira',vol:12,tmo:44.34,dev:20.34},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'angaguilar',lider:'acarolinarib',vol:136,tmo:42.95,dev:18.95},
+  {proc:'PR - Técnica prohibida',canal:'MULTICANAL CHAT',rep:'kmeira',lider:'julioliveira',vol:9,tmo:42.84,dev:18.84},
+  {proc:'PR - Artículos prohibidos',canal:'MULTICANAL CHAT',rep:'squintino',lider:'lemiliozzi',vol:3,tmo:41.47,dev:17.47},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'angaguilar',lider:'acarolinarib',vol:26,tmo:40.26,dev:16.26},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL C2C',rep:'hellerodrigu',lider:'acarolinarib',vol:106,tmo:39.95,dev:27.45},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'raynasilva',lider:'julioliveira',vol:9,tmo:39.14,dev:15.14},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'rigomes',lider:'asantosdefre',vol:20,tmo:38.48,dev:14.48},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'fgeraldo',lider:'acarolinarib',vol:94,tmo:37.82,dev:13.82},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'aqumoura',lider:'lemiliozzi',vol:66,tmo:36.17,dev:12.17},
+  {proc:'Asignación del Contáctanos Pre Venta',canal:'MULTICANAL C2C',rep:'iksilva',lider:'julioliveira',vol:3,tmo:35.74,dev:23.24},
+  {proc:'PR - Artículos prohibidos',canal:'MULTICANAL CHAT',rep:'arcsantos',lider:'julioliveira',vol:3,tmo:34.11,dev:10.11},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',rep:'aqumoura',lider:'lemiliozzi',vol:5,tmo:33.27,dev:9.27},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'nielasasanto',lider:'lemiliozzi',vol:88,tmo:33.11,dev:9.11},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'vlacerda',lider:'asantosdefre',vol:26,tmo:32.87,dev:8.87},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL CHAT',rep:'raynasilva',lider:'julioliveira',vol:21,tmo:32.74,dev:8.74},
+  {proc:'Asignación del contáctanos ME Sellers LT',canal:'MULTICANAL CHAT',rep:'emasantos',lider:'acarolinarib',vol:5,tmo:31.97,dev:7.97},
+  {proc:'Reversa',canal:'MULTICANAL C2C',rep:'snassar',lider:'julioliveira',vol:10,tmo:31.11,dev:18.61},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'gfarina',lider:'lemiliozzi',vol:11,tmo:30.90,dev:6.90},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'vlacerda',lider:'asantosdefre',vol:159,tmo:30.84,dev:6.84},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'angaguilar',lider:'acarolinarib',vol:106,tmo:30.24,dev:6.24},
+  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL CHAT',rep:'kmeira',lider:'julioliveira',vol:18,tmo:30.15,dev:6.15},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'rigomes',lider:'asantosdefre',vol:231,tmo:30.15,dev:6.15},
+  {proc:'PR - Artículos prohibidos',canal:'MULTICANAL CHAT',rep:'kmeira',lider:'julioliveira',vol:3,tmo:29.99,dev:5.99},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'casena',lider:'lemiliozzi',vol:16,tmo:29.08,dev:5.08},
+  {proc:'Calidad de foto',canal:'MULTICANAL CHAT',rep:'raynasilva',lider:'julioliveira',vol:3,tmo:28.90,dev:4.90},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'rrafspedroso',lider:'lemiliozzi',vol:20,tmo:28.64,dev:4.64},
+  {proc:'Asignación del Contáctanos Pre Venta',canal:'MULTICANAL CHAT',rep:'kmeira',lider:'julioliveira',vol:3,tmo:28.38,dev:4.38},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'vlacerda',lider:'asantosdefre',vol:123,tmo:27.96,dev:3.96},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'casena',lider:'lemiliozzi',vol:88,tmo:27.85,dev:3.85},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'angaguilar',lider:'acarolinarib',vol:3,tmo:27.82,dev:3.82},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'casena',lider:'lemiliozzi',vol:10,tmo:27.63,dev:3.63},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'rigomes',lider:'asantosdefre',vol:33,tmo:27.39,dev:3.39},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'rrafspedroso',lider:'lemiliozzi',vol:218,tmo:27.00,dev:3.00},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'squintino',lider:'lemiliozzi',vol:169,tmo:26.60,dev:2.60},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'gfarina',lider:'lemiliozzi',vol:8,tmo:26.56,dev:2.56},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'casena',lider:'lemiliozzi',vol:46,tmo:26.48,dev:2.48},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'sveloso',lider:'acarolinarib',vol:12,tmo:26.47,dev:2.47},
+  {proc:'Calidad de foto',canal:'MULTICANAL CHAT',rep:'lpinho',lider:'julioliveira',vol:5,tmo:26.36,dev:2.36},
+  {proc:'PR - Técnica prohibida',canal:'MULTICANAL CHAT',rep:'raynasilva',lider:'julioliveira',vol:7,tmo:26.14,dev:2.14},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'nikcosta',lider:'lemiliozzi',vol:90,tmo:26.04,dev:2.04},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',rep:'raqcosta',lider:'asantosdefre',vol:5,tmo:25.91,dev:1.91},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'gfarina',lider:'lemiliozzi',vol:90,tmo:25.87,dev:1.87},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'casena',lider:'lemiliozzi',vol:364,tmo:25.70,dev:1.70},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'nikcosta',lider:'lemiliozzi',vol:377,tmo:25.51,dev:1.51},
+  {proc:'PR - Propiedad intelectual',canal:'MULTICANAL CHAT',rep:'anmesquita',lider:'asantosdefre',vol:6,tmo:25.46,dev:1.46},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',rep:'kmeira',lider:'julioliveira',vol:179,tmo:25.35,dev:1.35},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'rodolfdasilv',lider:'asantosdefre',vol:73,tmo:25.30,dev:1.30},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'raqcosta',lider:'asantosdefre',vol:13,tmo:25.17,dev:1.17},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'jjujesusli',lider:'lemiliozzi',vol:236,tmo:25.08,dev:1.08},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'raqcosta',lider:'asantosdefre',vol:72,tmo:25.05,dev:1.05},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'sthrosa',lider:'lemiliozzi',vol:184,tmo:24.94,dev:0.94},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'kmeira',lider:'julioliveira',vol:160,tmo:24.91,dev:0.91},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'jesoliveira',lider:'acarolinarib',vol:164,tmo:24.90,dev:0.90},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',rep:'squintino',lider:'lemiliozzi',vol:35,tmo:24.85,dev:0.85},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'nikcosta',lider:'lemiliozzi',vol:36,tmo:24.79,dev:0.79},
+  {proc:'Antes de publicar',canal:'MULTICANAL CHAT',rep:'kaysantos',lider:'asantosdefre',vol:6,tmo:24.77,dev:0.77},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',rep:'tsouzaandrad',lider:'julioliveira',vol:11,tmo:24.76,dev:0.76},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'rrafspedroso',lider:'lemiliozzi',vol:29,tmo:24.61,dev:0.61},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'nikcosta',lider:'lemiliozzi',vol:95,tmo:24.41,dev:0.41},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',rep:'raynasilva',lider:'julioliveira',vol:280,tmo:24.40,dev:0.40},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'emasantos',lider:'acarolinarib',vol:16,tmo:24.39,dev:0.39},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'rodolfdasilv',lider:'asantosdefre',vol:383,tmo:24.39,dev:0.39},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'jjujesusli',lider:'lemiliozzi',vol:32,tmo:24.38,dev:0.38},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'rodolfdasilv',lider:'asantosdefre',vol:68,tmo:24.23,dev:0.23},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'emasantos',lider:'acarolinarib',vol:132,tmo:24.21,dev:0.21},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'jjujesusli',lider:'lemiliozzi',vol:43,tmo:24.18,dev:0.18},
+  {proc:'Viaje del paquete - Vendedor',canal:'MULTICANAL CHAT',rep:'jrosario',lider:'julioliveira',vol:5,tmo:24.13,dev:0.13},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'sthrosa',lider:'lemiliozzi',vol:42,tmo:23.91,dev:-0.09},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'mvidigal',lider:'julioliveira',vol:219,tmo:23.90,dev:-0.10},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'rigomes',lider:'asantosdefre',vol:204,tmo:23.90,dev:-0.10},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'rrafspedroso',lider:'lemiliozzi',vol:208,tmo:23.73,dev:-0.27},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',rep:'nikcosta',lider:'lemiliozzi',vol:7,tmo:23.72,dev:-0.28},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'emasantos',lider:'acarolinarib',vol:111,tmo:23.60,dev:-0.40},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',rep:'kmeira',lider:'julioliveira',vol:17,tmo:23.57,dev:-0.43},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'tsouzaandrad',lider:'julioliveira',vol:95,tmo:23.48,dev:-0.52},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'jjujesusli',lider:'lemiliozzi',vol:298,tmo:23.39,dev:-0.61},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'gfarina',lider:'lemiliozzi',vol:37,tmo:23.09,dev:-0.91},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'jesoliveira',lider:'acarolinarib',vol:137,tmo:23.06,dev:-0.94},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'raqcosta',lider:'asantosdefre',vol:8,tmo:23.02,dev:-0.98},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'gaeldasilva',lider:'asantosdefre',vol:239,tmo:23.01,dev:-0.99},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'tsouzaandrad',lider:'julioliveira',vol:5,tmo:22.93,dev:-1.07},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'milferreira',lider:'julioliveira',vol:105,tmo:22.76,dev:-1.24},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'eansilva',lider:'julioliveira',vol:14,tmo:22.55,dev:-1.45},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'mvidigal',lider:'julioliveira',vol:211,tmo:22.52,dev:-1.48},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'tsouzaandrad',lider:'julioliveira',vol:19,tmo:22.49,dev:-1.51},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',rep:'raynasilva',lider:'julioliveira',vol:34,tmo:22.49,dev:-1.51},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'kmeira',lider:'julioliveira',vol:6,tmo:22.41,dev:-1.59},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'tsouzaandrad',lider:'julioliveira',vol:105,tmo:22.36,dev:-1.64},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'gfarina',lider:'lemiliozzi',vol:65,tmo:22.36,dev:-1.64},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'jesoliveira',lider:'acarolinarib',vol:29,tmo:22.29,dev:-1.71},
+  {proc:'Reversa',canal:'MULTICANAL C2C',rep:'lissouza',lider:'asantosdefre',vol:32,tmo:22.25,dev:9.75},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'milferreira',lider:'julioliveira',vol:329,tmo:22.24,dev:-1.76},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'anmesquita',lider:'asantosdefre',vol:115,tmo:21.94,dev:-2.06},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',rep:'squintino',lider:'lemiliozzi',vol:176,tmo:21.87,dev:-2.13},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'tsouzaandrad',lider:'julioliveira',vol:301,tmo:21.82,dev:-2.18},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'raqcosta',lider:'asantosdefre',vol:262,tmo:21.73,dev:-2.27},
+  {proc:'Asignación del contáctanos ME Sellers LT',canal:'MULTICANAL CHAT',rep:'nikcosta',lider:'lemiliozzi',vol:4,tmo:21.53,dev:-2.47},
+  {proc:'Reversa',canal:'MULTICANAL C2C',rep:'ersoares',lider:'lemiliozzi',vol:8,tmo:21.52,dev:9.02},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',rep:'casena',lider:'lemiliozzi',vol:5,tmo:21.49,dev:-2.51},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',rep:'lpinho',lider:'julioliveira',vol:31,tmo:21.34,dev:-2.66},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',rep:'arcsantos',lider:'julioliveira',vol:255,tmo:21.25,dev:-2.75},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'rodolfdasilv',lider:'asantosdefre',vol:35,tmo:21.25,dev:-2.75},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'sveloso',lider:'acarolinarib',vol:328,tmo:21.11,dev:-2.89},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'yasasilva',lider:'lemiliozzi',vol:71,tmo:21.10,dev:-2.90},
+  {proc:'PR - Datos Personales',canal:'MULTICANAL CHAT',rep:'arcsantos',lider:'julioliveira',vol:3,tmo:20.96,dev:-3.04},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'gfarina',lider:'lemiliozzi',vol:336,tmo:20.95,dev:-3.05},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'rigomes',lider:'asantosdefre',vol:8,tmo:20.86,dev:-3.14},
+  {proc:'Asignación del Contáctanos Pre Venta',canal:'MULTICANAL CHAT',rep:'raynasilva',lider:'julioliveira',vol:7,tmo:20.83,dev:-3.17},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'emasantos',lider:'acarolinarib',vol:323,tmo:20.82,dev:-3.18},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'nikcosta',lider:'lemiliozzi',vol:12,tmo:20.67,dev:-3.33},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'raynasilva',lider:'julioliveira',vol:215,tmo:20.63,dev:-3.37},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'mvidigal',lider:'julioliveira',vol:10,tmo:20.61,dev:-3.39},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'arcsantos',lider:'julioliveira',vol:196,tmo:20.52,dev:-3.48},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'milferreira',lider:'julioliveira',vol:94,tmo:20.50,dev:-3.50},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',rep:'anmesquita',lider:'asantosdefre',vol:87,tmo:20.49,dev:-3.51},
+  {proc:'Viaje del paquete - Vendedor',canal:'MULTICANAL CHAT',rep:'sthrosa',lider:'lemiliozzi',vol:3,tmo:20.47,dev:-3.53},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'vlacerda',lider:'asantosdefre',vol:23,tmo:20.44,dev:-3.56},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'jesoliveira',lider:'acarolinarib',vol:39,tmo:20.33,dev:-3.67},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',rep:'arcsantos',lider:'julioliveira',vol:30,tmo:20.27,dev:-3.73},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',rep:'anmesquita',lider:'asantosdefre',vol:11,tmo:20.13,dev:-3.87},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'sveloso',lider:'acarolinarib',vol:125,tmo:20.13,dev:-3.87},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',rep:'gaeldasilva',lider:'asantosdefre',vol:281,tmo:19.90,dev:-4.10},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'emasantos',lider:'acarolinarib',vol:6,tmo:19.73,dev:-4.27},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'milferreira',lider:'julioliveira',vol:27,tmo:19.73,dev:-4.27},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'eansilva',lider:'julioliveira',vol:79,tmo:19.70,dev:-4.30},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',rep:'gaeldasilva',lider:'asantosdefre',vol:36,tmo:19.34,dev:-4.66},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL CHAT',rep:'kmeira',lider:'julioliveira',vol:20,tmo:19.24,dev:-4.76},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'sveloso',lider:'acarolinarib',vol:97,tmo:19.09,dev:-4.91},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'yasasilva',lider:'lemiliozzi',vol:87,tmo:19.02,dev:-4.98},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',rep:'sveloso',lider:'acarolinarib',vol:9,tmo:19.00,dev:-5.00},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'eansilva',lider:'julioliveira',vol:9,tmo:18.99,dev:-5.01},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'rrafspedroso',lider:'lemiliozzi',vol:6,tmo:18.91,dev:-5.09},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'emasantos',lider:'acarolinarib',vol:36,tmo:18.90,dev:-5.10},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',rep:'sthrosa',lider:'lemiliozzi',vol:15,tmo:18.85,dev:-5.15},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',rep:'kaysantos',lider:'asantosdefre',vol:35,tmo:18.53,dev:-5.47},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'sveloso',lider:'acarolinarib',vol:25,tmo:18.52,dev:-5.48},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'jrosario',lider:'julioliveira',vol:70,tmo:18.49,dev:-5.51},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL C2C',rep:'lissouza',lider:'asantosdefre',vol:224,tmo:18.33,dev:5.83},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL C2C',rep:'snassar',lider:'julioliveira',vol:82,tmo:18.32,dev:5.82},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'raqcosta',lider:'asantosdefre',vol:51,tmo:18.30,dev:-5.70},
+  {proc:'Reputación',canal:'MULTICANAL C2C',rep:'hellerodrigu',lider:'acarolinarib',vol:114,tmo:18.22,dev:5.72},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'jmiguel',lider:'acarolinarib',vol:27,tmo:18.22,dev:-5.78},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'sthrosa',lider:'lemiliozzi',vol:154,tmo:18.08,dev:-5.92},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'yasasilva',lider:'lemiliozzi',vol:316,tmo:18.07,dev:-5.93},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'kaysantos',lider:'asantosdefre',vol:228,tmo:18.01,dev:-5.99},
+];
+const MELIPRO_semanalRaw = [
+['angaguilar','acarolinarib','MULTICANAL CHAT','2026-04-06',41.60],
+  ['angaguilar','acarolinarib','MULTICANAL CHAT','2026-04-13',26.03],
+  ['angaguilar','acarolinarib','MULTICANAL CHAT','2026-04-20',40.31],
+  ['angaguilar','acarolinarib','MULTICANAL CHAT','2026-04-27',39.67],
+  ['angaguilar','acarolinarib','MULTICANAL CHAT','2026-05-04',37.64],
+  ['anmesquita','asantosdefre','MULTICANAL CHAT','2026-04-20',22.45],
+  ['anmesquita','asantosdefre','MULTICANAL CHAT','2026-04-27',18.67],
+  ['anmesquita','asantosdefre','MULTICANAL CHAT','2026-05-04',20.13],
+  ['anprieto','acarolinarib','MULTICANAL C2C','2026-04-06',9.42],
+  ['anprieto','acarolinarib','MULTICANAL C2C','2026-04-13',7.69],
+  ['anprieto','acarolinarib','MULTICANAL C2C','2026-04-20',9.80],
+  ['anprieto','acarolinarib','MULTICANAL C2C','2026-04-27',9.61],
+  ['anprieto','acarolinarib','MULTICANAL C2C','2026-05-04',9.90],
+  ['aqumoura','lemiliozzi','MULTICANAL CHAT','2026-04-06',53.75],
+  ['aqumoura','lemiliozzi','MULTICANAL CHAT','2026-04-13',46.89],
+  ['aqumoura','lemiliozzi','MULTICANAL CHAT','2026-04-20',42.51],
+  ['aqumoura','lemiliozzi','MULTICANAL CHAT','2026-04-27',48.42],
+  ['aqumoura','lemiliozzi','MULTICANAL CHAT','2026-05-04',36.01],
+  ['arcsantos','julioliveira','MULTICANAL CHAT','2026-04-06',19.75],
+  ['arcsantos','julioliveira','MULTICANAL CHAT','2026-04-13',17.06],
+  ['arcsantos','julioliveira','MULTICANAL CHAT','2026-04-20',23.27],
+  ['arcsantos','julioliveira','MULTICANAL CHAT','2026-04-27',20.18],
+  ['arcsantos','julioliveira','MULTICANAL CHAT','2026-05-04',20.97],
+  ['casena','lemiliozzi','MULTICANAL CHAT','2026-04-06',28.22],
+  ['casena','lemiliozzi','MULTICANAL CHAT','2026-04-13',25.93],
+  ['casena','lemiliozzi','MULTICANAL CHAT','2026-04-20',26.17],
+  ['casena','lemiliozzi','MULTICANAL CHAT','2026-04-27',26.87],
+  ['casena','lemiliozzi','MULTICANAL CHAT','2026-05-04',28.12],
+  ['eansilva','julioliveira','MULTICANAL CHAT','2026-04-13',18.80],
+  ['eansilva','julioliveira','MULTICANAL CHAT','2026-04-20',18.12],
+  ['eansilva','julioliveira','MULTICANAL CHAT','2026-04-27',19.26],
+  ['eansilva','julioliveira','MULTICANAL CHAT','2026-05-04',19.64],
+  ['emasantos','acarolinarib','MULTICANAL CHAT','2026-04-06',25.26],
+  ['emasantos','acarolinarib','MULTICANAL CHAT','2026-04-13',21.66],
+  ['emasantos','acarolinarib','MULTICANAL CHAT','2026-04-20',24.93],
+  ['emasantos','acarolinarib','MULTICANAL CHAT','2026-04-27',16.35],
+  ['emasantos','acarolinarib','MULTICANAL CHAT','2026-05-04',18.88],
+  ['ersoares','lemiliozzi','MULTICANAL C2C','2026-04-06',11.29],
+  ['ersoares','lemiliozzi','MULTICANAL C2C','2026-04-13',10.91],
+  ['ersoares','lemiliozzi','MULTICANAL C2C','2026-04-20',12.25],
+  ['ersoares','lemiliozzi','MULTICANAL C2C','2026-05-04',13.42],
+  ['fgeraldo','acarolinarib','MULTICANAL CHAT','2026-04-06',46.80],
+  ['fgeraldo','acarolinarib','MULTICANAL CHAT','2026-04-13',46.95],
+  ['fgeraldo','acarolinarib','MULTICANAL CHAT','2026-04-20',40.89],
+  ['fgeraldo','acarolinarib','MULTICANAL CHAT','2026-04-27',45.92],
+  ['fgeraldo','acarolinarib','MULTICANAL CHAT','2026-05-04',38.23],
+  ['gaeldasilva','asantosdefre','MULTICANAL CHAT','2026-04-06',17.77],
+  ['gaeldasilva','asantosdefre','MULTICANAL CHAT','2026-04-13',17.94],
+  ['gaeldasilva','asantosdefre','MULTICANAL CHAT','2026-04-20',20.58],
+  ['gaeldasilva','asantosdefre','MULTICANAL CHAT','2026-04-27',19.04],
+  ['gaeldasilva','asantosdefre','MULTICANAL CHAT','2026-05-04',18.26],
+  ['gfarina','lemiliozzi','MULTICANAL CHAT','2026-04-06',24.55],
+  ['gfarina','lemiliozzi','MULTICANAL CHAT','2026-04-13',23.83],
+  ['gfarina','lemiliozzi','MULTICANAL CHAT','2026-04-20',18.37],
+  ['gfarina','lemiliozzi','MULTICANAL CHAT','2026-04-27',19.64],
+  ['gfarina','lemiliozzi','MULTICANAL CHAT','2026-05-04',19.53],
+  ['heilot','asantosdefre','MULTICANAL C2C','2026-04-06',10.46],
+  ['heilot','asantosdefre','MULTICANAL C2C','2026-04-13',8.89],
+  ['heilot','asantosdefre','MULTICANAL C2C','2026-04-20',11.39],
+  ['heilot','asantosdefre','MULTICANAL C2C','2026-04-27',8.35],
+  ['heilot','asantosdefre','MULTICANAL C2C','2026-05-04',8.64],
+  ['hellerodrigu','acarolinarib','MULTICANAL C2C','2026-04-06',36.76],
+  ['hellerodrigu','acarolinarib','MULTICANAL C2C','2026-04-13',32.00],
+  ['hellerodrigu','acarolinarib','MULTICANAL C2C','2026-04-20',31.19],
+  ['hellerodrigu','acarolinarib','MULTICANAL C2C','2026-04-27',31.66],
+  ['hellerodrigu','acarolinarib','MULTICANAL C2C','2026-05-04',26.15],
+  ['iksilva','julioliveira','MULTICANAL C2C','2026-04-06',4.23],
+  ['iksilva','julioliveira','MULTICANAL C2C','2026-04-13',4.45],
+  ['iksilva','julioliveira','MULTICANAL C2C','2026-04-20',4.35],
+  ['iksilva','julioliveira','MULTICANAL C2C','2026-04-27',5.08],
+  ['iksilva','julioliveira','MULTICANAL C2C','2026-05-04',6.46],
+  ['jesoliveira','acarolinarib','MULTICANAL CHAT','2026-04-06',22.84],
+  ['jesoliveira','acarolinarib','MULTICANAL CHAT','2026-04-13',24.96],
+  ['jesoliveira','acarolinarib','MULTICANAL CHAT','2026-04-20',23.99],
+  ['jjujesusli','lemiliozzi','MULTICANAL CHAT','2026-04-06',25.39],
+  ['jjujesusli','lemiliozzi','MULTICANAL CHAT','2026-04-13',22.69],
+  ['jjujesusli','lemiliozzi','MULTICANAL CHAT','2026-04-20',23.97],
+  ['jjujesusli','lemiliozzi','MULTICANAL CHAT','2026-04-27',21.00],
+  ['jjujesusli','lemiliozzi','MULTICANAL CHAT','2026-05-04',26.98],
+  ['jlimachaves','acarolinarib','MULTICANAL CHAT','2026-04-27',11.36],
+  ['jlimachaves','acarolinarib','MULTICANAL CHAT','2026-05-04',29.29],
+  ['jmiguel','acarolinarib','MULTICANAL CHAT','2026-04-06',11.84],
+  ['jrosario','julioliveira','MULTICANAL CHAT','2026-04-06',16.09],
+  ['jrosario','julioliveira','MULTICANAL CHAT','2026-04-13',15.07],
+  ['jrosario','julioliveira','MULTICANAL CHAT','2026-04-20',20.07],
+  ['jrosario','julioliveira','MULTICANAL CHAT','2026-04-27',15.45],
+  ['jrosario','julioliveira','MULTICANAL CHAT','2026-05-04',15.61],
+  ['kaysantos','asantosdefre','MULTICANAL CHAT','2026-04-06',16.21],
+  ['kaysantos','asantosdefre','MULTICANAL CHAT','2026-04-13',17.36],
+  ['kaysantos','asantosdefre','MULTICANAL CHAT','2026-04-20',14.97],
+  ['kaysantos','asantosdefre','MULTICANAL CHAT','2026-04-27',16.46],
+  ['kaysantos','asantosdefre','MULTICANAL CHAT','2026-05-04',13.68],
+  ['kmeira','julioliveira','MULTICANAL CHAT','2026-04-06',23.21],
+  ['kmeira','julioliveira','MULTICANAL CHAT','2026-04-13',26.14],
+  ['kmeira','julioliveira','MULTICANAL CHAT','2026-04-20',23.44],
+  ['kmeira','julioliveira','MULTICANAL CHAT','2026-04-27',26.13],
+  ['kmeira','julioliveira','MULTICANAL CHAT','2026-05-04',22.91],
+  ['lhipolito','lemiliozzi','MULTICANAL C2C','2026-04-06',10.55],
+  ['lhipolito','lemiliozzi','MULTICANAL C2C','2026-04-13',9.11],
+  ['lhipolito','lemiliozzi','MULTICANAL C2C','2026-04-20',13.76],
+  ['lhipolito','lemiliozzi','MULTICANAL C2C','2026-04-27',12.38],
+  ['lhipolito','lemiliozzi','MULTICANAL C2C','2026-05-04',12.06],
+  ['lissouza','asantosdefre','MULTICANAL C2C','2026-04-06',15.56],
+  ['lissouza','asantosdefre','MULTICANAL C2C','2026-04-13',14.88],
+  ['lissouza','asantosdefre','MULTICANAL C2C','2026-04-20',18.75],
+  ['lissouza','asantosdefre','MULTICANAL C2C','2026-04-27',16.63],
+  ['lissouza','asantosdefre','MULTICANAL C2C','2026-05-04',23.40],
+  ['lpinho','julioliveira','MULTICANAL CHAT','2026-04-06',17.14],
+  ['lpinho','julioliveira','MULTICANAL CHAT','2026-04-13',15.22],
+  ['lpinho','julioliveira','MULTICANAL CHAT','2026-04-20',16.78],
+  ['lpinho','julioliveira','MULTICANAL CHAT','2026-04-27',17.15],
+  ['lpinho','julioliveira','MULTICANAL CHAT','2026-05-04',19.30],
+  ['milferreira','julioliveira','MULTICANAL CHAT','2026-04-06',17.43],
+  ['milferreira','julioliveira','MULTICANAL CHAT','2026-04-13',18.20],
+  ['milferreira','julioliveira','MULTICANAL CHAT','2026-04-20',24.32],
+  ['milferreira','julioliveira','MULTICANAL CHAT','2026-04-27',23.84],
+  ['mvidigal','julioliveira','MULTICANAL CHAT','2026-04-06',20.67],
+  ['mvidigal','julioliveira','MULTICANAL CHAT','2026-04-13',18.63],
+  ['mvidigal','julioliveira','MULTICANAL CHAT','2026-04-20',21.46],
+  ['mvidigal','julioliveira','MULTICANAL CHAT','2026-04-27',28.64],
+  ['mvidigal','julioliveira','MULTICANAL CHAT','2026-05-04',25.41],
+  ['nielasasanto','lemiliozzi','MULTICANAL CHAT','2026-04-06',49.69],
+  ['nielasasanto','lemiliozzi','MULTICANAL CHAT','2026-04-13',53.95],
+  ['nielasasanto','lemiliozzi','MULTICANAL CHAT','2026-04-20',45.72],
+  ['nielasasanto','lemiliozzi','MULTICANAL CHAT','2026-04-27',41.64],
+  ['nielasasanto','lemiliozzi','MULTICANAL CHAT','2026-05-04',44.08],
+  ['nikcosta','lemiliozzi','MULTICANAL CHAT','2026-04-06',25.97],
+  ['nikcosta','lemiliozzi','MULTICANAL CHAT','2026-04-13',25.46],
+  ['nikcosta','lemiliozzi','MULTICANAL CHAT','2026-04-20',24.34],
+  ['nikcosta','lemiliozzi','MULTICANAL CHAT','2026-04-27',28.16],
+  ['raqcosta','asantosdefre','MULTICANAL CHAT','2026-04-06',21.21],
+  ['raqcosta','asantosdefre','MULTICANAL CHAT','2026-04-20',22.09],
+  ['raqcosta','asantosdefre','MULTICANAL CHAT','2026-04-27',21.63],
+  ['raqcosta','asantosdefre','MULTICANAL CHAT','2026-05-04',20.91],
+  ['raynasilva','julioliveira','MULTICANAL CHAT','2026-04-06',24.13],
+  ['raynasilva','julioliveira','MULTICANAL CHAT','2026-04-13',27.51],
+  ['raynasilva','julioliveira','MULTICANAL CHAT','2026-04-20',25.04],
+  ['raynasilva','julioliveira','MULTICANAL CHAT','2026-04-27',24.40],
+  ['raynasilva','julioliveira','MULTICANAL CHAT','2026-05-04',24.85],
+  ['rigomes','asantosdefre','MULTICANAL CHAT','2026-04-06',23.73],
+  ['rigomes','asantosdefre','MULTICANAL CHAT','2026-04-13',26.45],
+  ['rigomes','asantosdefre','MULTICANAL CHAT','2026-04-20',28.21],
+  ['rigomes','asantosdefre','MULTICANAL CHAT','2026-04-27',31.09],
+  ['rigomes','asantosdefre','MULTICANAL CHAT','2026-05-04',22.51],
+  ['rodolfdasilv','asantosdefre','MULTICANAL CHAT','2026-04-06',23.61],
+  ['rodolfdasilv','asantosdefre','MULTICANAL CHAT','2026-04-13',20.38],
+  ['rodolfdasilv','asantosdefre','MULTICANAL CHAT','2026-04-20',23.58],
+  ['rodolfdasilv','asantosdefre','MULTICANAL CHAT','2026-04-27',29.14],
+  ['rodolfdasilv','asantosdefre','MULTICANAL CHAT','2026-05-04',26.36],
+  ['rrafspedroso','lemiliozzi','MULTICANAL CHAT','2026-04-06',25.73],
+  ['rrafspedroso','lemiliozzi','MULTICANAL CHAT','2026-04-13',22.74],
+  ['rrafspedroso','lemiliozzi','MULTICANAL CHAT','2026-04-20',25.83],
+  ['rrafspedroso','lemiliozzi','MULTICANAL CHAT','2026-04-27',28.73],
+  ['rrafspedroso','lemiliozzi','MULTICANAL CHAT','2026-05-04',26.01],
+  ['snassar','julioliveira','MULTICANAL C2C','2026-04-06',10.67],
+  ['snassar','julioliveira','MULTICANAL C2C','2026-04-13',11.46],
+  ['snassar','julioliveira','MULTICANAL C2C','2026-04-20',12.69],
+  ['snassar','julioliveira','MULTICANAL C2C','2026-04-27',13.41],
+  ['snassar','julioliveira','MULTICANAL C2C','2026-05-04',11.64],
+  ['squintino','lemiliozzi','MULTICANAL CHAT','2026-04-06',20.42],
+  ['squintino','lemiliozzi','MULTICANAL CHAT','2026-04-13',20.40],
+  ['squintino','lemiliozzi','MULTICANAL CHAT','2026-04-20',25.13],
+  ['squintino','lemiliozzi','MULTICANAL CHAT','2026-04-27',20.30],
+  ['squintino','lemiliozzi','MULTICANAL CHAT','2026-05-04',20.55],
+  ['sthrosa','lemiliozzi','MULTICANAL CHAT','2026-04-06',18.94],
+  ['sthrosa','lemiliozzi','MULTICANAL CHAT','2026-04-13',21.75],
+  ['sthrosa','lemiliozzi','MULTICANAL CHAT','2026-04-20',21.11],
+  ['sthrosa','lemiliozzi','MULTICANAL CHAT','2026-04-27',20.46],
+  ['sthrosa','lemiliozzi','MULTICANAL CHAT','2026-05-04',20.82],
+  ['sveloso','acarolinarib','MULTICANAL CHAT','2026-04-06',22.07],
+  ['sveloso','acarolinarib','MULTICANAL CHAT','2026-04-13',17.31],
+  ['sveloso','acarolinarib','MULTICANAL CHAT','2026-04-20',20.44],
+  ['sveloso','acarolinarib','MULTICANAL CHAT','2026-04-27',18.76],
+  ['sveloso','acarolinarib','MULTICANAL CHAT','2026-05-04',16.34],
+  ['tsouzaandrad','julioliveira','MULTICANAL CHAT','2026-04-06',21.69],
+  ['tsouzaandrad','julioliveira','MULTICANAL CHAT','2026-04-13',18.87],
+  ['tsouzaandrad','julioliveira','MULTICANAL CHAT','2026-04-20',27.00],
+  ['tsouzaandrad','julioliveira','MULTICANAL CHAT','2026-04-27',21.76],
+  ['tsouzaandrad','julioliveira','MULTICANAL CHAT','2026-05-04',21.39],
+  ['ttarekmourad','asantosdefre','MULTICANAL CHAT','2026-04-06',15.93],
+  ['ttarekmourad','asantosdefre','MULTICANAL CHAT','2026-04-13',14.26],
+  ['ttarekmourad','asantosdefre','MULTICANAL CHAT','2026-04-20',15.98],
+  ['ttarekmourad','asantosdefre','MULTICANAL CHAT','2026-04-27',14.01],
+  ['ttarekmourad','asantosdefre','MULTICANAL CHAT','2026-05-04',16.79],
+  ['vlacerda','asantosdefre','MULTICANAL CHAT','2026-04-06',29.69],
+  ['vlacerda','asantosdefre','MULTICANAL CHAT','2026-04-13',26.74],
+  ['vlacerda','asantosdefre','MULTICANAL CHAT','2026-04-20',31.65],
+  ['vlacerda','asantosdefre','MULTICANAL CHAT','2026-04-27',33.35],
+  ['vlacerda','asantosdefre','MULTICANAL CHAT','2026-05-04',32.44],
+  ['yasasilva','lemiliozzi','MULTICANAL CHAT','2026-04-06',17.10],
+  ['yasasilva','lemiliozzi','MULTICANAL CHAT','2026-04-13',18.48],
+  ['yasasilva','lemiliozzi','MULTICANAL CHAT','2026-04-20',20.00],
+  ['yasasilva','lemiliozzi','MULTICANAL CHAT','2026-04-27',19.42],
+  ['yasasilva','lemiliozzi','MULTICANAL CHAT','2026-05-04',20.15],
+];
+const MELIPRO_toqueRepData = [
+{rep:'aqumoura',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:191,toque:27.42,toqueMax:303.75,tmo:48.51},
+  {rep:'nielasasanto',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:191,toque:25.81,toqueMax:309.02,tmo:49.08},
+  {rep:'fgeraldo',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:225,toque:21.61,toqueMax:217.45,tmo:45.79},
+  {rep:'hellerodrigu',lider:'acarolinarib',canal:'MULTICANAL C2C',assigns:265,toque:20.68,toqueMax:341.32,tmo:35.38},
+  {rep:'angaguilar',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:273,toque:15.96,toqueMax:252.28,tmo:37.53},
+  {rep:'jlimachaves',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:63,toque:11.33,toqueMax:74.72,tmo:11.36},
+  {rep:'rigomes',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:496,toque:8.99,toqueMax:163.13,tmo:27.58},
+  {rep:'lissouza',lider:'asantosdefre',canal:'MULTICANAL C2C',assigns:450,toque:7.99,toqueMax:95.03,tmo:16.90},
+  {rep:'raynasilva',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:609,toque:7.47,toqueMax:268.37,tmo:25.38},
+  {rep:'sthrosa',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:418,toque:7.23,toqueMax:151.35,tmo:21.64},
+  {rep:'rrafspedroso',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:482,toque:7.00,toqueMax:116.33,tmo:25.51},
+  {rep:'casena',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:532,toque:6.89,toqueMax:208.33,tmo:26.21},
+  {rep:'raqcosta',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:421,toque:6.60,toqueMax:192.50,tmo:21.82},
+  {rep:'nikcosta',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:624,toque:6.32,toqueMax:156.40,tmo:25.26},
+  {rep:'milferreira',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:583,toque:6.09,toqueMax:206.05,tmo:22.20},
+  {rep:'jesoliveira',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:389,toque:6.06,toqueMax:279.85,tmo:23.18},
+  {rep:'vlacerda',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:336,toque:6.02,toqueMax:108.03,tmo:29.00},
+  {rep:'kmeira',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:433,toque:5.98,toqueMax:239.08,tmo:25.04},
+  {rep:'gfarina',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:553,toque:5.72,toqueMax:115.30,tmo:22.43},
+  {rep:'sveloso',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:605,toque:5.67,toqueMax:146.35,tmo:20.45},
+  {rep:'snassar',lider:'julioliveira',canal:'MULTICANAL C2C',assigns:550,toque:5.66,toqueMax:142.73,tmo:12.40},
+  {rep:'lhipolito',lider:'lemiliozzi',canal:'MULTICANAL C2C',assigns:466,toque:5.51,toqueMax:117.23,tmo:11.92},
+  {rep:'rodolfdasilv',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:589,toque:5.46,toqueMax:96.60,tmo:23.89},
+  {rep:'tsouzaandrad',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:560,toque:5.39,toqueMax:178.73,tmo:22.19},
+  {rep:'jjujesusli',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:626,toque:5.34,toqueMax:82.65,tmo:23.96},
+  {rep:'emasantos',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:640,toque:4.91,toqueMax:178.15,tmo:21.95},
+  {rep:'ersoares',lider:'lemiliozzi',canal:'MULTICANAL C2C',assigns:256,toque:4.58,toqueMax:71.45,tmo:11.35},
+  {rep:'anmesquita',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:254,toque:4.26,toqueMax:96.52,tmo:20.37},
+  {rep:'eansilva',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:198,toque:4.13,toqueMax:121.35,tmo:18.61},
+  {rep:'heilot',lider:'asantosdefre',canal:'MULTICANAL C2C',assigns:446,toque:4.01,toqueMax:79.05,tmo:10.07},
+  {rep:'jmiguel',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:121,toque:3.99,toqueMax:176.15,tmo:16.13},
+  {rep:'squintino',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:495,toque:3.79,toqueMax:78.03,tmo:21.63},
+  {rep:'mvidigal',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:516,toque:3.69,toqueMax:92.75,tmo:21.97},
+  {rep:'yasasilva',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:526,toque:3.65,toqueMax:50.17,tmo:18.23},
+  {rep:'ttarekmourad',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:688,toque:3.49,toqueMax:170.63,tmo:15.54},
+  {rep:'jrosario',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:510,toque:2.91,toqueMax:115.62,tmo:16.55},
+  {rep:'arcsantos',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:607,toque:2.84,toqueMax:55.50,tmo:19.43},
+  {rep:'kaysantos',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:719,toque:2.77,toqueMax:44.03,tmo:16.38},
+  {rep:'gaeldasilva',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:712,toque:2.71,toqueMax:57.92,tmo:18.89},
+  {rep:'lpinho',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:697,toque:2.64,toqueMax:98.83,tmo:16.77},
+  {rep:'anprieto',lider:'acarolinarib',canal:'MULTICANAL C2C',assigns:480,toque:2.58,toqueMax:33.80,tmo:9.23},
+  {rep:'iksilva',lider:'julioliveira',canal:'MULTICANAL C2C',assigns:540,toque:2.06,toqueMax:98.60,tmo:4.73},
+];
+const MELIPRO_produRepData = [
+{rep:'jmiguel',lider:'acarolinarib',canal:'MULTICANAL CHAT',produ:6.19,tmo:16.00},
+  {rep:'heilot',lider:'asantosdefre',canal:'MULTICANAL C2C',produ:6.02,tmo:9.62},
+  {rep:'jlimachaves',lider:'acarolinarib',canal:'MULTICANAL CHAT',produ:5.79,tmo:11.36},
+  {rep:'jrosario',lider:'julioliveira',canal:'MULTICANAL CHAT',produ:5.15,tmo:16.43},
+  {rep:'ersoares',lider:'lemiliozzi',canal:'MULTICANAL C2C',produ:5.09,tmo:10.96},
+  {rep:'kaysantos',lider:'asantosdefre',canal:'MULTICANAL CHAT',produ:5.07,tmo:16.22},
+  {rep:'yasasilva',lider:'lemiliozzi',canal:'MULTICANAL CHAT',produ:5.04,tmo:18.52},
+  {rep:'iksilva',lider:'julioliveira',canal:'MULTICANAL C2C',produ:4.97,tmo:4.59},
+  {rep:'snassar',lider:'julioliveira',canal:'MULTICANAL C2C',produ:4.93,tmo:11.98},
+  {rep:'lpinho',lider:'julioliveira',canal:'MULTICANAL CHAT',produ:4.86,tmo:16.73},
+  {rep:'arcsantos',lider:'julioliveira',canal:'MULTICANAL CHAT',produ:4.73,tmo:19.49},
+  {rep:'emasantos',lider:'acarolinarib',canal:'MULTICANAL CHAT',produ:4.69,tmo:22.00},
+  {rep:'rodolfdasilv',lider:'asantosdefre',canal:'MULTICANAL CHAT',produ:4.57,tmo:23.82},
+  {rep:'gaeldasilva',lider:'asantosdefre',canal:'MULTICANAL CHAT',produ:4.54,tmo:18.77},
+  {rep:'anprieto',lider:'acarolinarib',canal:'MULTICANAL C2C',produ:4.50,tmo:8.99},
+  {rep:'sthrosa',lider:'lemiliozzi',canal:'MULTICANAL CHAT',produ:4.41,tmo:20.75},
+  {rep:'eansilva',lider:'julioliveira',canal:'MULTICANAL CHAT',produ:4.35,tmo:18.69},
+  {rep:'squintino',lider:'lemiliozzi',canal:'MULTICANAL CHAT',produ:4.30,tmo:21.27},
+  {rep:'gfarina',lider:'lemiliozzi',canal:'MULTICANAL CHAT',produ:4.29,tmo:22.29},
+  {rep:'milferreira',lider:'julioliveira',canal:'MULTICANAL CHAT',produ:4.28,tmo:22.23},
+  {rep:'anmesquita',lider:'asantosdefre',canal:'MULTICANAL CHAT',produ:4.28,tmo:20.30},
+  {rep:'rrafspedroso',lider:'lemiliozzi',canal:'MULTICANAL CHAT',produ:4.25,tmo:24.95},
+  {rep:'ttarekmourad',lider:'asantosdefre',canal:'MULTICANAL CHAT',produ:4.21,tmo:15.43},
+  {rep:'raqcosta',lider:'asantosdefre',canal:'MULTICANAL CHAT',produ:4.18,tmo:21.93},
+  {rep:'tsouzaandrad',lider:'julioliveira',canal:'MULTICANAL CHAT',produ:4.16,tmo:22.24},
+  {rep:'lhipolito',lider:'lemiliozzi',canal:'MULTICANAL C2C',produ:4.14,tmo:11.09},
+  {rep:'sveloso',lider:'acarolinarib',canal:'MULTICANAL CHAT',produ:4.03,tmo:19.78},
+  {rep:'casena',lider:'lemiliozzi',canal:'MULTICANAL CHAT',produ:3.88,tmo:26.18},
+  {rep:'nikcosta',lider:'lemiliozzi',canal:'MULTICANAL CHAT',produ:3.87,tmo:25.10},
+  {rep:'lissouza',lider:'asantosdefre',canal:'MULTICANAL C2C',produ:3.71,tmo:16.39},
+  {rep:'kmeira',lider:'julioliveira',canal:'MULTICANAL CHAT',produ:3.68,tmo:24.90},
+  {rep:'mvidigal',lider:'julioliveira',canal:'MULTICANAL CHAT',produ:3.67,tmo:21.81},
+  {rep:'raynasilva',lider:'julioliveira',canal:'MULTICANAL CHAT',produ:3.66,tmo:25.20},
+  {rep:'jjujesusli',lider:'lemiliozzi',canal:'MULTICANAL CHAT',produ:3.51,tmo:23.04},
+  {rep:'vlacerda',lider:'asantosdefre',canal:'MULTICANAL CHAT',produ:3.49,tmo:28.94},
+  {rep:'jesoliveira',lider:'acarolinarib',canal:'MULTICANAL CHAT',produ:3.40,tmo:23.51},
+  {rep:'rigomes',lider:'asantosdefre',canal:'MULTICANAL CHAT',produ:3.25,tmo:27.31},
+  {rep:'angaguilar',lider:'acarolinarib',canal:'MULTICANAL CHAT',produ:2.01,tmo:35.85},
+  {rep:'hellerodrigu',lider:'acarolinarib',canal:'MULTICANAL C2C',produ:1.67,tmo:32.49},
+  {rep:'aqumoura',lider:'lemiliozzi',canal:'MULTICANAL CHAT',produ:1.38,tmo:47.23},
+  {rep:'nielasasanto',lider:'lemiliozzi',canal:'MULTICANAL CHAT',produ:1.35,tmo:47.29},
+  {rep:'fgeraldo',lider:'acarolinarib',canal:'MULTICANAL CHAT',produ:1.30,tmo:45.28},
+];
+const MELIPRO_prodRepData = [
+{rep:'nielasasanto',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:0,tmo:47.29,prod:21.49,np:25.80,hold:0,acw:1.60},
+  {rep:'aqumoura',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:0,tmo:47.23,prod:18.82,np:28.41,hold:0,acw:0.98},
+  {rep:'fgeraldo',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:0,tmo:45.28,prod:23.48,np:21.80,hold:0,acw:0.68},
+  {rep:'angaguilar',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:0,tmo:35.85,prod:20.21,np:15.64,hold:0,acw:0.64},
+  {rep:'hellerodrigu',lider:'acarolinarib',canal:'MULTICANAL C2C',assigns:0,tmo:32.49,prod:11.38,np:21.11,hold:0,acw:0.39},
+  {rep:'vlacerda',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:0,tmo:28.94,prod:21.92,np:7.02,hold:0,acw:0.91},
+  {rep:'rigomes',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:0,tmo:27.31,prod:17.26,np:10.05,hold:0,acw:1.03},
+  {rep:'casena',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:0,tmo:26.18,prod:17.41,np:8.77,hold:0,acw:1.75},
+  {rep:'raynasilva',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:0,tmo:25.20,prod:16.02,np:9.18,hold:0,acw:1.60},
+  {rep:'nikcosta',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:0,tmo:25.10,prod:17.13,np:7.97,hold:0,acw:1.47},
+  {rep:'rrafspedroso',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:0,tmo:24.95,prod:16.75,np:8.20,hold:0,acw:1.01},
+  {rep:'kmeira',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:0,tmo:24.90,prod:17.57,np:7.33,hold:0,acw:1.17},
+  {rep:'rodolfdasilv',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:0,tmo:23.82,prod:16.36,np:7.46,hold:0,acw:1.95},
+  {rep:'jesoliveira',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:0,tmo:23.51,prod:14.36,np:9.15,hold:0,acw:3.01},
+  {rep:'jjujesusli',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:0,tmo:23.04,prod:15.87,np:7.17,hold:0,acw:1.63},
+  {rep:'gfarina',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:0,tmo:22.29,prod:15.26,np:7.03,hold:0,acw:1.22},
+  {rep:'tsouzaandrad',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:0,tmo:22.24,prod:15.79,np:6.45,hold:0,acw:0.94},
+  {rep:'milferreira',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:0,tmo:22.23,prod:14.92,np:7.31,hold:0,acw:1.07},
+  {rep:'emasantos',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:0,tmo:22.00,prod:15.99,np:6.01,hold:0,acw:0.99},
+  {rep:'raqcosta',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:0,tmo:21.93,prod:13.41,np:8.52,hold:0,acw:1.67},
+  {rep:'mvidigal',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:0,tmo:21.81,prod:16.89,np:4.92,hold:0,acw:1.06},
+  {rep:'squintino',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:0,tmo:21.27,prod:15.85,np:5.42,hold:0,acw:1.23},
+  {rep:'sthrosa',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:0,tmo:20.75,prod:13.45,np:7.30,hold:0,acw:0.63},
+  {rep:'anmesquita',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:0,tmo:20.30,prod:14.38,np:5.92,hold:0,acw:1.34},
+  {rep:'sveloso',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:0,tmo:19.78,prod:12.84,np:6.94,hold:0,acw:1.12},
+  {rep:'arcsantos',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:0,tmo:19.49,prod:15.58,np:3.91,hold:0,acw:0.91},
+  {rep:'gaeldasilva',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:0,tmo:18.77,prod:14.53,np:4.24,hold:0,acw:1.30},
+  {rep:'eansilva',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:0,tmo:18.69,prod:13.02,np:5.67,hold:0,acw:0.94},
+  {rep:'yasasilva',lider:'lemiliozzi',canal:'MULTICANAL CHAT',assigns:0,tmo:18.52,prod:13.27,np:5.25,hold:0,acw:1.40},
+  {rep:'lpinho',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:0,tmo:16.73,prod:12.78,np:3.95,hold:0,acw:1.20},
+  {rep:'jrosario',lider:'julioliveira',canal:'MULTICANAL CHAT',assigns:0,tmo:16.43,prod:12.53,np:3.90,hold:0,acw:0.82},
+  {rep:'lissouza',lider:'asantosdefre',canal:'MULTICANAL C2C',assigns:0,tmo:16.39,prod:7.37,np:9.02,hold:0,acw:0.32},
+  {rep:'kaysantos',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:0,tmo:16.22,prod:12.11,np:4.11,hold:0,acw:1.15},
+  {rep:'jmiguel',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:0,tmo:16.00,prod:11.03,np:4.97,hold:0,acw:0.93},
+  {rep:'ttarekmourad',lider:'asantosdefre',canal:'MULTICANAL CHAT',assigns:0,tmo:15.43,prod:10.50,np:4.93,hold:0,acw:1.23},
+  {rep:'snassar',lider:'julioliveira',canal:'MULTICANAL C2C',assigns:0,tmo:11.98,prod:5.48,np:6.50,hold:0,acw:0.30},
+  {rep:'jlimachaves',lider:'acarolinarib',canal:'MULTICANAL CHAT',assigns:0,tmo:11.36,prod:0.00,np:11.36,hold:0,acw:0.00},
+  {rep:'lhipolito',lider:'lemiliozzi',canal:'MULTICANAL C2C',assigns:0,tmo:11.09,prod:4.80,np:6.29,hold:0,acw:0.25},
+  {rep:'ersoares',lider:'lemiliozzi',canal:'MULTICANAL C2C',assigns:0,tmo:10.96,prod:5.33,np:5.63,hold:0,acw:0.40},
+  {rep:'heilot',lider:'asantosdefre',canal:'MULTICANAL C2C',assigns:0,tmo:9.62,prod:4.81,np:4.81,hold:0,acw:0.22},
+  {rep:'anprieto',lider:'acarolinarib',canal:'MULTICANAL C2C',assigns:0,tmo:8.99,prod:5.51,np:3.48,hold:0,acw:0.25},
+  {rep:'iksilva',lider:'julioliveira',canal:'MULTICANAL C2C',assigns:0,tmo:4.59,prod:0.50,np:4.09,hold:0,acw:0.13},
+];
+const MELIPRO_estiloData = [
+{rep:'ersoares',lider:'lemiliozzi',canal:'MULTICANAL C2C',sen:'EXPERT',estilo:41.3,tmo:10.96},
+  {rep:'hellerodrigu',lider:'acarolinarib',canal:'MULTICANAL C2C',sen:'NEWBIE',estilo:43.9,tmo:32.49},
+  {rep:'lissouza',lider:'asantosdefre',canal:'MULTICANAL C2C',sen:'EXPERT',estilo:47.7,tmo:16.39},
+  {rep:'iksilva',lider:'julioliveira',canal:'MULTICANAL C2C',sen:'EXPERT',estilo:48.9,tmo:4.59},
+  {rep:'raqcosta',lider:'asantosdefre',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:50.0,tmo:21.93},
+  {rep:'sthrosa',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'TRAINING',estilo:52.1,tmo:20.75},
+  {rep:'lhipolito',lider:'lemiliozzi',canal:'MULTICANAL C2C',sen:'EXPERT',estilo:53.6,tmo:11.09},
+  {rep:'sthrosa',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'NEWBIE',estilo:53.8,tmo:20.75},
+  {rep:'snassar',lider:'julioliveira',canal:'MULTICANAL C2C',sen:'EXPERT',estilo:53.8,tmo:11.98},
+  {rep:'emasantos',lider:'acarolinarib',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:54.0,tmo:22.00},
+  {rep:'heilot',lider:'asantosdefre',canal:'MULTICANAL C2C',sen:'EXPERT',estilo:54.2,tmo:9.62},
+  {rep:'jmiguel',lider:'acarolinarib',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:54.2,tmo:16.00},
+  {rep:'anprieto',lider:'acarolinarib',canal:'MULTICANAL C2C',sen:'EXPERT',estilo:55.3,tmo:8.99},
+  {rep:'jesoliveira',lider:'acarolinarib',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:55.8,tmo:23.51},
+  {rep:'mvidigal',lider:'julioliveira',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:55.9,tmo:21.81},
+  {rep:'rigomes',lider:'asantosdefre',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:56.2,tmo:27.31},
+  {rep:'squintino',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:56.8,tmo:21.27},
+  {rep:'casena',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:57.2,tmo:26.18},
+  {rep:'raynasilva',lider:'julioliveira',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:57.7,tmo:25.20},
+  {rep:'jjujesusli',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:58.4,tmo:23.04},
+  {rep:'kmeira',lider:'julioliveira',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:59.1,tmo:24.90},
+  {rep:'tsouzaandrad',lider:'julioliveira',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:59.1,tmo:22.24},
+  {rep:'aqumoura',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'NEWBIE',estilo:59.2,tmo:47.23},
+  {rep:'milferreira',lider:'julioliveira',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:59.2,tmo:22.23},
+  {rep:'gaeldasilva',lider:'asantosdefre',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:59.2,tmo:18.77},
+  {rep:'nielasasanto',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'TRAINING',estilo:60.0,tmo:47.29},
+  {rep:'nikcosta',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:60.1,tmo:25.10},
+  {rep:'sveloso',lider:'acarolinarib',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:60.2,tmo:19.78},
+  {rep:'rrafspedroso',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:60.6,tmo:24.95},
+  {rep:'ttarekmourad',lider:'asantosdefre',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:61.0,tmo:15.43},
+  {rep:'vlacerda',lider:'asantosdefre',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:61.3,tmo:28.94},
+  {rep:'gfarina',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:61.4,tmo:22.29},
+  {rep:'eansilva',lider:'julioliveira',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:61.4,tmo:18.69},
+  {rep:'kaysantos',lider:'asantosdefre',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:61.8,tmo:16.22},
+  {rep:'arcsantos',lider:'julioliveira',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:62.0,tmo:19.49},
+  {rep:'lpinho',lider:'julioliveira',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:62.1,tmo:16.73},
+  {rep:'fgeraldo',lider:'acarolinarib',canal:'MULTICANAL CHAT',sen:'NEWBIE',estilo:62.4,tmo:45.28},
+  {rep:'jrosario',lider:'julioliveira',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:62.5,tmo:16.43},
+  {rep:'angaguilar',lider:'acarolinarib',canal:'MULTICANAL CHAT',sen:'NEWBIE',estilo:62.5,tmo:35.85},
+  {rep:'yasasilva',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:62.9,tmo:18.52},
+  {rep:'aqumoura',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'TRAINING',estilo:63.2,tmo:47.23},
+  {rep:'fgeraldo',lider:'acarolinarib',canal:'MULTICANAL CHAT',sen:'TRAINING',estilo:63.4,tmo:45.28},
+  {rep:'anmesquita',lider:'asantosdefre',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:65.5,tmo:20.30},
+  {rep:'rodolfdasilv',lider:'asantosdefre',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:66.2,tmo:23.82},
+  {rep:'nielasasanto',lider:'lemiliozzi',canal:'MULTICANAL CHAT',sen:'NEWBIE',estilo:67.5,tmo:47.29},
+];
+const MELIPRO_detratoresData = [
+{caso:'451604197',data:'20/04',rep:'fgeraldo',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:4,tmo:75.82,comentario:''},
+  {caso:'452223884',data:'23/04',rep:'emasantos',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:2,tmo:74.88,comentario:''},
+  {caso:'452567185',data:'24/04',rep:'nielasasanto',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:65.77,comentario:''},
+  {caso:'451951774',data:'22/04',rep:'sveloso',canal:'MULTICANAL CHAT',proc:'Reversa',nota:1,tmo:65.65,comentario:''},
+  {caso:'450862398',data:'16/04',rep:'raynasilva',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',nota:1,tmo:63.03,comentario:''},
+  {caso:'452494230',data:'24/04',rep:'yasasilva',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:58.78,comentario:''},
+  {caso:'450886209',data:'16/04',rep:'jesoliveira',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:57.85,comentario:''},
+  {caso:'450921299',data:'16/04',rep:'nielasasanto',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:2,tmo:57.63,comentario:''},
+  {caso:'451530161',data:'20/04',rep:'kmeira',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:2,tmo:55.47,comentario:''},
+  {caso:'452986836',data:'27/04',rep:'casena',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:55.37,comentario:''},
+  {caso:'448883334',data:'07/04',rep:'sveloso',canal:'MULTICANAL C2C',proc:'Reversa',nota:0,tmo:54.00,comentario:'Tive a resposta e o chat foi encerrado no mesmo momento, sem me dar chance de resposta.Att,Mateus'},
+  {caso:'453216826',data:'28/04',rep:'raqcosta',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:2,tmo:53.87,comentario:''},
+  {caso:'449423036',data:'09/04',rep:'nikcosta',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:52.28,comentario:''},
+  {caso:'450843926',data:'16/04',rep:'raynasilva',canal:'MULTICANAL CHAT',proc:'PR - Técnica prohibida',nota:4,tmo:50.68,comentario:''},
+  {caso:'452270256',data:'23/04',rep:'squintino',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',nota:4,tmo:46.90,comentario:''},
+  {caso:'451931407',data:'22/04',rep:'kmeira',canal:'MULTICANAL CHAT',proc:'Reputación',nota:4,tmo:45.67,comentario:''},
+  {caso:'451956214',data:'22/04',rep:'aqumoura',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:5,tmo:43.60,comentario:''},
+  {caso:'452990078',data:'27/04',rep:'vlacerda',canal:'MULTICANAL CHAT',proc:'Reputación',nota:5,tmo:42.15,comentario:''},
+  {caso:'452938008',data:'27/04',rep:'jjujesusli',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:5,tmo:41.82,comentario:''},
+  {caso:'451109549',data:'17/04',rep:'emasantos',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:6,tmo:41.48,comentario:''},
+  {caso:'451521686',data:'20/04',rep:'gfarina',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:1,tmo:41.47,comentario:''},
+  {caso:'452899118',data:'27/04',rep:'milferreira',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:40.75,comentario:''},
+  {caso:'452488496',data:'24/04',rep:'rigomes',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:6,tmo:40.18,comentario:''},
+  {caso:'452026542',data:'22/04',rep:'rrafspedroso',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:2,tmo:39.08,comentario:''},
+  {caso:'452959900',data:'27/04',rep:'kmeira',canal:'MULTICANAL CHAT',proc:'Potenciar Ventas',nota:4,tmo:38.47,comentario:''},
+  {caso:'448929289',data:'07/04',rep:'gaeldasilva',canal:'MULTICANAL C2C',proc:'Reputación',nota:5,tmo:38.40,comentario:''},
+  {caso:'453008414',data:'28/04',rep:'fgeraldo',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:5,tmo:38.27,comentario:''},
+  {caso:'449664107',data:'10/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:36.40,comentario:'Nao resolveu meu problema e nao deram nenhuma sugestão pra resolução !'},
+  {caso:'450681266',data:'15/04',rep:'rodolfdasilv',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:2,tmo:36.02,comentario:''},
+  {caso:'450116654',data:'13/04',rep:'gaeldasilva',canal:'MULTICANAL C2C',proc:'Reputación',nota:5,tmo:34.07,comentario:''},
+  {caso:'453793658',data:'30/04',rep:'casena',canal:'MULTICANAL CHAT',proc:'Viaje del paquete - Vendedor',nota:6,tmo:33.58,comentario:''},
+  {caso:'448888961',data:'07/04',rep:'jesoliveira',canal:'MULTICANAL C2C',proc:'Reputación ME',nota:0,tmo:33.52,comentario:''},
+  {caso:'452310242',data:'23/04',rep:'raqcosta',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:33.15,comentario:''},
+  {caso:'453234925',data:'28/04',rep:'anmesquita',canal:'MULTICANAL CHAT',proc:'Reputación',nota:1,tmo:33.05,comentario:''},
+  {caso:'453513145',data:'29/04',rep:'raqcosta',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:32.98,comentario:''},
+  {caso:'450132051',data:'13/04',rep:'squintino',canal:'MULTICANAL CHAT',proc:'Reputación',nota:5,tmo:32.23,comentario:''},
+  {caso:'452890235',data:'27/04',rep:'tsouzaandrad',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:32.08,comentario:''},
+  {caso:'451070309',data:'17/04',rep:'eansilva',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:31.83,comentario:''},
+  {caso:'450930136',data:'16/04',rep:'ttarekmourad',canal:'MULTICANAL CHAT',proc:'Reversa',nota:1,tmo:31.43,comentario:''},
+  {caso:'452456501',data:'24/04',rep:'milferreira',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:6,tmo:31.35,comentario:''},
+  {caso:'450908899',data:'16/04',rep:'lhipolito',canal:'MULTICANAL CHAT',proc:'PR - Técnica prohibida',nota:0,tmo:31.00,comentario:'péssima, abri um chamado para resolver um problema simples causado pelo próprio sistema do meli, mas as respostas são as'},
+  {caso:'450867220',data:'16/04',rep:'rigomes',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:30.70,comentario:''},
+  {caso:'450123509',data:'13/04',rep:'jjujesusli',canal:'MULTICANAL CHAT',proc:'Reputación',nota:5,tmo:30.55,comentario:''},
+  {caso:'450692233',data:'15/04',rep:'gfarina',canal:'MULTICANAL CHAT',proc:'Reputación',nota:5,tmo:30.08,comentario:'Nao resplvem os problemas'},
+  {caso:'453249178',data:'28/04',rep:'nikcosta',canal:'MULTICANAL CHAT',proc:'Reputación',nota:1,tmo:29.58,comentario:''},
+  {caso:'452504873',data:'24/04',rep:'casena',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:5,tmo:25.87,comentario:''},
+  {caso:'453159132',data:'28/04',rep:'raynasilva',canal:'MULTICANAL CHAT',proc:'Gestión de Publicación',nota:4,tmo:25.73,comentario:''},
+  {caso:'453004171',data:'27/04',rep:'jjujesusli',canal:'MULTICANAL CHAT',proc:'Reputación',nota:5,tmo:25.45,comentario:'Estou aguardando ajuda ainda, por isso a nota 5. 👍'},
+  {caso:'453228391',data:'28/04',rep:'nikcosta',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:5,tmo:24.63,comentario:''},
+  {caso:'451103897',data:'17/04',rep:'jrosario',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:0,tmo:24.25,comentario:'Atendente encerrou meu atendimento, sendo que deveria me transferir para outro setor para resolver uma outra demanda. Nã'},
+  {caso:'447956756',data:'01/04',rep:'squintino',canal:'MULTICANAL CHAT',proc:'PR - Técnica prohibida',nota:4,tmo:23.22,comentario:''},
+  {caso:'452565175',data:'24/04',rep:'ttarekmourad',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:2,tmo:22.32,comentario:''},
+  {caso:'451951018',data:'22/04',rep:'ersoares',canal:'MULTICANAL C2C',proc:'Viaje del paquete - Vendedor',nota:0,tmo:22.02,comentario:'Um atendimento unilateral e patético, o seller sempre é prejudicado e nada fazem para ajudar.'},
+  {caso:'452199746',data:'23/04',rep:'arcsantos',canal:'MULTICANAL CHAT',proc:'Potenciar Ventas',nota:6,tmo:21.87,comentario:''},
+  {caso:'450938574',data:'16/04',rep:'gfarina',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:5,tmo:20.63,comentario:''},
+  {caso:'447717650',data:'01/04',rep:'raqcosta',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:19.85,comentario:''},
+  {caso:'451073794',data:'17/04',rep:'milferreira',canal:'MULTICANAL CHAT',proc:'Viaje del paquete - Vendedor',nota:6,tmo:19.82,comentario:''},
+  {caso:'453003053',data:'27/04',rep:'ttarekmourad',canal:'MULTICANAL CHAT',proc:'Reputación',nota:3,tmo:19.42,comentario:''},
+  {caso:'452531679',data:'24/04',rep:'raqcosta',canal:'MULTICANAL CHAT',proc:'Gestiones Operativas',nota:5,tmo:17.55,comentario:''},
+  {caso:'453509724',data:'29/04',rep:'kaysantos',canal:'MULTICANAL CHAT',proc:'Reputación',nota:5,tmo:17.52,comentario:''},
+  {caso:'453793658',data:'30/04',rep:'casena',canal:'MULTICANAL CHAT',proc:'Viaje del paquete - Vendedor',nota:6,tmo:17.28,comentario:''},
+  {caso:'452535566',data:'24/04',rep:'jrosario',canal:'MULTICANAL CHAT',proc:'Post Compra Funcionalidades Vendedor',nota:1,tmo:17.10,comentario:''},
+  {caso:'453249178',data:'28/04',rep:'nikcosta',canal:'MULTICANAL CHAT',proc:'Reputación',nota:1,tmo:16.12,comentario:''},
+];
+const MELIPRO_solucoesQ4Data = [
+{rep:"fgeraldo",solucao:"Como abrir uma reclamação - Informamos ao V que vamos iniciar a reclamação em nome do C (V)",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:75.82},
+  {rep:"emasantos",solucao:"Mediação encerrada - Não envia fotos ou não responde no prazo",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:74.88},
+  {rep:"nielasasanto",solucao:"Devoluções: Dúvida reversa: gerando código de devolução (V)",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:65.77},
+  {rep:"sveloso",solucao:"Devolução entregue: temos comprovante de entrega - não cobrimos",proc:"Reversa",canal:"MULTICANAL CHAT",n:1,tmo:65.65},
+  {rep:"raynasilva",solucao:"Modificar - Como criar ou modificar variantes, fotos e preço por variação",proc:"Gestión de Publicación",canal:"MULTICANAL CHAT",n:1,tmo:63.03},
+  {rep:"yasasilva",solucao:"Devolução - Recebeu devolução fallida, orientamos sobre como iniciar reclamação",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:58.78},
+  {rep:"jesoliveira",solucao:"Mediação encerrada - Não conformidade com a reclamação PNR",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:57.85},
+  {rep:"nielasasanto",solucao:"Devolução - Recebeu devolução fallida, orientamos sobre como iniciar reclamação",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:57.63},
+  {rep:"kmeira",solucao:"Reputação ME Vendas: Logistica Cross Docking - Excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:55.47},
+  {rep:"casena",solucao:"Mediação encerrada - Não retira o produto devolvido / Recusa o recebimento",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:55.37},
+  {rep:"sveloso",solucao:"Devolução entregue: passaram 3 dias úteis - não cobrimos",proc:"Reversa",canal:"MULTICANAL C2C",n:1,tmo:54.00},
+  {rep:"raqcosta",solucao:"CBT C: Como o custo de envio é calculado",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:53.87},
+  {rep:"nikcosta",solucao:"Mediação encerrada: pagamos ambos (V)",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:52.28},
+  {rep:"raynasilva",solucao:"Técnica Proibida - Preço proibido/mínimo/Máximo (Core)",proc:"PR - Técnica prohibida",canal:"MULTICANAL CHAT",n:1,tmo:50.68},
+  {rep:"squintino",solucao:"Modificar - ML criou ou removeu a publicação do catálogo",proc:"Gestión de Publicación",canal:"MULTICANAL CHAT",n:1,tmo:46.90},
+  {rep:"kmeira",solucao:"Analisamos reputação - Reclamação afeta a reputação porque o vendedor não oferece suporte e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:45.67},
+  {rep:"aqumoura",solucao:"Custos - Estorno do custos por tipificação errada",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:43.60},
+  {rep:"vlacerda",solucao:"Analisamos reputação - Reclamação não afeta a reputação",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:42.15},
+  {rep:"jjujesusli",solucao:"Como ajudar o comprador (V)",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:41.82},
+  {rep:"emasantos",solucao:"Mediação encerrada - Mediação encerrada ao V (V)",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:41.48},
+  {rep:"gfarina",solucao:"Reputação ME Vendas: Logistica Cross Docking - Não excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:41.47},
+  {rep:"milferreira",solucao:"Mediação encerrada - Produto danificado ou com o mesmo dano relatado pelo C",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:40.75},
+  {rep:"rigomes",solucao:"Reputação ME Vendas: Logistica Cross Docking - Não excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:40.18},
+  {rep:"rrafspedroso",solucao:"Como ajudar o comprador (V)",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:39.08},
+  {rep:"kmeira",solucao:"Potencializar (Posicionamento) - O que é e como ganhar Catálogo",proc:"Potenciar Ventas",canal:"MULTICANAL CHAT",n:1,tmo:38.47},
+  {rep:"fgeraldo",solucao:"Devoluções: Dúvida reversa: gerando código de devolução (V)",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:38.27},
+  {rep:"hellerodrigu",solucao:"Mediação aberta com IA – Vendedor em desacordo com a culpabilidade",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL C2C",n:1,tmo:36.40},
+  {rep:"gaeldasilva",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto não recebido e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL C2C",n:2,tmo:36.23},
+  {rep:"rodolfdasilv",solucao:"Top_On Big Sellers - Devoluções - Recebeu devolução fallida - não bonificamos (V)",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:36.02},
+  {rep:"jesoliveira",solucao:"Reputação ME Coleta XD: Culpa seller - Não excluimos",proc:"Reputación ME",canal:"MULTICANAL C2C",n:1,tmo:33.52},
+  {rep:"raqcosta",solucao:"Mediação encerrada - Não conformidade com a reclamação PNR",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:33.15},
+  {rep:"anmesquita",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto defeituoso e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:33.05},
+  {rep:"raqcosta",solucao:"Custos - Estorno do custos por tipificação errada",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:32.98},
+  {rep:"squintino",solucao:"Auto: Critérios reclamações - não impacta a reputação, tem tag avoid por outro motivo",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:32.23},
+  {rep:"tsouzaandrad",solucao:"Mediação encerrada - Não envia fotos ou não responde no prazo",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:32.08},
+  {rep:"eansilva",solucao:"Custos – Mantemos o custo de envio de ida cobrado",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:31.83},
+  {rep:"ttarekmourad",solucao:"Devolução demorada: passaram 60 dias - não bonificamos",proc:"Reversa",canal:"MULTICANAL CHAT",n:1,tmo:31.43},
+  {rep:"milferreira",solucao:"Mediação encerrada com IA – Desacordo com a resolução",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:31.35},
+  {rep:"lhipolito",solucao:"Técnica Prohibida - Inconsistência entre Título e Foto",proc:"PR - Técnica prohibida",canal:"MULTICANAL CHAT",n:1,tmo:31.00},
+  {rep:"rigomes",solucao:"Mediação aberta com IA – Vendedor em desacordo com a culpabilidade",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:30.70},
+  {rep:"jjujesusli",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto diferente e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:30.55},
+  {rep:"gfarina",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto não recebido e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:30.08},
+  {rep:"casena",solucao:"Reativar ME: Não reativamos - indicamos motivo",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:25.87},
+  {rep:"raynasilva",solucao:"Modificar - Como modificar o título",proc:"Gestión de Publicación",canal:"MULTICANAL CHAT",n:1,tmo:25.73},
+  {rep:"jjujesusli",solucao:"Analisamos reputação - Reclamação afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:25.45},
+  {rep:"casena",solucao:"Dinheiro não disponível - bonificamos o vendedor",proc:"Viaje del paquete - Vendedor",canal:"MULTICANAL CHAT",n:2,tmo:25.43},
+  {rep:"nikcosta",solucao:"Regras ME: dimensões e categorias aceitas",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:24.63},
+  {rep:"jrosario",solucao:"Reputação ME Vendas: Logistica Cross Docking - Não excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:24.25},
+  {rep:"squintino",solucao:"Técnica proibida - Rollback (reativamos o anúncio)",proc:"PR - Técnica prohibida",canal:"MULTICANAL CHAT",n:1,tmo:23.22},
+  {rep:"nikcosta",solucao:"Analisamos reputação - Reclamação revisada",proc:"Reputación",canal:"MULTICANAL CHAT",n:2,tmo:22.85},
+  {rep:"ttarekmourad",solucao:"Não pode iniciar reclamação - compra fora de compra garantida",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:22.32},
+  {rep:"ersoares",solucao:"Problemas com o transportador - severidade alta",proc:"Viaje del paquete - Vendedor",canal:"MULTICANAL C2C",n:1,tmo:22.02},
+  {rep:"arcsantos",solucao:"Potencializar (Posicionamento) - Perdendo no Catálogo",proc:"Potenciar Ventas",canal:"MULTICANAL CHAT",n:1,tmo:21.87},
+  {rep:"gfarina",solucao:"Top_On Big Sellers - Devoluções - Recebeu devolução fallida - não bonificamos (V)",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:20.63},
+  {rep:"raqcosta",solucao:"V pede informações sobre mediação em andamento",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:19.85},
+  {rep:"milferreira",solucao:"Envio a caminho - está atrasado (V)",proc:"Viaje del paquete - Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:19.82},
+  {rep:"ttarekmourad",solucao:"Analisamos reputação - Reclamação afeta a reputação por produto defeituoso e mantemos o impacto",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:19.42},
+  {rep:"raqcosta",solucao:"Coleta: resposta por solicitação de alteração de horário ou endereço de coleta",proc:"Gestiones Operativas",canal:"MULTICANAL CHAT",n:1,tmo:17.55},
+  {rep:"kaysantos",solucao:"Analisamos reputação - Cancelamento afeta a reputação e excluímos",proc:"Reputación",canal:"MULTICANAL CHAT",n:1,tmo:17.52},
+  {rep:"jrosario",solucao:"Mediação encerrada - Produto danificado ou com o mesmo dano relatado pelo C",proc:"Post Compra Funcionalidades Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:17.10},
+];
+
+// ---- DADOS VIP MLB ----
+const VIP_quartilData = [
+{q:'Q1',rep:'glcruz',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:762,tmo:19.19,dev:-8.81},
+  {q:'Q1',rep:'traposo',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:387,tmo:19.87,dev:-8.13},
+  {q:'Q1',rep:'kfiuza',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:566,tmo:20.34,dev:-7.66},
+  {q:'Q1',rep:'dbonfim',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:158,tmo:22.33,dev:-5.67},
+  {q:'Q2',rep:'gclemente',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:443,tmo:25.98,dev:-2.02},
+  {q:'Q2',rep:'pcaldas',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:151,tmo:27.90,dev:-0.10},
+  {q:'Q2',rep:'stacosta',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:131,tmo:28.39,dev:0.39},
+  {q:'Q2',rep:'nbenetelo',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:626,tmo:29.22,dev:1.22},
+  {q:'Q3',rep:'alesena',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:226,tmo:29.51,dev:1.51},
+  {q:'Q3',rep:'spsilva',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:348,tmo:29.69,dev:1.69},
+  {q:'Q3',rep:'gunascimento',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:61,tmo:30.52,dev:2.52},
+  {q:'Q3',rep:'maysousa',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:236,tmo:31.33,dev:3.33},
+  {q:'Q4',rep:'rasousa',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:165,tmo:31.73,dev:3.73},
+  {q:'Q4',rep:'denpinheiro',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:225,tmo:35.46,dev:7.46},
+  {q:'Q4',rep:'andresouza',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:51,tmo:40.56,dev:12.56},
+  {q:'Q4',rep:'mathmartins',lider:'vbarbosa',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:184,tmo:41.29,dev:13.29},
+];
+const VIP_processoData = [
+{proc:'Reputación ME',canal:'MULTICANAL CHAT',vol:70,tmo:43.99,meta:28.00,dev:15.99,min:0,max:0},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',vol:136,tmo:41.71,meta:28.00,dev:13.71,min:0,max:0},
+  {proc:'Asignación del Contáctanos FBM',canal:'MULTICANAL CHAT',vol:66,tmo:30.28,meta:28.00,dev:2.28,min:0,max:0},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',vol:1289,tmo:26.87,meta:28.00,dev:-1.13,min:0,max:0},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',vol:140,tmo:26.67,meta:28.00,dev:-1.33,min:0,max:0},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',vol:1509,tmo:25.69,meta:28.00,dev:-2.31,min:0,max:0},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',vol:750,tmo:25.46,meta:28.00,dev:-2.54,min:0,max:0},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',vol:32,tmo:23.66,meta:28.00,dev:-4.34,min:0,max:0},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',vol:47,tmo:23.52,meta:28.00,dev:-4.48,min:0,max:0},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',vol:48,tmo:23.09,meta:28.00,dev:-4.91,min:0,max:0},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',vol:415,tmo:22.89,meta:28.00,dev:-5.11,min:0,max:0},
+  {proc:'Potenciar Ventas',canal:'MULTICANAL CHAT',vol:38,tmo:21.72,meta:28.00,dev:-6.28,min:0,max:0},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL CHAT',vol:37,tmo:20.88,meta:28.00,dev:-7.12,min:0,max:0},
+];
+const VIP_q4Data = [
+{proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'rasousa',lider:'vbarbosa',vol:3,tmo:209.64,dev:181.64},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'andresouza',lider:'vbarbosa',vol:3,tmo:156.40,dev:128.40},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'stacosta',lider:'vbarbosa',vol:5,tmo:95.70,dev:67.70},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'alesena',lider:'vbarbosa',vol:3,tmo:80.43,dev:52.43},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'alesena',lider:'vbarbosa',vol:9,tmo:79.39,dev:51.39},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'rasousa',lider:'vbarbosa',vol:6,tmo:73.35,dev:45.35},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'denpinheiro',lider:'vbarbosa',vol:13,tmo:70.42,dev:42.42},
+  {proc:'FBM - Inventario',canal:'MULTICANAL CHAT',rep:'mathmartins',lider:'vbarbosa',vol:3,tmo:67.41,dev:39.41},
+  {proc:'FBM - Post Inbound',canal:'MULTICANAL CHAT',rep:'mathmartins',lider:'vbarbosa',vol:6,tmo:66.14,dev:38.14},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'alesena',lider:'vbarbosa',vol:10,tmo:64.69,dev:36.69},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'denpinheiro',lider:'vbarbosa',vol:10,tmo:62.07,dev:34.07},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'maysousa',lider:'vbarbosa',vol:4,tmo:61.47,dev:33.47},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'mathmartins',lider:'vbarbosa',vol:4,tmo:58.90,dev:30.90},
+  {proc:'Viaje del paquete - Vendedor',canal:'MULTICANAL CHAT',rep:'nbenetelo',lider:'vbarbosa',vol:8,tmo:58.77,dev:30.77},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'pcaldas',lider:'vbarbosa',vol:6,tmo:58.38,dev:30.38},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'stacosta',lider:'vbarbosa',vol:15,tmo:57.48,dev:29.48},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'denpinheiro',lider:'vbarbosa',vol:4,tmo:57.07,dev:29.07},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'mathmartins',lider:'vbarbosa',vol:12,tmo:51.62,dev:23.62},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'andresouza',lider:'vbarbosa',vol:6,tmo:48.22,dev:20.22},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'mathmartins',lider:'vbarbosa',vol:14,tmo:48.10,dev:20.10},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',rep:'nbenetelo',lider:'vbarbosa',vol:6,tmo:47.68,dev:19.68},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',rep:'dbonfim',lider:'vbarbosa',vol:3,tmo:47.22,dev:19.22},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'andresouza',lider:'vbarbosa',vol:7,tmo:43.97,dev:15.97},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'mathmartins',lider:'vbarbosa',vol:41,tmo:43.61,dev:15.61},
+  {proc:'Viaje del paquete - Vendedor',canal:'MULTICANAL CHAT',rep:'glcruz',lider:'vbarbosa',vol:7,tmo:42.16,dev:14.16},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'gclemente',lider:'vbarbosa',vol:18,tmo:41.24,dev:13.24},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'spsilva',lider:'vbarbosa',vol:39,tmo:38.74,dev:10.74},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'traposo',lider:'vbarbosa',vol:7,tmo:36.12,dev:8.12},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'mathmartins',lider:'vbarbosa',vol:46,tmo:35.96,dev:7.96},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'maysousa',lider:'vbarbosa',vol:100,tmo:35.46,dev:7.46},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'kfiuza',lider:'vbarbosa',vol:11,tmo:35.41,dev:7.41},
+  {proc:'Asignación del Contáctanos FBM',canal:'MULTICANAL CHAT',rep:'mathmartins',lider:'vbarbosa',vol:45,tmo:34.46,dev:6.46},
+  {proc:'Asignación del Contáctanos FBM',canal:'MULTICANAL CHAT',rep:'rasousa',lider:'vbarbosa',vol:4,tmo:33.67,dev:5.67},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'pcaldas',lider:'vbarbosa',vol:12,tmo:32.88,dev:4.88},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'nbenetelo',lider:'vbarbosa',vol:123,tmo:32.64,dev:4.64},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'maysousa',lider:'vbarbosa',vol:36,tmo:32.46,dev:4.46},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'denpinheiro',lider:'vbarbosa',vol:67,tmo:32.45,dev:4.45},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'pcaldas',lider:'vbarbosa',vol:79,tmo:31.67,dev:3.67},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL CHAT',rep:'dbonfim',lider:'vbarbosa',vol:3,tmo:31.12,dev:3.12},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'gunascimento',lider:'vbarbosa',vol:10,tmo:30.38,dev:2.38},
+  {proc:'Asignación del contáctanos ME Sellers LT',canal:'MULTICANAL CHAT',rep:'nbenetelo',lider:'vbarbosa',vol:5,tmo:30.04,dev:2.04},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'spsilva',lider:'vbarbosa',vol:15,tmo:29.97,dev:1.97},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'denpinheiro',lider:'vbarbosa',vol:119,tmo:29.94,dev:1.94},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'rasousa',lider:'vbarbosa',vol:74,tmo:29.51,dev:1.51},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'gclemente',lider:'vbarbosa',vol:12,tmo:28.76,dev:0.76},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'nbenetelo',lider:'vbarbosa',vol:300,tmo:28.74,dev:0.74},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'maysousa',lider:'vbarbosa',vol:60,tmo:28.67,dev:0.67},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',rep:'gunascimento',lider:'vbarbosa',vol:47,tmo:28.12,dev:0.12},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'spsilva',lider:'vbarbosa',vol:70,tmo:27.86,dev:-0.14},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'spsilva',lider:'vbarbosa',vol:187,tmo:27.76,dev:-0.24},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'nbenetelo',lider:'vbarbosa',vol:23,tmo:27.57,dev:-0.43},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'nbenetelo',lider:'vbarbosa',vol:40,tmo:27.48,dev:-0.52},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'gclemente',lider:'vbarbosa',vol:74,tmo:27.32,dev:-0.68},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'nbenetelo',lider:'vbarbosa',vol:3,tmo:27.21,dev:-0.79},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'andresouza',lider:'vbarbosa',vol:32,tmo:26.89,dev:-1.11},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'denpinheiro',lider:'vbarbosa',vol:5,tmo:26.77,dev:-1.23},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'gclemente',lider:'vbarbosa',vol:227,tmo:26.38,dev:-1.62},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'alesena',lider:'vbarbosa',vol:68,tmo:26.27,dev:-1.73},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'nbenetelo',lider:'vbarbosa',vol:110,tmo:26.21,dev:-1.79},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',rep:'rasousa',lider:'vbarbosa',vol:57,tmo:25.45,dev:-2.55},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'stacosta',lider:'vbarbosa',vol:70,tmo:25.34,dev:-2.66},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'alesena',lider:'vbarbosa',vol:114,tmo:25.29,dev:-2.71},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',rep:'dbonfim',lider:'vbarbosa',vol:63,tmo:25.10,dev:-2.90},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'spsilva',lider:'vbarbosa',vol:4,tmo:25.02,dev:-2.98},
+  {proc:'Asignación del Contáctanos FBM',canal:'MULTICANAL CHAT',rep:'alesena',lider:'vbarbosa',vol:5,tmo:24.27,dev:-3.73},
+  {proc:'Asignacion del contactanos Top ON Post Venta',canal:'MULTICANAL CHAT',rep:'spsilva',lider:'vbarbosa',vol:12,tmo:23.90,dev:-4.10},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'maysousa',lider:'vbarbosa',vol:5,tmo:23.85,dev:-4.15},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'gclemente',lider:'vbarbosa',vol:75,tmo:23.61,dev:-4.39},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'traposo',lider:'vbarbosa',vol:65,tmo:23.41,dev:-4.59},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'dbonfim',lider:'vbarbosa',vol:12,tmo:22.88,dev:-5.12},
+  {proc:'Despacho Ventas y Publicaciones',canal:'MULTICANAL CHAT',rep:'glcruz',lider:'vbarbosa',vol:19,tmo:22.53,dev:-5.47},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'traposo',lider:'vbarbosa',vol:52,tmo:22.25,dev:-5.75},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',rep:'kfiuza',lider:'vbarbosa',vol:35,tmo:21.73,dev:-6.27},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'nbenetelo',lider:'vbarbosa',vol:7,tmo:21.60,dev:-6.40},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'kfiuza',lider:'vbarbosa',vol:185,tmo:21.36,dev:-6.64},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'glcruz',lider:'vbarbosa',vol:129,tmo:21.32,dev:-6.68},
+  {proc:'Asignación del Contáctanos - Prustomer',canal:'MULTICANAL CHAT',rep:'kfiuza',lider:'vbarbosa',vol:246,tmo:20.90,dev:-7.10},
+  {proc:'Asignacion del contactanos Top ON  Pre venta',canal:'MULTICANAL CHAT',rep:'rasousa',lider:'vbarbosa',vol:3,tmo:20.79,dev:-7.21},
+  {proc:'Gestión de Publicación',canal:'MULTICANAL CHAT',rep:'kfiuza',lider:'vbarbosa',vol:32,tmo:20.21,dev:-7.79},
+  {proc:'Reputación',canal:'MULTICANAL CHAT',rep:'dbonfim',lider:'vbarbosa',vol:56,tmo:19.53,dev:-8.47},
+  {proc:'Post Compra Funcionalidades Vendedor',canal:'MULTICANAL CHAT',rep:'glcruz',lider:'vbarbosa',vol:121,tmo:19.35,dev:-8.65},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'traposo',lider:'vbarbosa',vol:221,tmo:19.23,dev:-8.77},
+  {proc:'Asignacion del Contactanos ME Pre Despacho Top ON',canal:'MULTICANAL CHAT',rep:'glcruz',lider:'vbarbosa',vol:413,tmo:19.04,dev:-8.96},
+  {proc:'Reputación ME',canal:'MULTICANAL CHAT',rep:'gclemente',lider:'vbarbosa',vol:13,tmo:18.24,dev:-9.76},
+  {proc:'Reversa',canal:'MULTICANAL CHAT',rep:'glcruz',lider:'vbarbosa',vol:13,tmo:18.20,dev:-9.80},
+  {proc:'Gestiones Operativas',canal:'MULTICANAL CHAT',rep:'spsilva',lider:'vbarbosa',vol:6,tmo:18.03,dev:-9.97},
+];
+const VIP_semanalRaw = [
+['alesena','vbarbosa','MULTICANAL CHAT','2026-04-06',34.55],
+  ['alesena','vbarbosa','MULTICANAL CHAT','2026-04-13',29.28],
+  ['alesena','vbarbosa','MULTICANAL CHAT','2026-04-20',30.79],
+  ['alesena','vbarbosa','MULTICANAL CHAT','2026-04-27',28.77],
+  ['alesena','vbarbosa','MULTICANAL CHAT','2026-05-04',39.33],
+  ['andresouza','vbarbosa','MULTICANAL CHAT','2026-04-20',33.19],
+  ['andresouza','vbarbosa','MULTICANAL CHAT','2026-04-27',43.22],
+  ['andresouza','vbarbosa','MULTICANAL CHAT','2026-05-04',23.54],
+  ['dbonfim','vbarbosa','MULTICANAL CHAT','2026-04-06',19.35],
+  ['dbonfim','vbarbosa','MULTICANAL CHAT','2026-04-27',26.77],
+  ['dbonfim','vbarbosa','MULTICANAL CHAT','2026-05-04',45.43],
+  ['denpinheiro','vbarbosa','MULTICANAL CHAT','2026-04-06',35.59],
+  ['denpinheiro','vbarbosa','MULTICANAL CHAT','2026-04-13',42.33],
+  ['denpinheiro','vbarbosa','MULTICANAL CHAT','2026-04-20',44.33],
+  ['denpinheiro','vbarbosa','MULTICANAL CHAT','2026-04-27',29.60],
+  ['denpinheiro','vbarbosa','MULTICANAL CHAT','2026-05-04',30.97],
+  ['gclemente','vbarbosa','MULTICANAL CHAT','2026-04-06',25.31],
+  ['gclemente','vbarbosa','MULTICANAL CHAT','2026-04-13',26.07],
+  ['gclemente','vbarbosa','MULTICANAL CHAT','2026-04-20',23.77],
+  ['gclemente','vbarbosa','MULTICANAL CHAT','2026-04-27',24.69],
+  ['gclemente','vbarbosa','MULTICANAL CHAT','2026-05-04',24.84],
+  ['glcruz','vbarbosa','MULTICANAL CHAT','2026-04-06',18.06],
+  ['glcruz','vbarbosa','MULTICANAL CHAT','2026-04-13',14.57],
+  ['glcruz','vbarbosa','MULTICANAL CHAT','2026-04-20',20.04],
+  ['glcruz','vbarbosa','MULTICANAL CHAT','2026-04-27',21.56],
+  ['gunascimento','vbarbosa','MULTICANAL CHAT','2026-05-04',32.63],
+  ['kfiuza','vbarbosa','MULTICANAL CHAT','2026-04-06',23.31],
+  ['kfiuza','vbarbosa','MULTICANAL CHAT','2026-04-13',19.42],
+  ['kfiuza','vbarbosa','MULTICANAL CHAT','2026-04-20',18.61],
+  ['kfiuza','vbarbosa','MULTICANAL CHAT','2026-04-27',20.95],
+  ['kfiuza','vbarbosa','MULTICANAL CHAT','2026-05-04',21.14],
+  ['mathmartins','vbarbosa','MULTICANAL CHAT','2026-04-06',42.43],
+  ['mathmartins','vbarbosa','MULTICANAL CHAT','2026-04-13',64.74],
+  ['mathmartins','vbarbosa','MULTICANAL CHAT','2026-04-20',28.41],
+  ['mathmartins','vbarbosa','MULTICANAL CHAT','2026-04-27',39.58],
+  ['mathmartins','vbarbosa','MULTICANAL CHAT','2026-05-04',29.69],
+  ['maysousa','vbarbosa','MULTICANAL CHAT','2026-04-06',35.99],
+  ['maysousa','vbarbosa','MULTICANAL CHAT','2026-04-13',23.51],
+  ['maysousa','vbarbosa','MULTICANAL CHAT','2026-04-20',26.26],
+  ['maysousa','vbarbosa','MULTICANAL CHAT','2026-04-27',28.63],
+  ['maysousa','vbarbosa','MULTICANAL CHAT','2026-05-04',44.16],
+  ['nbenetelo','vbarbosa','MULTICANAL CHAT','2026-04-06',27.28],
+  ['nbenetelo','vbarbosa','MULTICANAL CHAT','2026-04-13',29.83],
+  ['nbenetelo','vbarbosa','MULTICANAL CHAT','2026-04-20',30.16],
+  ['nbenetelo','vbarbosa','MULTICANAL CHAT','2026-04-27',29.82],
+  ['pcaldas','vbarbosa','MULTICANAL CHAT','2026-04-06',27.36],
+  ['pcaldas','vbarbosa','MULTICANAL CHAT','2026-04-13',40.98],
+  ['pcaldas','vbarbosa','MULTICANAL CHAT','2026-04-20',24.18],
+  ['pcaldas','vbarbosa','MULTICANAL CHAT','2026-04-27',21.45],
+  ['pcaldas','vbarbosa','MULTICANAL CHAT','2026-05-04',24.27],
+  ['rasousa','vbarbosa','MULTICANAL CHAT','2026-04-06',29.47],
+  ['rasousa','vbarbosa','MULTICANAL CHAT','2026-04-13',45.16],
+  ['rasousa','vbarbosa','MULTICANAL CHAT','2026-04-20',26.77],
+  ['rasousa','vbarbosa','MULTICANAL CHAT','2026-04-27',56.83],
+  ['rasousa','vbarbosa','MULTICANAL CHAT','2026-05-04',43.82],
+  ['spsilva','vbarbosa','MULTICANAL CHAT','2026-04-06',31.57],
+  ['spsilva','vbarbosa','MULTICANAL CHAT','2026-04-13',26.07],
+  ['spsilva','vbarbosa','MULTICANAL CHAT','2026-04-20',29.75],
+  ['spsilva','vbarbosa','MULTICANAL CHAT','2026-04-27',31.52],
+  ['spsilva','vbarbosa','MULTICANAL CHAT','2026-05-04',21.83],
+  ['stacosta','vbarbosa','MULTICANAL CHAT','2026-04-06',35.91],
+  ['stacosta','vbarbosa','MULTICANAL CHAT','2026-04-13',19.94],
+  ['stacosta','vbarbosa','MULTICANAL CHAT','2026-04-20',22.44],
+  ['stacosta','vbarbosa','MULTICANAL CHAT','2026-04-27',18.81],
+  ['stacosta','vbarbosa','MULTICANAL CHAT','2026-05-04',21.03],
+  ['traposo','vbarbosa','MULTICANAL CHAT','2026-04-06',19.62],
+  ['traposo','vbarbosa','MULTICANAL CHAT','2026-04-13',19.67],
+  ['traposo','vbarbosa','MULTICANAL CHAT','2026-04-20',16.29],
+  ['traposo','vbarbosa','MULTICANAL CHAT','2026-05-04',34.77],
+];
+const VIP_toqueRepData = [
+{rep:'andresouza',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:51,toque:21.98,toqueMax:250.15,tmo:40.56},
+  {rep:'mathmartins',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:184,toque:15.45,toqueMax:302.03,tmo:41.29},
+  {rep:'stacosta',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:131,toque:14.94,toqueMax:246.22,tmo:28.39},
+  {rep:'denpinheiro',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:223,toque:13.27,toqueMax:221.85,tmo:35.71},
+  {rep:'pcaldas',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:152,toque:13.09,toqueMax:285.85,tmo:27.92},
+  {rep:'maysousa',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:232,toque:13.00,toqueMax:354.92,tmo:31.95},
+  {rep:'alesena',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:221,toque:11.03,toqueMax:183.78,tmo:30.08},
+  {rep:'rasousa',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:168,toque:9.55,toqueMax:268.38,tmo:31.23},
+  {rep:'spsilva',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:341,toque:9.36,toqueMax:355.00,tmo:29.66},
+  {rep:'nbenetelo',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:625,toque:9.02,toqueMax:299.52,tmo:29.43},
+  {rep:'gclemente',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:437,toque:8.59,toqueMax:292.18,tmo:26.21},
+  {rep:'gunascimento',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:61,toque:6.28,toqueMax:86.70,tmo:30.52},
+  {rep:'dbonfim',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:154,toque:5.42,toqueMax:108.85,tmo:22.80},
+  {rep:'glcruz',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:745,toque:5.28,toqueMax:176.82,tmo:19.44},
+  {rep:'traposo',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:387,toque:5.17,toqueMax:172.68,tmo:19.90},
+  {rep:'kfiuza',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:557,toque:5.07,toqueMax:187.00,tmo:20.62},
+];
+const VIP_produRepData = [
+{rep:'traposo',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:4.56,tmo:19.87},
+  {rep:'glcruz',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:4.19,tmo:19.19},
+  {rep:'nbenetelo',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:3.60,tmo:29.22},
+  {rep:'gclemente',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:3.33,tmo:25.98},
+  {rep:'kfiuza',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:3.32,tmo:20.34},
+  {rep:'gunascimento',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:3.03,tmo:30.52},
+  {rep:'spsilva',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:2.69,tmo:29.69},
+  {rep:'dbonfim',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:2.55,tmo:22.33},
+  {rep:'alesena',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:2.49,tmo:29.51},
+  {rep:'denpinheiro',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:2.32,tmo:35.46},
+  {rep:'stacosta',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:2.26,tmo:28.39},
+  {rep:'pcaldas',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:2.16,tmo:27.90},
+  {rep:'maysousa',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:2.12,tmo:31.33},
+  {rep:'rasousa',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:2.06,tmo:31.73},
+  {rep:'mathmartins',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:1.69,tmo:41.29},
+  {rep:'andresouza',lider:'vbarbosa',canal:'MULTICANAL CHAT',produ:1.43,tmo:40.56},
+];
+const VIP_prodRepData = [
+{rep:'mathmartins',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:41.29,prod:24.46,np:16.83,hold:0,acw:1.16},
+  {rep:'andresouza',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:40.56,prod:17.57,np:22.99,hold:0,acw:0.82},
+  {rep:'denpinheiro',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:35.46,prod:21.26,np:14.20,hold:0,acw:0.92},
+  {rep:'rasousa',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:31.73,prod:20.60,np:11.13,hold:0,acw:1.31},
+  {rep:'maysousa',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:31.33,prod:17.36,np:13.97,hold:0,acw:0.91},
+  {rep:'gunascimento',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:30.52,prod:23.75,np:6.77,hold:0,acw:0.41},
+  {rep:'spsilva',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:29.69,prod:19.31,np:10.38,hold:0,acw:1.02},
+  {rep:'alesena',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:29.51,prod:17.78,np:11.73,hold:0,acw:0.76},
+  {rep:'nbenetelo',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:29.22,prod:18.59,np:10.63,hold:0,acw:1.46},
+  {rep:'stacosta',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:28.39,prod:12.95,np:15.44,hold:0,acw:0.40},
+  {rep:'pcaldas',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:27.90,prod:13.88,np:14.02,hold:0,acw:0.67},
+  {rep:'gclemente',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:25.98,prod:16.01,np:9.97,hold:0,acw:1.28},
+  {rep:'dbonfim',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:22.33,prod:15.44,np:6.89,hold:0,acw:1.48},
+  {rep:'kfiuza',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:20.34,prod:13.64,np:6.70,hold:0,acw:1.58},
+  {rep:'traposo',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:19.87,prod:13.58,np:6.29,hold:0,acw:0.99},
+  {rep:'glcruz',lider:'vbarbosa',canal:'MULTICANAL CHAT',assigns:0,tmo:19.19,prod:11.60,np:7.59,hold:0,acw:1.66},
+];
+const VIP_estiloData = [
+{rep:'gunascimento',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:48.9,tmo:30.52},
+  {rep:'glcruz',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:58.4,tmo:19.19},
+  {rep:'nbenetelo',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:59.9,tmo:29.22},
+  {rep:'kfiuza',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:63.7,tmo:20.34},
+  {rep:'andresouza',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:67.6,tmo:40.56},
+  {rep:'dbonfim',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:67.8,tmo:22.33},
+  {rep:'mathmartins',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:67.8,tmo:41.29},
+  {rep:'alesena',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:70.2,tmo:29.51},
+  {rep:'pcaldas',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:70.5,tmo:27.90},
+  {rep:'gclemente',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:71.7,tmo:25.98},
+  {rep:'maysousa',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:72.0,tmo:31.33},
+  {rep:'denpinheiro',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:73.6,tmo:35.46},
+  {rep:'rasousa',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:73.9,tmo:31.73},
+  {rep:'spsilva',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:74.5,tmo:29.69},
+  {rep:'traposo',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:74.6,tmo:19.87},
+  {rep:'stacosta',lider:'vbarbosa',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:84.7,tmo:28.39},
+];
+const VIP_detratoresData = [
+{caso:'452894430',data:'27/04',rep:'glcruz',canal:'MULTICANAL CHAT',proc:'Gestiones Operativas',nota:2,tmo:52.00,comentario:''},
+  {caso:'452989823',data:'27/04',rep:'spsilva',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:5,tmo:50.47,comentario:''},
+  {caso:'447506343',data:'01/04',rep:'glcruz',canal:'MULTICANAL CHAT',proc:'Despacho Ventas y Publicaciones',nota:0,tmo:46.27,comentario:'Não resolveu o problema, os agentes de suporte estão claramente despreparados para atender os sellers.'},
+  {caso:'452042549',data:'22/04',rep:'kfiuza',canal:'MULTICANAL CHAT',proc:'PR - Técnica prohibida',nota:4,tmo:32.25,comentario:''},
+  {caso:'452200654',data:'23/04',rep:'glcruz',canal:'MULTICANAL CHAT',proc:'Reputación ME',nota:1,tmo:26.87,comentario:''},
+  {caso:'452540642',data:'24/04',rep:'glcruz',canal:'MULTICANAL CHAT',proc:'Viaje del paquete - Vendedor',nota:6,tmo:26.07,comentario:''},
+];
+const VIP_solucoesQ4Data = [
+{rep:"glcruz",solucao:"Coleta: como funciona o serviço",proc:"Gestiones Operativas",canal:"MULTICANAL CHAT",n:1,tmo:52.00},
+  {rep:"spsilva",solucao:"Reputação ME Coleta XD: Coleta pendente",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:50.47},
+  {rep:"glcruz",solucao:"Custo de envio: não se aplica bonificação",proc:"Despacho Ventas y Publicaciones",canal:"MULTICANAL CHAT",n:1,tmo:46.27},
+  {rep:"kfiuza",solucao:"Técnica proibida - Rollback (reativamos o anúncio)",proc:"PR - Técnica prohibida",canal:"MULTICANAL CHAT",n:1,tmo:32.25},
+  {rep:"glcruz",solucao:"Reputação ME Coleta XD: Culpa seller - Não excluimos",proc:"Reputación ME",canal:"MULTICANAL CHAT",n:1,tmo:26.87},
+  {rep:"glcruz",solucao:"Cancelar venda - não é possível (V)",proc:"Viaje del paquete - Vendedor",canal:"MULTICANAL CHAT",n:1,tmo:26.07},
+];
+
 // ---- DADOS MULTI-FILA ----
 let currentFila = 'publi';
 
 const FILAS_META = {
   publi:  {chat:27.54, c2c:19.73, global:26.0},
   ventas: {chat:28.89, c2c:16.91, global:24.0},
-  me:     {chat:29.29, c2c:11.90, global:22.31},
+  me:      {chat:29.29, c2c:11.90, global:22.31},
+  melipro: {chat:24.0,  c2c:12.5,  global:20.0},
+  vip:     {chat:28.0,  c2c:28.0,  global:28.0},
 };
 
 const FILAS_INFO = {
   publi:  {label:'TMO - Mature Publicações', queue:'BR_Publicaciones_Sellers_Mature', emoji:'📢', short:'Publi'},
   ventas: {label:'TMO - Mature Vendas',      queue:'BR_Ventas_Sellers_Mature',        emoji:'🛒', short:'Vendas'},
-  me:     {label:'TMO - Mature ME',           queue:'BR_ME_Sellers_Mature',            emoji:'📦', short:'ME'},
+  me:      {label:'TMO - Mature ME',           queue:'BR_ME_Sellers_Mature',            emoji:'📦', short:'ME'},
+  melipro: {label:'TMO - Pro MLB',            queue:'MELI_PRO_MLB',                   emoji:'⭐', short:'Pro'},
+  vip:     {label:'TMO - VIP MLB',            queue:'MELIPRO_VIP_MLB',                emoji:'👑', short:'VIP'},
 };
 
+const MELIPRO_KPIS = {
+  '2026-04': {tmo:22.47, tmoCaso:null, volume:20463, reps:34, desvio:-1.53, pct:-6.4, label:'Abril 2026 Pro', partial:false},
+  '2026-05': {tmo:22.71, tmoCaso:null, volume:5572,  reps:30, desvio:-1.29, pct:-5.4, label:'Maio 2026 Pro',  partial:true}
+};
+const MELIPRO_CANAL = {
+  '2026-04': [{c:'MULTICANAL CHAT',v:15926,t:22.47,d:-1.53},{c:'MULTICANAL C2C',v:3537,t:11.77,d:-0.73}],
+  '2026-05': [{c:'MULTICANAL CHAT',v:4520,t:22.71,d:-1.29},{c:'MULTICANAL C2C',v:1052,t:12.75,d:0.25}]
+};
+const MELIPRO_LIDER = {
+  '2026-04': [],
+  '2026-05': []
+};
+const VIP_KPIS = {
+  '2026-04': {tmo:26.32, tmoCaso:null, volume:4720, reps:16, desvio:-1.68, pct:-6.0, label:'Abril 2026 VIP', partial:false},
+  '2026-05': {tmo:27.72, tmoCaso:null, volume:1110, reps:14, desvio:-0.28, pct:-1.0, label:'Maio 2026 VIP',  partial:true}
+};
+const VIP_CANAL = {
+  '2026-04': [{c:'MULTICANAL CHAT',v:4720,t:26.32,d:-1.68}],
+  '2026-05': [{c:'MULTICANAL CHAT',v:1110,t:27.72,d:-0.28}]
+};
+const VIP_LIDER = {
+  '2026-04': [],
+  '2026-05': []
+};
 const VENTAS_KPIS = {
   '2026-04': {tmo:22.83, tmoCaso:null, volume:30615, reps:71, desvio:1.83, pct:8.7, label:'Abril 2026', partial:false},
   '2026-05': {tmo:26.51, tmoCaso:null, volume:5628,  reps:71, desvio:-2.38, pct:-8.2, label:'Maio 2026', partial:true}
@@ -2103,6 +3158,46 @@ const ME_q4Data = [
 
 // ---- MULTI-OFENSORES ----
 // ---- RESUMO EXECUTIVO ----
+const MELIPRO_EXEC_SUMMARY = {
+  '2026-04': [
+    {peso:1, cor:'#2dc653', icon:'🟢', titulo:'CHAT NPS acima da meta (78,5% vs 74,6%)',
+     texto:'NPS CHAT <strong>78,5% vs meta 74,6%</strong> · 890 surveys. C2C abaixo da meta (46,4%) com baixo volume (28 surveys). TMO CHAT 22,5 min — 6,4% abaixo da meta 24,0 min.'},
+    {peso:2, cor:'#e63946', icon:'🔴', titulo:'C2C NPS abaixo da meta (46,4% vs 74,6%)',
+     texto:'C2C NPS <strong>46,4% vs meta 74,6%</strong> · apenas 28 surveys. TMO C2C 11,8 min — dentro da meta. Volume baixo pode distorcer o NPS — monitorar com mais dados.'},
+    {peso:3, cor:'#f4a261', icon:'🟡', titulo:'Q4 via C2C — Asignación com TMO crítico',
+     texto:'Processos de Asignación em C2C com TMO elevado. Outliers individuais com TMO >50 min indicam falta de script de triagem para Pro MLB via C2C.'},
+    {peso:4, cor:'#f4a261', icon:'🟡', titulo:'NEWBIEs próximos da meta de NPS (74,1%)',
+     texto:'NEWBIEs com NPS <strong>74,1%</strong> — próximos da meta 74,6%. Boa performance considerando o perfil de sellers Pro que demandam resolução mais técnica.'},
+    {peso:5, cor:'#457b9d', icon:'🔵', titulo:'Produtividade CHAT estável (3,92)',
+     texto:'Produtividade CHAT média 3,92. Sellers Pro geram contatos mais complexos — produtividade menor que filas com perfil de contato mais simples é esperado.'},
+  ],
+  '2026-05': [
+    {peso:1, cor:'#2dc653', icon:'🟢', titulo:'NPS CHAT melhorando (82,4% em Maio)',
+     texto:'NPS CHAT <strong>82,4% em Maio</strong> — acima dos 78,5% de Abril. Tendência positiva com amostra crescente (445 surveys). C2C com amostra insuficiente (6 surveys).'},
+    {peso:2, cor:'#f4a261', icon:'🟡', titulo:'TMO estável (22,7 min vs meta 24,0 min)',
+     texto:'TMO CHAT <strong>22,7 min — 5,4% abaixo da meta</strong>. Desempenho consistente. Monitorar C2C que subiu levemente para 12,75 min (meta 12,5 min).'},
+  ]
+};
+
+const VIP_EXEC_SUMMARY = {
+  '2026-04': [
+    {peso:1, cor:'#2dc653', icon:'🟢', titulo:'NPS CHAT excepcional (89,6% vs meta 74,6%)',
+     texto:'NPS CHAT <strong>89,6% vs meta 74,6%</strong> · 249 surveys. Resultado excepcional para sellers VIP. TMO 26,3 min — 6% abaixo da meta 28,0 min. Apenas canal CHAT ativo.'},
+    {peso:2, cor:'#e63946', icon:'🔴', titulo:'rasousa — Outlier crítico CHAT (209 min)',
+     texto:'TMO individual <strong>209 min</strong> em Asignación Top ON Post Venta. Caso extremo que impacta os indicadores de toque. Requer investigação imediata — pode ser caso excepcional ou erro de roteamento.'},
+    {peso:3, cor:'#f4a261', icon:'🟡', titulo:'Fila pequena — 16 reps, 4.720 contatos',
+     texto:'Volume relativamente baixo: 16 reps ativos · 4.720 contatos. Outliers individuais têm impacto desproporcionalmente alto no TMO médio da fila. Gestão individual é essencial.'},
+    {peso:4, cor:'#457b9d', icon:'🔵', titulo:'Todos os indicadores dentro das metas',
+     texto:'TMO CHAT 26,3 min (meta 28,0 min) ✅ · NPS 89,6% (meta 74,6%) ✅ · Apenas C2C sem dados suficientes. Fila VIP com excelente desempenho geral — manter padrão.'},
+  ],
+  '2026-05': [
+    {peso:1, cor:'#2dc653', icon:'🟢', titulo:'NPS 76,6% — ainda acima da meta (74,6%)',
+     texto:'NPS <strong>76,6% em Maio</strong> — acima da meta 74,6% mas abaixo dos 89,6% de Abril. Queda pode ser amostral (128 surveys). Monitorar próximas semanas.'},
+    {peso:2, cor:'#f4a261', icon:'🟡', titulo:'TMO subiu levemente (27,7 vs meta 28,0 min)',
+     texto:'TMO CHAT <strong>27,7 min em Maio</strong> — ainda dentro da meta (28,0 min). Subiu de 26,3 min em Abril. Acompanhar tendência semanal.'},
+  ]
+};
+
 const VENTAS_EXEC_SUMMARY = {
   '2026-04': [
     {peso:1, cor:'#e63946', icon:'🔴', titulo:'dyfernandes — Rep outlier crítico CHAT (68,6 min)',
@@ -2331,6 +3426,84 @@ const DIAG_CONTENT = {
       </tbody></table>
     </div>`,
 
+
+  melipro: `
+    <div class="diag-card">
+      <h3>🟢 <span class="tag-green">OK</span> CHAT TMO abaixo da meta (22,5 min vs 24,0 min)</h3>
+      <ul><li><strong>TMO CHAT:</strong> 22,5 min · -6,4% vs meta 24,0 min</li>
+        <li><strong>NPS CHAT:</strong> 78,5% vs meta 74,6% ✅</li>
+        <li><strong>Volume:</strong> 15.926 contatos CHAT · 3.537 C2C</li></ul>
+      <p style="margin-top:10px"><strong>Destaque:</strong> TMO e NPS ambos dentro dos objetivos. Canal CHAT em bom nível. Foco em manter o padrão e resolver os pontos de atenção no C2C.</p>
+    </div>
+    <div class="diag-card">
+      <h3>🔴 <span class="tag-red">ATENÇÃO</span> C2C NPS abaixo da meta (46,4% vs 74,6%)</h3>
+      <ul><li><strong>C2C NPS:</strong> 46,4% vs meta 74,6%</li>
+        <li><strong>Volume:</strong> apenas 28 surveys — amostra reduzida</li>
+        <li><strong>TMO C2C:</strong> 11,8 min — dentro da meta 12,5 min</li></ul>
+      <p style="margin-top:10px"><strong>Causa:</strong> Baixo volume de surveys C2C pode distorcer o NPS. Poucos casos detratores causam grande impacto percentual. Monitorar com volume maior antes de ações estruturais.</p>
+    </div>
+    <div class="diag-card">
+      <h3>🟡 <span class="tag-yellow">ALTO</span> Q4 via C2C — Outliers em Asignación</h3>
+      <ul><li>Asignación C2C com TMO >50 min em múltiplos reps</li>
+        <li>Indica falta de script de triagem para Pro MLB via C2C</li>
+        <li>Contrasta com CHAT C2C que mantém TMO 11,8 min</li></ul>
+      <p style="margin-top:10px"><strong>Ação:</strong> Criar script específico de triagem C2C para sellers Pro MLB — qualificação rápida com perguntas objetivas sobre o tipo de demanda. Meta: triagem em máximo 8 min.</p>
+    </div>
+    <div class="diag-card">
+      <h3>📊 Síntese de Causas Raiz</h3>
+      <table class="plano-table"><thead><tr><th>Causa</th><th>Impacto</th></tr></thead><tbody>
+        <tr><td>C2C NPS baixo (amostra reduzida)</td><td><span class="tag-red">ALTO</span></td></tr>
+        <tr><td>Outliers individuais em Asignación C2C</td><td><span class="tag-yellow">MÉDIO</span></td></tr>
+        <tr><td>Volume C2C reduzido dificulta diagnóstico</td><td><span class="tag-yellow">MÉDIO</span></td></tr>
+      </tbody></table>
+    </div>
+    <div class="diag-card full">
+      <h3>📅 Plano de Ação — Maio 2026</h3>
+      <table class="plano-table"><thead><tr><th>Ação</th><th>Responsável</th><th>Prazo</th><th>Prioridade</th></tr></thead><tbody>
+        <tr><td>Investigar 3 casos C2C detratores — identificar causa raiz do NPS baixo</td><td>Coord. Pro MLB</td><td>Imediato</td><td><span class="tag-red">URGENTE</span></td></tr>
+        <tr><td>Script de triagem C2C para Pro MLB — qualificação rápida em ≤8 min</td><td>Coord. + líderes C2C</td><td>20/05</td><td><span class="tag-yellow">ALTO</span></td></tr>
+        <tr><td>Acompanhar NPS C2C mensalmente para validar se amostra cresce</td><td>Coord. Pro MLB</td><td>Mensal</td><td><span class="tag-yellow">ALTO</span></td></tr>
+      </tbody></table>
+    </div>`,
+
+  vip: `
+    <div class="diag-card">
+      <h3>🟢 <span class="tag-green">REFERÊNCIA</span> NPS CHAT excepcional (89,6% vs meta 74,6%)</h3>
+      <ul><li><strong>NPS CHAT:</strong> 89,6% vs meta 74,6% ✅ · 249 surveys</li>
+        <li><strong>TMO CHAT:</strong> 26,3 min vs meta 28,0 min ✅</li>
+        <li>Todos os indicadores dentro ou acima das metas</li></ul>
+      <p style="margin-top:10px"><strong>Destaque:</strong> Fila VIP com excelente desempenho. TMO e NPS ambos dentro dos objetivos. Foco em manter o padrão e resolver os poucos outliers individuais.</p>
+    </div>
+    <div class="diag-card">
+      <h3>🔴 <span class="tag-red">CRÍTICO</span> rasousa — Outlier extremo CHAT (209 min)</h3>
+      <ul><li><strong>TMO:</strong> 209 min em Asignacion Top ON Post Venta</li>
+        <li>3 contatos com TMO médio excepcional — pode ser casos com tickets múltiplos</li>
+        <li><strong>Líder:</strong> vbarbosa</li></ul>
+      <p style="margin-top:10px"><strong>Causa:</strong> Caso extremo provavelmente relacionado a contatos de sellers VIP com demandas muito complexas e múltiplas interações. Investigar se é um caso excepcional ou padrão recorrente.</p>
+    </div>
+    <div class="diag-card">
+      <h3>🟡 <span class="tag-yellow">ATENÇÃO</span> Fila pequena — Outliers têm alto impacto</h3>
+      <ul><li><strong>16 reps ativos</strong> · 4.720 contatos</li>
+        <li>Um único outlier pode deslocar o TMO médio significativamente</li>
+        <li>Gestão individual é mais crítica que em filas grandes</li></ul>
+      <p style="margin-top:10px"><strong>Ação:</strong> Manter acompanhamento individual semanal de todos os reps. Com 16 pessoas, é viável um one-on-one frequente para identificar problemas cedo.</p>
+    </div>
+    <div class="diag-card">
+      <h3>📊 Síntese de Causas Raiz</h3>
+      <table class="plano-table"><thead><tr><th>Causa</th><th>Impacto</th></tr></thead><tbody>
+        <tr><td>Outlier rasousa (209 min) — caso extremo</td><td><span class="tag-red">ALTO</span></td></tr>
+        <tr><td>Fila pequena — vulnerável a outliers individuais</td><td><span class="tag-yellow">MÉDIO</span></td></tr>
+        <tr><td>Casos VIP com demandas técnicas complexas</td><td><span class="tag-yellow">MÉDIO</span></td></tr>
+      </tbody></table>
+    </div>
+    <div class="diag-card full">
+      <h3>📅 Plano de Ação — Maio 2026</h3>
+      <table class="plano-table"><thead><tr><th>Ação</th><th>Responsável</th><th>Prazo</th><th>Prioridade</th></tr></thead><tbody>
+        <tr><td>Investigar casos rasousa (209 min) — avaliar se é necessário realocar ou treinar</td><td>vbarbosa</td><td>Imediato</td><td><span class="tag-red">URGENTE</span></td></tr>
+        <tr><td>One-on-one semanal com todos os 16 reps — monitoramento individual VIP</td><td>Líderes VIP MLB</td><td>Semanal</td><td><span class="tag-yellow">ALTO</span></td></tr>
+        <tr><td>Monitorar NPS em Maio — confirmar se mantém acima de 74,6%</td><td>Coord. VIP MLB</td><td>Quinzenal</td><td><span class="tag-yellow">ALTO</span></td></tr>
+      </tbody></table>
+    </div>`,
   me: `
     <div class="diag-card">
       <h3>🟢 <span class="tag-green">REFERÊNCIA</span> CHAT TMO 21% abaixo da meta (23,1 vs 29,3 min)</h3>
@@ -2405,8 +3578,10 @@ function renderDiagnostico() {
 }
 
 function getExecSummary() {
-  if (currentFila==='ventas') return VENTAS_EXEC_SUMMARY;
-  if (currentFila==='me')     return ME_EXEC_SUMMARY;
+  if (currentFila==='ventas')  return VENTAS_EXEC_SUMMARY;
+  if (currentFila==='me')      return ME_EXEC_SUMMARY;
+  if (currentFila==='melipro') return MELIPRO_EXEC_SUMMARY;
+  if (currentFila==='vip')     return VIP_EXEC_SUMMARY;
   return EXEC_SUMMARY;
 }
 function renderExecSummary(m) {
@@ -3579,39 +4754,57 @@ function filterProdu() {
 function getToqueData()  {
   if (currentFila==='ventas') return VENTAS_toqueRepData;
   if (currentFila==='me')     return ME_toqueRepData;
+  if (currentFila==='melipro') return MELIPRO_toqueRepData;
+  if (currentFila==='vip')     return VIP_toqueRepData;
   return currentMonth==='2026-04' ? toqueRepData  : MAY_toqueRepData;
 }
 function getProduData()  {
   if (currentFila==='ventas') return VENTAS_produRepData;
   if (currentFila==='me')     return ME_produRepData;
+  if (currentFila==='melipro') return MELIPRO_produRepData;
+  if (currentFila==='vip')     return VIP_produRepData;
   return currentMonth==='2026-04' ? produRepData  : MAY_produRepData;
 }
 function getProdTData()  {
   if (currentFila==='ventas') return VENTAS_prodRepData;
   if (currentFila==='me')     return ME_prodRepData;
+  if (currentFila==='melipro') return MELIPRO_prodRepData;
+  if (currentFila==='vip')     return VIP_prodRepData;
   return currentMonth==='2026-04' ? prodRepData   : MAY_prodRepData;
 }
 function getSemanalRaw() {
   if (currentFila==='ventas') return VENTAS_semanalRaw;
   if (currentFila==='me')     return ME_semanalRaw;
+  if (currentFila==='melipro') return MELIPRO_semanalRaw;
+  if (currentFila==='vip')     return VIP_semanalRaw;
   return semanalRaw;
 }
 function getEstiloData() {
   if (currentFila==='ventas') return VENTAS_estiloData;
   if (currentFila==='me')     return ME_estiloData;
+  if (currentFila==='melipro') return MELIPRO_estiloData;
+  if (currentFila==='vip')     return VIP_estiloData;
   return estiloData;
 }
 function getNpsKpis() {
-  return currentFila==='ventas' ? VENTAS_NPS_KPIS : currentFila==='me' ? ME_NPS_KPIS : NPS_KPIS;
+  if (currentFila==='ventas')  return VENTAS_NPS_KPIS;
+  if (currentFila==='me')      return ME_NPS_KPIS;
+  if (currentFila==='melipro') return MELIPRO_NPS_KPIS;
+  if (currentFila==='vip')     return VIP_NPS_KPIS;
+  return NPS_KPIS;
 }
 function getSolucoesQ4Data() {
   if (currentFila==='ventas') return VENTAS_solucoesQ4Data;
   if (currentFila==='me')     return ME_solucoesQ4Data;
+  if (currentFila==='melipro') return MELIPRO_solucoesQ4Data;
+  if (currentFila==='vip')     return VIP_solucoesQ4Data;
   return solucoesQ4Data;
 }
 function getDetratoresData(m) {
   if (currentFila==='ventas') return VENTAS_detratoresData;
   if (currentFila==='me')     return ME_detratoresData;
+  if (currentFila==='melipro') return MELIPRO_detratoresData;
+  if (currentFila==='vip')     return VIP_detratoresData;
   return m==='2026-04' ? detratoresData : MAY_detratoresData;
 }
 
@@ -3869,6 +5062,14 @@ const MAY_prodRepData = [
 ];
 
 // ---- DADOS TMO × NPS ----
+const MELIPRO_NPS_KPIS = {
+  '2026-04': {chat_nps:78.5,chat_meta:74.6,chat_surveys:890,chat_tmo:22.47,c2c_nps:46.4,c2c_meta:74.6,c2c_surveys:28,c2c_tmo:11.77,newbie_nps:74.1,newbie_surveys:81,expert_nps:78.5,expert_surveys:809,insight:'CHAT NPS 78,5% acima da meta 74,6%. C2C abaixo da meta com baixo volume (28 surveys). NEWBIEs próximos da meta (74,1%).'},
+  '2026-05': {chat_nps:82.4,chat_meta:74.6,chat_surveys:445,chat_tmo:22.71,c2c_nps:66.7,c2c_meta:74.6,c2c_surveys:6,c2c_tmo:12.75,newbie_nps:81.7,newbie_surveys:60,expert_nps:82.6,expert_surveys:385,insight:'Maio parcial — CHAT NPS 82,4% acima da meta. C2C ainda abaixo com amostra muito reduzida (6 surveys).'}
+};
+const VIP_NPS_KPIS = {
+  '2026-04': {chat_nps:89.6,chat_meta:74.6,chat_surveys:249,chat_tmo:26.32,c2c_nps:null,c2c_meta:74.6,c2c_surveys:0,c2c_tmo:0,newbie_nps:null,newbie_surveys:0,expert_nps:89.6,expert_surveys:249,insight:'NPS CHAT excepcional: 89,6% vs meta 74,6%. Apenas canal CHAT ativo. Alto padrão de satisfação.'},
+  '2026-05': {chat_nps:76.6,chat_meta:74.6,chat_surveys:128,chat_tmo:27.72,c2c_nps:null,c2c_meta:74.6,c2c_surveys:0,c2c_tmo:0,newbie_nps:null,newbie_surveys:0,expert_nps:76.6,expert_surveys:128,insight:'Maio parcial — NPS 76,6% ainda acima da meta 74,6%. TMO subiu levemente para 27,7 min.'}
+};
 const VENTAS_NPS_KPIS = {
   '2026-04': {chat_nps:51.2,chat_meta:55.6,chat_surveys:217,chat_tmo:27.79,c2c_nps:70.4,c2c_meta:56.3,c2c_surveys:54,c2c_tmo:16.93,newbie_nps:23.1,newbie_surveys:13,expert_nps:56.6,expert_surveys:258,insight:'NPS CHAT abaixo da meta (51,2% vs 55,6%). C2C acima da meta. NEWBIEs têm NPS 23% — foco de desenvolvimento.'},
   '2026-05': {chat_nps:65.0,chat_meta:55.6,chat_surveys:20,chat_tmo:26.51,c2c_nps:54.5,c2c_meta:56.3,c2c_surveys:11,c2c_tmo:17.72,newbie_nps:33.3,newbie_surveys:3,expert_nps:64.0,expert_surveys:15,insight:'Maio parcial — CHAT NPS melhora para 65% (acima da meta). Amostra reduzida.'}
@@ -5706,6 +6907,63 @@ const STATS = {
   }
 };
 
+const MELIPRO_STATS = {
+  '2026-04': {
+    label: 'Pro MLB · Abril 2026',
+    toque_mc2c: 5.12, toque_chat: 7.23, toque_casos_alto: 8, toque_max: 180, toque_max_rep: '—',
+    toque_chat_vol: '15.926', toque_c2c_vol: '3.537',
+    produ_geral: 3.80, produ_chat: 3.92, produ_chat_reps: 34,
+    produ_c2c: 3.41, produ_c2c_reps: 8,
+    produ_best: 6.50, produ_best_sub: '— · CHAT',
+    produ_worst: 1.20, produ_worst_sub: '— · CHAT',
+    pt_chat_prod: 16.50, pt_c2c_prod: 8.20, pt_chat_np: 5.97, pt_c2c_np: 3.57,
+    prodtime: [],
+    nps_canal: [{canal:'MULTICANAL CHAT',tmo:22.47,dev:'-1,53',nps:78.5,meta:74.6,status:'Acima da meta',surveys:890,insight:'CHAT NPS acima da meta com TMO abaixo',bg:'#f0fdf4',cls:'q1'},
+      {canal:'MULTICANAL C2C',tmo:11.77,dev:'-0,73',nps:46.4,meta:74.6,status:'Abaixo da meta',surveys:28,insight:'C2C abaixo da meta — amostra reduzida',bg:'#fff5f5',cls:'q4'}],
+    nps_insight: 'CHAT NPS 78,5% acima da meta 74,6%. C2C abaixo com amostra reduzida (28 surveys).',
+  },
+  '2026-05': {
+    label: 'Pro MLB · Maio 2026 ⚡ (parcial)',
+    toque_mc2c: 5.12, toque_chat: 7.23, toque_casos_alto: 8, toque_max: 180, toque_max_rep: '—',
+    toque_chat_vol: '—', toque_c2c_vol: '—',
+    produ_geral: 3.80, produ_chat: 3.92, produ_chat_reps: 34,
+    produ_c2c: 3.41, produ_c2c_reps: 8,
+    produ_best: 6.50, produ_best_sub: '— · CHAT',
+    produ_worst: 1.20, produ_worst_sub: '— · CHAT',
+    pt_chat_prod: 16.50, pt_c2c_prod: 8.20, pt_chat_np: 5.97, pt_c2c_np: 3.57,
+    prodtime: [],
+    nps_canal: [{canal:'MULTICANAL CHAT',tmo:22.71,dev:'-1,29',nps:82.4,meta:74.6,status:'Acima da meta',surveys:445,insight:'CHAT NPS 82,4% acima da meta',bg:'#f0fdf4',cls:'q1'}],
+    nps_insight: 'Maio parcial — CHAT NPS 82,4% acima da meta 74,6%. C2C com amostra insuficiente.',
+  }
+};
+const VIP_STATS = {
+  '2026-04': {
+    label: 'VIP MLB · Abril 2026',
+    toque_mc2c: 0, toque_chat: 9.50, toque_casos_alto: 3, toque_max: 209, toque_max_rep: 'rasousa',
+    toque_chat_vol: '4.720', toque_c2c_vol: '0',
+    produ_geral: 3.20, produ_chat: 3.20, produ_chat_reps: 16,
+    produ_c2c: 0, produ_c2c_reps: 0,
+    produ_best: 5.50, produ_best_sub: '— · CHAT',
+    produ_worst: 1.10, produ_worst_sub: '— · CHAT',
+    pt_chat_prod: 18.50, pt_c2c_prod: 0, pt_chat_np: 7.82, pt_c2c_np: 0,
+    prodtime: [],
+    nps_canal: [{canal:'MULTICANAL CHAT',tmo:26.32,dev:'-1,68',nps:89.6,meta:74.6,status:'Acima da meta',surveys:249,insight:'NPS excepcional 89,6% vs meta 74,6%',bg:'#f0fdf4',cls:'q1'}],
+    nps_insight: 'NPS CHAT excepcional: 89,6% vs meta 74,6%. Apenas canal CHAT ativo.',
+  },
+  '2026-05': {
+    label: 'VIP MLB · Maio 2026 ⚡ (parcial)',
+    toque_mc2c: 0, toque_chat: 9.50, toque_casos_alto: 3, toque_max: 209, toque_max_rep: 'rasousa',
+    toque_chat_vol: '—', toque_c2c_vol: '—',
+    produ_geral: 3.20, produ_chat: 3.20, produ_chat_reps: 16,
+    produ_c2c: 0, produ_c2c_reps: 0,
+    produ_best: 5.50, produ_best_sub: '— · CHAT',
+    produ_worst: 1.10, produ_worst_sub: '— · CHAT',
+    pt_chat_prod: 18.50, pt_c2c_prod: 0, pt_chat_np: 7.82, pt_c2c_np: 0,
+    prodtime: [],
+    nps_canal: [{canal:'MULTICANAL CHAT',tmo:27.72,dev:'-0,28',nps:76.6,meta:74.6,status:'Acima da meta',surveys:128,insight:'NPS 76,6% acima da meta. TMO levemente acima (27,7 vs meta 28,0).',bg:'#f0fdf4',cls:'q1'}],
+    nps_insight: 'Maio parcial — NPS 76,6% acima da meta 74,6%. Monitorar TMO (27,7 min).',
+  }
+};
 const VENTAS_STATS = {
   '2026-04': {
     label: 'Vendas · Abril 2026',
@@ -5803,7 +7061,7 @@ const ME_STATS = {
 };
 
 function updateAllKpis(m) {
-  const stats_obj = currentFila==='ventas' ? VENTAS_STATS : currentFila==='me' ? ME_STATS : STATS;
+  const stats_obj = currentFila==='ventas' ? VENTAS_STATS : currentFila==='me' ? ME_STATS : currentFila==='melipro' ? MELIPRO_STATS : currentFila==='vip' ? VIP_STATS : STATS;
   const s = stats_obj[m] || stats_obj['2026-04'];
   const lbl = s.label;
   // Toque
@@ -5985,12 +7243,12 @@ function setMonth(m) {
   currentMonth = m;
   document.getElementById('mes-selector').value = m;
   // KPIs
-  const _KPIS=currentFila==="ventas"?VENTAS_KPIS:currentFila==="me"?ME_KPIS:KPIS;
+  const _KPIS=currentFila==="ventas"?VENTAS_KPIS:currentFila==="me"?ME_KPIS:currentFila==="melipro"?MELIPRO_KPIS:currentFila==="vip"?VIP_KPIS:KPIS;
   const k = _KPIS[m] || _KPIS["2026-04"];
   document.getElementById('kpi-tmo').textContent = k.tmo.toFixed(2);
   document.getElementById('kpi-tmo-sub').innerHTML = '<strong style="color:#e63946">'+(k.desvio>0?'+':'')+k.pct+'% vs meta</strong>';
   // KPIs de canal
-  const _CANAL=currentFila==="ventas"?VENTAS_CANAL:currentFila==="me"?ME_CANAL:CANAL_DATA;
+  const _CANAL=currentFila==="ventas"?VENTAS_CANAL:currentFila==="me"?ME_CANAL:currentFila==="melipro"?MELIPRO_CANAL:currentFila==="vip"?VIP_CANAL:CANAL_DATA;
   const cd = _CANAL[m] || _CANAL["2026-04"];
   const chat = cd.find(r=>r.c==='MULTICANAL CHAT');
   const c2c  = cd.find(r=>r.c==='MULTICANAL C2C');
@@ -6004,7 +7262,7 @@ function setMonth(m) {
   cCanalChart.data.datasets[0].data = cd.map(r=>r.t);
   cCanalChart.update();
   // líder chart
-  const _LIDER=currentFila==="ventas"?VENTAS_LIDER:currentFila==="me"?ME_LIDER:LIDER_DATA;
+  const _LIDER=currentFila==="ventas"?VENTAS_LIDER:currentFila==="me"?ME_LIDER:currentFila==="melipro"?MELIPRO_LIDER:currentFila==="vip"?VIP_LIDER:LIDER_DATA;
   const ld = _LIDER[m] || _LIDER["2026-04"];
   cLiderChart.data.labels = ld.map(r=>r.l);
   cLiderChart.data.datasets[0].data = ld.map(r=>r.t);
@@ -6041,21 +7299,27 @@ function setMonth(m) {
 function getQuartilData() {
   if (currentFila==='ventas') return VENTAS_quartilData;
   if (currentFila==='me')     return ME_quartilData;
+  if (currentFila==='melipro') return MELIPRO_quartilData;
+  if (currentFila==='vip')     return VIP_quartilData;
   return currentMonth==='2026-04' ? quartilData : MAY_quartilData;
 }
 function getProcessoData() {
   if (currentFila==='ventas') return VENTAS_processoData;
   if (currentFila==='me')     return ME_processoData;
+  if (currentFila==='melipro') return MELIPRO_processoData;
+  if (currentFila==='vip')     return VIP_processoData;
   return currentMonth==='2026-04' ? processoData : MAY_processoData;
 }
 function getQ4Data() {
   if (currentFila==='ventas') return VENTAS_q4Data;
   if (currentFila==='me')     return ME_q4Data;
+  if (currentFila==='melipro') return MELIPRO_q4Data;
+  if (currentFila==='vip')     return VIP_q4Data;
   return currentMonth==='2026-04' ? q4Data : MAY_q4Data;
 }
 function setFila(fila) {
   currentFila = fila;
-  ['publi','ventas','me'].forEach(f => {
+  ['publi','ventas','me','melipro','vip'].forEach(f => {
     const btn = document.getElementById('btn-fila-'+f);
     if (!btn) return;
     btn.style.background = f===fila ? 'rgba(255,255,255,0.25)' : 'transparent';

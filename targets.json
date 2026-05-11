@@ -63,5 +63,19 @@
       "Viaje del paquete - Vendedor|MULTICANAL C2C": 13.19,
       "Viaje del paquete - Vendedor|MULTICANAL CHAT": 32.65
     }
+  },
+  "MELI_PRO_MLB": {
+    "chat": 24.0,
+    "c2c": 12.5,
+    "global": 20.0,
+    "processos": {},
+    "_note": "Estimado — confirmar em grid.adminml.com"
+  },
+  "MELIPRO_VIP_MLB": {
+    "chat": 28.0,
+    "c2c": 28.0,
+    "global": 28.0,
+    "processos": {},
+    "_note": "Estimado — confirmar em grid.adminml.com"
   }
 }
