@@ -10,6 +10,7 @@ TARGETS: Lidos de targets.json (mesmo diretório).
 """
 import subprocess, json, re, sys, os
 from datetime import date, datetime, timedelta
+sys.stdout.reconfigure(encoding='utf-8', errors='replace') if hasattr(sys.stdout, 'reconfigure') else None
 
 REPO = r"C:\Users\alicarvalho\tmo-dashboard-abril2026"
 HTML = REPO + r"\index.html"
@@ -39,7 +40,8 @@ QUEUES = {
         "js_kpis":  "KPIS",
         "js_canal": "CANAL_DATA",
         "js_lider": "LIDER_DATA",
-        "js_prefix": "MAY_",      # prefixo para arrays do mês atual
+        "js_prefix": "MAY_",
+        "label":    "Publicacoes",
     },
     "ventas": {
         "name":     "BR_Ventas_Sellers_Mature",
@@ -47,6 +49,7 @@ QUEUES = {
         "js_canal": "VENTAS_CANAL",
         "js_lider": "VENTAS_LIDER",
         "js_prefix": "VENTAS_",
+        "label":    "Vendas",
     },
     "me": {
         "name":     "BR_ME_Sellers_Mature",
@@ -54,18 +57,40 @@ QUEUES = {
         "js_canal": "ME_CANAL",
         "js_lider": "ME_LIDER",
         "js_prefix": "ME_",
+        "label":    "ME",
+    },
+    "melipro": {
+        "name":     "MELI_PRO_MLB",
+        "js_kpis":  "MELIPRO_KPIS",
+        "js_canal": "MELIPRO_CANAL",
+        "js_lider": "MELIPRO_LIDER",
+        "js_prefix": "MELIPRO_",
+        "label":    "Pro MLB",
+    },
+    "vip": {
+        "name":     "MELIPRO_VIP_MLB",
+        "js_kpis":  "VIP_KPIS",
+        "js_canal": "VIP_CANAL",
+        "js_lider": "VIP_LIDER",
+        "js_prefix": "VIP_",
+        "label":    "VIP MLB",
     },
 }
 
 # ---- helpers ---------------------------------------------------------------
+BQ_PATH = r"C:\Users\alicarvalho\AppData\Local\Google\Cloud SDK\google-cloud-sdk\bin\bq.cmd"
+
 def bq_csv(sql, max_rows=1000):
+    # bq.cmd via subprocess requer SQL em linha única
+    sql_flat = ' '.join(l.strip() for l in sql.splitlines() if l.strip())
     r = subprocess.run(
-        ["bq", "query", "--use_legacy_sql=false", "--format=csv",
-         f"--max_rows={max_rows}", sql],
+        [BQ_PATH, "query", "--use_legacy_sql=false", "--format=csv",
+         f"--max_rows={max_rows}", sql_flat],
         capture_output=True, text=True, timeout=180
     )
     if r.returncode != 0:
-        print(f"  ERRO BQ:\n{r.stderr}")
+        err = r.stderr or r.stdout
+        print(f"  ERRO BQ:\n{err[:200]}")
         return []
     lines = [l for l in r.stdout.strip().splitlines()
              if l and not l.startswith("Waiting") and not l.startswith("Current")]
@@ -91,13 +116,29 @@ def write_html(html):
         f.write(html)
 
 def replace_js_array(html, varname, new_content):
-    """Substitui const VARNAME = [...] no HTML."""
-    pat = rf"(const {re.escape(varname)} = \[)[^\]]*?(\];)"
-    m = re.search(pat, html, re.DOTALL)
-    if m:
-        return html[:m.start()] + f"const {varname} = [\n{new_content}\n];" + html[m.end():]
-    print(f"  AVISO: variável {varname} não encontrada no HTML")
-    return html
+    """Substitui const VARNAME = [...] no HTML. Suporta arrays com colchetes internos."""
+    marker = f"const {varname} = ["
+    start = html.find(marker)
+    if start == -1:
+        print(f"  AVISO: variável {varname} não encontrada no HTML")
+        return html
+    # Find the closing ]; by counting bracket depth
+    depth = 0
+    pos = start + len(marker) - 1  # position of the opening [
+    end = -1
+    for i in range(pos, len(html)):
+        if html[i] == '[': depth += 1
+        elif html[i] == ']':
+            depth -= 1
+            if depth == 0:
+                # Check if followed by ;
+                if i + 1 < len(html) and html[i+1] == ';':
+                    end = i + 2
+                break
+    if end == -1:
+        print(f"  AVISO: fechamento de {varname} não encontrado")
+        return html
+    return html[:start] + f"const {varname} = [\n{new_content}\n];" + html[end:]
 
 def replace_js_month_in_obj(html, obj_name, month_key, new_entry_content):
     """Substitui a entrada '{month_key}': {...} dentro do objeto obj_name."""
@@ -148,11 +189,10 @@ def get_lider_map(queue_name, mes_ini):
     rows = bq_csv(f"""
         SELECT DISTINCT USER_LDAP AS rep, USER_TEAM_LEADER_LDAP AS lider
         FROM `meli-bi-data.WHOWNER.DM_CX_TMO`
-        WHERE USER_TEAM_NAME LIKE '%{queue_name.replace("BR_","").split("_Sellers")[0]}%Mature%'
+        WHERE USER_TEAM_NAME = '{queue_name}'
           AND DATE(ASSIGN_DTTM) BETWEEN '{mes_ini}' AND DATE_ADD(DATE '{mes_ini}', INTERVAL 1 MONTH)
           AND USER_TEAM_LEADER_LDAP IS NOT NULL
-        ORDER BY 1
-        LIMIT 500
+        ORDER BY 1 LIMIT 500
     """, max_rows=500)
     return {r["rep"].strip(): r["lider"].strip() for r in rows}
 
@@ -484,9 +524,9 @@ def main():
     for q_key, q_cfg in QUEUES.items():
         queue_name = q_cfg["name"]
         prefix = q_cfg["js_prefix"]
-        tgt = TARGETS[queue_name]
-        meta_chat, meta_c2c, meta_global = tgt["chat"], tgt["c2c"], tgt["global"]
-        label_fila = {"publi":"Publicações","ventas":"Vendas","me":"ME"}[q_key]
+        tgt = TARGETS.get(queue_name, {"chat":27.54,"c2c":19.73,"global":26.0})
+        meta_chat, meta_c2c, meta_global = tgt["chat"], tgt.get("c2c") or tgt["chat"], tgt["global"]
+        label_fila = q_cfg.get("label", q_key)
 
         print(f"\n[{q_key.upper()}] {queue_name}")
 
@@ -583,14 +623,14 @@ def main():
 
         # STATS
         print(f"  [+] STATS...")
-        stats_varname = {"publi":"STATS","ventas":"VENTAS_STATS","me":"ME_STATS"}[q_key]
+        stats_varname = {"publi":"STATS","ventas":"VENTAS_STATS","me":"ME_STATS","melipro":"MELIPRO_STATS","vip":"VIP_STATS"}.get(q_key,"STATS")
         s = compute_stats(prod_js, produ_js, toque_js, f"{mes_label} {label_fila}")
         s["label"] = f"{mes_label} · {label_fila}" + (" ⚡ (parcial)" if partial else "")
         nps_insight = "" if q_key != "publi" else f"Dados de {mes_label}: TMO {tmo_g} min"
         stats_entry = build_stats_entry(s, "", nps_insight)
         html = replace_stats_month(html, stats_varname, mes_key, stats_entry)
 
-        print(f"  ✓ {label_fila}: TMO {tmo_g} min · {vol} contatos · {reps} reps")
+        print(f"  OK {label_fila}: TMO {tmo_g} min / {vol} contatos / {reps} reps")
 
     # ---- Targets no JS -------------------------------------------------------
     print("\n[TARGETS] Atualizando FILAS_META no HTML...")
