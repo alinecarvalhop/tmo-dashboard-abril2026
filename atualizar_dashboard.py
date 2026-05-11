@@ -295,7 +295,7 @@ def get_processo_data_js(queue_name, mes_ini, meta_chat, meta_c2c):
         SELECT USER_TEAM_CHANNEL AS canal, ASSIGN_PROCESS_NAME AS proc,
             COUNT(*) AS vol, ROUND(AVG(TMO_SEC)/60,2) AS tmo
         FROM `meli-bi-data.WHOWNER.DM_CX_TMO`
-        WHERE USER_TEAM_NAME LIKE '%{queue_name.replace("BR_","").split("_Sellers")[0]}%Mature%'
+        WHERE USER_TEAM_NAME = '{queue_name}'
           AND DATE(ASSIGN_DTTM) BETWEEN '{mes_ini}' AND DATE_ADD(DATE '{mes_ini}', INTERVAL 1 MONTH)
           AND FLAG_IS_OUTLIER=FALSE AND FLAG_DROP=FALSE AND FLAG_WITHOUT_AGENT_TOUCH=FALSE
         GROUP BY 1,2 ORDER BY tmo DESC
@@ -382,7 +382,6 @@ def get_produ_rep_data_js(queue_name, mes_ini, lider_map):
 
 def get_toque_rep_data_js(queue_name, mes_ini, lider_map):
     """Toque (touch time) por rep — DM_CX_TMO."""
-    team_filter = queue_name.replace("BR_","").split("_Sellers")[0]
     rows = bq_csv(f"""
         SELECT USER_LDAP AS rep, USER_TEAM_CHANNEL AS canal,
             COUNT(*) AS assigns,
@@ -390,7 +389,7 @@ def get_toque_rep_data_js(queue_name, mes_ini, lider_map):
             ROUND(MAX(TOUCH_TIME_SEC)/60,2) AS toqueMax,
             ROUND(AVG(TMO_SEC)/60,2) AS tmo
         FROM `meli-bi-data.WHOWNER.DM_CX_TMO`
-        WHERE USER_TEAM_NAME LIKE '%{team_filter}%Mature%'
+        WHERE USER_TEAM_NAME = '{queue_name}'
           AND DATE(ASSIGN_DTTM) BETWEEN '{mes_ini}' AND DATE_ADD(DATE '{mes_ini}', INTERVAL 1 MONTH)
           AND FLAG_IS_OUTLIER=FALSE AND FLAG_DROP=FALSE AND FLAG_WITHOUT_AGENT_TOUCH=FALSE
         GROUP BY 1,2 ORDER BY toque DESC
