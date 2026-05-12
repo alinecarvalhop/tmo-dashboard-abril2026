@@ -652,8 +652,8 @@ tr:last-child td { border-bottom: none; }
   <!-- RECORTE SEMANAL: atual vs anterior -->
   <div id="evolucao-kpis" style="margin-bottom:20px"></div>
   <div class="card">
-    <div class="card-title">📈 Evolução Semanal de TMO por Representante — Abril 2026
-      <span style="font-size:11px;font-weight:400;color:#6c757d;margin-left:12px">S1=06/04 · S2=13/04 · S3=20/04 · S4=27/04 · Meta: CHAT ~39 min · C2C ~21 min</span>
+    <div class="card-title" id="evolucao-card-title">📈 Evolução Semanal de TMO por Representante
+      <span id="evolucao-card-sub" style="font-size:11px;font-weight:400;color:#6c757d;margin-left:12px"></span>
     </div>
     <div class="filters">
       <div class="filter-group">
@@ -684,10 +684,10 @@ tr:last-child td { border-bottom: none; }
     <div class="tbl-wrap">
       <table id="tbl-evolucao">
         <thead>
-          <tr>
+          <tr id="thead-evolucao">
             <th>Rep</th><th>Líder</th><th>Canal</th>
-            <th>S1 (06/04)</th><th>S2 (13/04)</th><th>S3 (20/04)</th><th>S4 (27/04)</th>
-            <th>Variação S1→S4</th><th>Tendência</th>
+            <th>S1</th><th>S2</th><th>S3</th><th>S4</th>
+            <th>Variação</th><th>Tendência</th>
           </tr>
         </thead>
         <tbody id="tbody-evolucao"></tbody>
@@ -3567,6 +3567,92 @@ const ME_estiloData = [
   {rep:'dspimentel',lider:'josimsantana',canal:'MULTICANAL CHAT',sen:'EXPERT',estilo:74.4,tmo:26.33},
 ];
 
+// ---- CASOS ESTILO PRO MLB / VIP MLB ----
+const MELIPRO_estiloCasosData = [
+  {caso:'446114089',data:'07/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:341.32},
+  {caso:'453382396',data:'29/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Viaje del paquete - Vendedor',tmo:293.85},
+  {caso:'450676817',data:'16/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Reversa',tmo:275.22},
+  {caso:'453154841',data:'28/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:233.12},
+  {caso:'452018142',data:'24/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Gestiones Operativas',tmo:223.68},
+  {caso:'450591431',data:'15/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:218.45},
+  {caso:'451500466',data:'22/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Viaje del paquete - Vendedor',tmo:203.63},
+  {caso:'448548603',data:'06/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:194.57},
+  {caso:'449605908',data:'10/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:189.62},
+  {caso:'449806339',data:'13/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Viaje del paquete - Vendedor',tmo:177.58},
+  {caso:'446874914',data:'08/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Despacho Ventas y Publicaciones',tmo:174.13},
+  {caso:'453156600',data:'30/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Viaje del paquete - Vendedor',tmo:170.47},
+  {caso:'448841554',data:'22/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:162.42},
+  {caso:'452925785',data:'27/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Despacho Ventas y Publicaciones',tmo:143.17},
+  {caso:'450345076',data:'15/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Gestiones Operativas',tmo:138.30},
+  {caso:'449103939',data:'09/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Despacho Ventas y Publicaciones',tmo:128.62},
+  {caso:'452484276',data:'24/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Despacho Ventas y Publicaciones',tmo:126.53},
+  {caso:'450861238',data:'16/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Reversa',tmo:123.80},
+  {caso:'452895114',data:'27/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:119.72},
+  {caso:'447653120',data:'02/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Reputación',tmo:118.08},
+  {caso:'445934050',data:'10/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Reputación',tmo:107.40},
+  {caso:'447766875',data:'01/04',rep:'iksilva',canal:'MULTICANAL C2C',proc:'Asignación del Contáctanos Pre Venta',tmo:98.60},
+  {caso:'450088335',data:'13/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:96.40},
+  {caso:'447930642',data:'02/04',rep:'lissouza',canal:'MULTICANAL C2C',proc:'Reputación',tmo:95.55},
+  {caso:'451943273',data:'23/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Despacho Ventas y Publicaciones',tmo:95.02},
+  {caso:'451943273',data:'27/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Despacho Ventas y Publicaciones',tmo:90.07},
+  {caso:'450837512',data:'16/04',rep:'lissouza',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:88.10},
+  {caso:'450695749',data:'17/04',rep:'iksilva',canal:'MULTICANAL C2C',proc:'Potenciar Ventas',tmo:87.83},
+  {caso:'448902863',data:'09/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:87.83},
+  {caso:'447977138',data:'02/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:87.68},
+  {caso:'449412151',data:'09/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Despacho Ventas y Publicaciones',tmo:86.30},
+  {caso:'453724449',data:'30/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:85.73},
+  {caso:'452209744',data:'23/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Reputación',tmo:85.23},
+  {caso:'452570666',data:'24/04',rep:'lissouza',canal:'MULTICANAL C2C',proc:'Reversa',tmo:80.77},
+  {caso:'449167476',data:'08/04',rep:'lissouza',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:80.13},
+  {caso:'449328273',data:'09/04',rep:'iksilva',canal:'MULTICANAL C2C',proc:'Potenciar Ventas',tmo:75.12},
+  {caso:'447719197',data:'20/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Gestiones Operativas',tmo:73.15},
+  {caso:'453205803',data:'29/04',rep:'iksilva',canal:'MULTICANAL C2C',proc:'Gestión de Publicación',tmo:72.43},
+  {caso:'445258705',data:'23/04',rep:'ersoares',canal:'MULTICANAL C2C',proc:'Reversa',tmo:71.47},
+  {caso:'448914615',data:'07/04',rep:'lissouza',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:70.30},
+  {caso:'448830824',data:'08/04',rep:'lissouza',canal:'MULTICANAL C2C',proc:'Reversa',tmo:69.70},
+  {caso:'450095400',data:'13/04',rep:'hellerodrigu',canal:'MULTICANAL C2C',proc:'Post Compra Funcionalidades Vendedor',tmo:69.35},
+];
+const VIP_estiloCasosData = [
+  {caso:'447431036',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Potenciar Ventas',tmo:86.72},
+  {caso:'447725953',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'PR - Técnica prohibida Masivos',tmo:73.25},
+  {caso:'447925113',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:63.68},
+  {caso:'447971762',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:60.45},
+  {caso:'447748435',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Reputación ME',tmo:58.97},
+  {caso:'448196806',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:58.28},
+  {caso:'447957912',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:55.08},
+  {caso:'447923989',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:54.97},
+  {caso:'447950434',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:52.83},
+  {caso:'447977080',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:49.17},
+  {caso:'447971697',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Reputación',tmo:49.00},
+  {caso:'448194748',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:48.37},
+  {caso:'447953952',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Reputación',tmo:48.20},
+  {caso:'447967567',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:47.67},
+  {caso:'447923673',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:47.38},
+  {caso:'448190399',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:46.85},
+  {caso:'448181473',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:46.02},
+  {caso:'444984584',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Reputación',tmo:45.22},
+  {caso:'448200910',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:44.65},
+  {caso:'447980046',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:43.88},
+  {caso:'447982312',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:43.85},
+  {caso:'447991923',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:43.40},
+  {caso:'448137652',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:42.42},
+  {caso:'448206008',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:39.60},
+  {caso:'448181353',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:38.53},
+  {caso:'448177317',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:37.72},
+  {caso:'447930642',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Reputación',tmo:34.10},
+  {caso:'448151072',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Reputación',tmo:33.83},
+  {caso:'448137424',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Reputación',tmo:32.90},
+  {caso:'447994510',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:28.78},
+  {caso:'448209891',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:27.45},
+  {caso:'448140094',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:25.93},
+  {caso:'448207752',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:24.23},
+  {caso:'448162743',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:23.17},
+  {caso:'448208198',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:23.12},
+  {caso:'448180090',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Reputación',tmo:22.50},
+  {caso:'447996425',data:'01/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Asignación del Contáctanos - Prustomer',tmo:22.20},
+  {caso:'448180424',data:'02/04',rep:'gunascimento',canal:'MULTICANAL CHAT',proc:'Reputación',tmo:21.08},
+];
+
 // ---- TMO × ESTILO MELI ----
 function populateEstiloCasosProc() {
   const selProc = document.getElementById('fest2-proc');
@@ -3574,23 +3660,23 @@ function populateEstiloCasosProc() {
   if (!selProc || !selRep) return;
   selProc.innerHTML = '<option value="">Todos</option>';
   selRep.innerHTML  = '<option value="">Todos</option>';
-  if (currentFila !== 'publi') return;
-  const procs = [...new Set(estiloCasosData.map(r=>r.proc))].sort();
-  const reps  = [...new Set(estiloCasosData.map(r=>r.rep))].sort();
+  if (currentFila === 'ventas' || currentFila === 'me') return;
+  const procs = [...new Set(getEstiloCasosData().map(r=>r.proc))].sort();
+  const reps  = [...new Set(getEstiloCasosData().map(r=>r.rep))].sort();
   procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; selProc.appendChild(o); });
   reps.forEach(r=>{  const o=document.createElement('option'); o.value=r; o.textContent=r; selRep.appendChild(o);  });
 }
 
 function filterEstiloCasos() {
-  if (currentFila !== 'publi') {
+  if (currentFila === 'ventas' || currentFila === 'me') {
     const tb = document.getElementById('tbody-estilo-casos');
-    if (tb) tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#adb5bd;padding:20px">Dados disponíveis apenas para BR_Publicaciones_Sellers_Mature.</td></tr>';
+    if (tb) tb.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#adb5bd;padding:20px">Dados disponíveis para Publicações, Pro MLB e VIP MLB.</td></tr>';
     return;
   }
   const r = document.getElementById('fest2-rep').value;
   const c = document.getElementById('fest2-canal').value;
   const p = document.getElementById('fest2-proc').value;
-  const rows = estiloCasosData.filter(x =>
+  const rows = getEstiloCasosData().filter(x =>
     (!r || x.rep===r) && (!c || x.canal===c) && (!p || x.proc===p)
   ).sort((a,b)=>b.tmo-a.tmo);
   const tb = document.getElementById('tbody-estilo-casos');
@@ -3598,7 +3684,7 @@ function filterEstiloCasos() {
   if (!rows.length) { tb.innerHTML = emptyRow(7); return; }
   // Mapear estilo % por rep
   const estiloMap = {};
-  estiloData.forEach(e=>{ estiloMap[e.rep] = e.estilo; });
+  getEstiloData().forEach(e=>{ estiloMap[e.rep] = e.estilo; });
   tb.innerHTML = rows.map(x => {
     const est = estiloMap[x.rep] || 0;
     const estCor = est<40?'#e63946':est<45?'#f4a261':'#856404';
@@ -4450,8 +4536,11 @@ function filterEvolucao() {
   let rows = buildEvolucaoData().filter(r =>
     (!c || r.canal===c) && (!l || r.lider===l)
   );
+  const sems = getSemanasDynamic();
+  updateEvolucaoHeader(sems);
+  const _meta = FILAS_META[currentFila].chat;
   rows = rows.map(r => {
-    const vals = SEMANAS.map(s => r.semanas[s] ?? null);
+    const vals = sems.map(s => r.semanas[s] ?? null);
     const valid = vals.filter(v=>v!=null);
     const first = valid[0], last = valid[valid.length-1];
     const delta = first && last ? +(last-first).toFixed(2) : null;
@@ -4459,11 +4548,11 @@ function filterEvolucao() {
   });
   if (t==='melhorando') rows = rows.filter(r=>r.delta!=null && r.delta<0);
   if (t==='piorando')   rows = rows.filter(r=>r.delta!=null && r.delta>0);
-  if (t==='acima')      rows = rows.filter(r=>r.last!=null && r.last>27);
+  if (t==='acima')      rows = rows.filter(r=>r.last!=null && r.last>_meta);
   rows.sort((a,b)=>(b.last??0)-(a.last??0));
   const tb = document.getElementById('tbody-evolucao');
   document.getElementById('fe-count').textContent = `${rows.length} representante(s)`;
-  if (!rows.length) { tb.innerHTML = emptyRow(9); return; }
+  if (!rows.length) { tb.innerHTML = emptyRow(3+sems.length+2); return; }
   tb.innerHTML = rows.map(r => {
     const arrow = r.delta==null ? '—' :
       r.delta < -2 ? `<span style="color:#2dc653;font-weight:700">↓ ${r.delta.toFixed(1)}</span>` :
@@ -4471,14 +4560,12 @@ function filterEvolucao() {
                      `<span style="color:#6c757d">≈ ${r.delta>0?'+':''}${r.delta.toFixed(1)}</span>`;
     const trend = r.delta==null ? '—' :
       r.delta < -3 ? '📉 Melhora' : r.delta > 3 ? '📈 Piora' : '➡️ Estável';
+    const semCells = r.vals.map(v => tmoCell(v)).join('');
     return `<tr>
       <td><strong>${r.rep}</strong></td>
       <td>${r.lider}</td>
       <td>${canalBadge(r.canal)}</td>
-      ${tmoCell(r.vals[0])}
-      ${tmoCell(r.vals[1])}
-      ${tmoCell(r.vals[2])}
-      ${tmoCell(r.vals[3])}
+      ${semCells}
       <td style="text-align:center">${arrow}</td>
       <td style="text-align:center">${sparkline(r.vals)} ${trend}</td>
     </tr>`;
@@ -4545,6 +4632,11 @@ function getSemanalRaw() {
   if (currentFila==='melipro') return MELIPRO_semanalRaw;
   if (currentFila==='vip')     return VIP_semanalRaw;
   return semanalRaw;
+}
+function getEstiloCasosData() {
+  if (currentFila==='melipro') return MELIPRO_estiloCasosData;
+  if (currentFila==='vip')     return VIP_estiloCasosData;
+  return estiloCasosData;
 }
 function getEstiloData() {
   if (currentFila==='ventas') return VENTAS_estiloData;
@@ -5719,6 +5811,25 @@ const ME_semanalRaw = [
 
 const SEMANAS = ['2026-04-06','2026-04-13','2026-04-20','2026-04-27'];
 const SEMANA_LABELS = ['S1 06/04','S2 13/04','S3 20/04','S4 27/04'];
+function getSemanasDynamic() {
+  const data = getSemanalRaw();
+  if (!data.length) return SEMANAS;
+  const weeks = [...new Set(data.map(r => r[3]))].sort();
+  return weeks.length ? weeks : SEMANAS;
+}
+function updateEvolucaoHeader(sems) {
+  const tr = document.getElementById('thead-evolucao');
+  if (!tr) return;
+  const labels = sems.map((s,i) => 'S'+(i+1)+' '+s.slice(5).replace('-','/'));
+  const thFixed = '<th>Rep</th><th>Líder</th><th>Canal</th>';
+  const thSems = labels.map(l => '<th>'+l+'</th>').join('');
+  const thExtra = '<th>Variação S1→S'+sems.length+'</th><th>Tendência</th>';
+  tr.innerHTML = thFixed + thSems + thExtra;
+  // Update subtitle
+  const sub = document.getElementById('evolucao-card-sub');
+  const _m = FILAS_META[currentFila];
+  if (sub) sub.textContent = labels.join(' · ') + ' · Meta: CHAT '+_m.chat+' min · C2C '+_m.c2c+' min';
+}
 
 // ---- DADOS PRODUTIVIDADE ----
 const produRepData = [
