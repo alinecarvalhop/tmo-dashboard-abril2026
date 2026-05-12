@@ -554,6 +554,9 @@ tr:last-child td { border-bottom: none; }
     </div>
   </div>
 
+  <!-- Outgoing + Capacidade -->
+  <div id="outgoing-section" style="margin-bottom:20px"></div>
+
   <!-- Por Canal / ON vs OFF -->
   <div class="charts-2" style="margin-bottom:20px">
     <div class="card">
@@ -5809,6 +5812,93 @@ const ME_semanalRaw = [
   ['yldamasceno','dsouzaolivei','MULTICANAL CHAT','2026-05-04',18.33],
 ];
 
+// ---- OUTGOING + CAPACIDADE DATA ----
+const OUTGOING_DATA = {
+  publi: {
+    '2026-04': {chat:{outgoing:16433,vol:12832,hr:3494}, c2c:{outgoing:4051,vol:4073,hr:1370}},
+    '2026-05': {chat:{outgoing:5402, vol:6145, hr:186},  c2c:{outgoing:1602,vol:null,hr:88}}
+  },
+  ventas: {
+    '2026-04': {chat:{outgoing:14691,vol:19467,hr:2963}, c2c:{outgoing:12535,vol:18282,hr:2635}},
+    '2026-05': {chat:{outgoing:5504, vol:5628, hr:188},  c2c:{outgoing:4449, vol:3265, hr:160}}
+  },
+  me: {
+    '2026-04': {chat:{outgoing:34189,vol:43354,hr:5285}, c2c:{outgoing:11835,vol:17882,hr:1959}},
+    '2026-05': {chat:{outgoing:10747,vol:13553,hr:244},  c2c:{outgoing:4196, vol:null, hr:126}}
+  },
+  melipro: {
+    '2026-04': {chat:{outgoing:15171,vol:15926,hr:3088}, c2c:{outgoing:3043,vol:3537,hr:738}},
+    '2026-05': {chat:{outgoing:5165, vol:4520, hr:163},  c2c:{outgoing:1084,vol:1052,hr:40}}
+  },
+  vip: {
+    '2026-04': {chat:{outgoing:null,vol:4720,hr:1405}, c2c:null},
+    '2026-05': {chat:{outgoing:null,vol:1110,hr:78},   c2c:null}
+  }
+};
+
+function renderOutgoing(m) {
+  const sec = document.getElementById('outgoing-section');
+  if (!sec) return;
+  const d = OUTGOING_DATA[currentFila];
+  if (!d) { sec.innerHTML=''; return; }
+  const cur = d[m] || d['2026-04'];
+  const prev = m==='2026-05' ? d['2026-04'] : null;
+  const _tmo = FILAS_META[currentFila];
+
+  function buildCanal(label, data, prevData, tmo_meta) {
+    if (!data) return '';
+    const vol   = data.vol;
+    const cap   = data.outgoing;
+    const hr    = data.hr;
+    const util  = (cap && cap > 0 && vol) ? Math.round(vol/cap*100) : null;
+    const prev_vol = prevData ? prevData.vol : null;
+    const prev_cap = prevData ? prevData.outgoing : null;
+
+    // Trend arrows
+    function trendArrow(curr, prev, inv) {
+      if (!curr || !prev) return '';
+      const d = curr - prev;
+      const pct = Math.round(d/prev*100);
+      if (Math.abs(pct) < 3) return '<span style="color:#6c757d;font-size:11px">≈ estável</span>';
+      const up = inv ? d < 0 : d > 0;
+      const col = up ? '#2dc653' : '#e63946';
+      const arrow = d > 0 ? '↑' : '↓';
+      return '<span style="color:'+col+';font-size:11px;font-weight:700">'+arrow+' '+Math.abs(pct)+'%</span>';
+    }
+
+    // Alert logic: TMO down but volume also down = warning
+    let alert = '';
+    if (prev_vol && vol) {
+      const tmo_d = m==='2026-05' ? -1 : 0; // simplified: in May partial TMO usually differs
+      const vol_d = vol - prev_vol;
+      if (vol_d < -prev_vol*0.1) {
+        alert = '<div style="background:#fff3cd;border-left:3px solid #f4a261;padding:6px 10px;border-radius:4px;font-size:11px;margin-top:8px">⚠️ Volume caiu vs mês anterior — verificar se redução de TMO está gerando throughput real</div>';
+      }
+    }
+
+    const utilBar = util !== null ? '<div style="background:#e9ecef;border-radius:4px;height:6px;overflow:hidden;margin:4px 0"><div style="width:'+Math.min(util,100)+'%;height:100%;background:'+(util>80?'#2dc653':util>50?'#457b9d':'#e63946')+';border-radius:4px"></div></div>' : '';
+
+    return '<div style="flex:1;background:#f8f9fa;border-radius:8px;padding:14px 16px">'
+      +'<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6c757d;margin-bottom:10px">'+label+'</div>'
+      +'<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">'
+        +'<div><div style="font-size:10px;color:#6c757d">Capacidade Outgoing</div><div style="font-size:20px;font-weight:800;color:#1a1a2e">'+(cap ? cap.toLocaleString('pt-BR') : '—')+'</div>'+(prev_cap ? '<div>'+trendArrow(cap,prev_cap,false)+'</div>' : '')+'</div>'
+        +'<div><div style="font-size:10px;color:#6c757d">Volume Entregue</div><div style="font-size:20px;font-weight:800;color:#1a1a2e">'+(vol ? vol.toLocaleString('pt-BR') : '—')+'</div>'+(prev_vol ? '<div>'+trendArrow(vol,prev_vol,false)+'</div>' : '')+'</div>'
+        +'<div><div style="font-size:10px;color:#6c757d">Horas Produtivas</div><div style="font-size:18px;font-weight:700;color:#457b9d">'+(hr ? hr.toLocaleString('pt-BR')+' h' : '—')+'</div></div>'
+        +'<div><div style="font-size:10px;color:#6c757d">Utilização</div><div style="font-size:18px;font-weight:700;color:'+(util!==null?(util>80?'#2dc653':util>50?'#457b9d':'#e63946'):'#6c757d')+'">'+(util !== null ? util+'%' : '—')+'</div>'+(utilBar)+'</div>'
+      +'</div>'+alert+'</div>';
+  }
+
+  const lbl = m==='2026-05' ? 'Maio 2026 ⚡ (parcial)' : 'Abril 2026';
+  const chatHtml = buildCanal('CHAT', cur.chat, prev ? prev.chat : null, _tmo.chat);
+  const c2cHtml  = cur.c2c ? buildCanal('C2C',  cur.c2c,  prev ? prev.c2c  : null, _tmo.c2c) : '';
+
+  sec.innerHTML = '<div class="card" style="margin-bottom:0">'
+    +'<div class="card-title">📊 Outgoing & Capacidade — '+lbl
+    +'<span style="font-size:11px;font-weight:400;color:#6c757d;margin-left:12px">Monitore se a redução de TMO está gerando mais entregas</span></div>'
+    +'<div style="display:flex;gap:16px">'+chatHtml+c2cHtml+'</div>'
+    +'</div>';
+}
+
 const SEMANAS = ['2026-04-06','2026-04-13','2026-04-20','2026-04-27'];
 const SEMANA_LABELS = ['S1 06/04','S2 13/04','S3 20/04','S4 27/04'];
 function getSemanasDynamic() {
@@ -6860,7 +6950,7 @@ function setMonth(m) {
   buildRepsChart(m);
   filterToque();
   renderProdTime(); populateProdTipoReps(); filterProdTipo();
-  filterProdu(); renderProduLider();
+  filterProdu(); renderProduLider(); renderOutgoing(m);
   filterEvolucao();
   computeEvolucaoKPIs(m);
   renderDispersao();
@@ -7064,7 +7154,7 @@ filterEstilo();
 populateEstiloCasosProc(); filterEstiloCasos();
 updateNpsKpis('2026-04'); populateCorrelacaoFilters(); filterCorrelacao();
 renderProdTime(); populateProdTipoReps(); filterProdTipo();
-populateProduFilters(); filterProdu(); renderProduLider();
+populateProduFilters(); filterProdu(); renderProduLider(); renderOutgoing('2026-04');
 populateToqueFilters(); filterToque();
 populateProdTFilters();
 populateCasosFilters(); populateCasosFiltersLider(); filterCasos();
