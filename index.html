@@ -182,6 +182,26 @@ tr:last-child td { border-bottom: none; }
 <!-- ===================== PÁGINA 1: VISÃO GERAL ===================== -->
 <div id="page-resumo" class="page active">
 
+  <!-- TENDÊNCIA DIÁRIA -->
+  <div id="daily-chart-card" style="margin-bottom:20px;display:none">
+    <div class="card">
+      <div class="card-title">📅 Tendência Diária de TMO
+        <span style="font-size:11px;font-weight:400;color:#6c757d;margin-left:12px" id="daily-chart-sub"></span>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:10px">
+        <select id="fd-daily-canal" onchange="renderDailyChart()" style="padding:4px 8px;border-radius:6px;border:1px solid #dee2e6;font-size:12px">
+          <option value="chat">MULTICANAL CHAT</option>
+          <option value="c2c">MULTICANAL C2C</option>
+        </select>
+        <select id="fd-daily-mes" onchange="renderDailyChart()" style="padding:4px 8px;border-radius:6px;border:1px solid #dee2e6;font-size:12px">
+          <option value="2026-04">Abril 2026</option>
+          <option value="2026-05" selected>Maio 2026</option>
+        </select>
+      </div>
+      <canvas id="cDailyTMO" height="90"></canvas>
+    </div>
+  </div>
+
   <!-- NÚMEROS GERAIS -->
   <div class="kpi-row" style="grid-template-columns:repeat(5,1fr)">
     <div class="kpi red">
@@ -262,6 +282,12 @@ tr:last-child td { border-bottom: none; }
         <label>Líder</label>
         <select id="fq-lider" onchange="filterQuartil()">
           <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Semana</label>
+        <select id="fq-semana" onchange="filterQuartil()">
+          <option value="">Todas (Mês)</option>
         </select>
       </div>
       <div class="filter-group">
@@ -828,6 +854,12 @@ tr:last-child td { border-bottom: none; }
       </div>
       <div class="filter-group">
         <label>Rep</label>
+        <select id="fnps-lider" onchange="filterCorrelacao()">
+          <option value="">Todos</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Rep</label>
         <select id="fnps-rep" onchange="filterCorrelacao()">
           <option value="">Todos</option>
         </select>
@@ -896,6 +928,12 @@ tr:last-child td { border-bottom: none; }
           <option value="">Todos</option>
           <option>MULTICANAL CHAT</option>
           <option>MULTICANAL C2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Líder</label>
+        <select id="fest-lider" onchange="filterEstilo()">
+          <option value="">Todos</option>
         </select>
       </div>
       <div class="filter-group">
@@ -1001,6 +1039,12 @@ tr:last-child td { border-bottom: none; }
           <option>MULTICANAL C2C</option>
         </select>
       </div>
+      <div class="filter-group">
+        <label>Líder</label>
+        <select id="fd-lider" onchange="renderDispersao()">
+          <option value="">Todos</option>
+        </select>
+      </div>
       <div class="filter-count" id="fd-count"></div>
     </div>
     <div style="height:420px"><canvas id="cDispersao"></canvas></div>
@@ -1041,6 +1085,12 @@ tr:last-child td { border-bottom: none; }
           <option value="">Todos</option>
           <option>MULTICANAL CHAT</option>
           <option>MULTICANAL C2C</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label>Líder</label>
+        <select id="fd-sol-lider" onchange="renderSolucoesQ4()">
+          <option value="">Todos</option>
         </select>
       </div>
       <div class="filter-group">
@@ -1296,6 +1346,10 @@ function emptyRow(cols) { return `<tr class="empty-row"><td colspan="${cols}">Ne
 function populateQuartilFilters() {
   const data = getQuartilData();
   const lideres = [...new Set(data.map(r=>r.lider).filter(l=>l&&l!=='—'))].sort();
+  // Populate semana filter from semanalRaw
+  const semanas = [...new Set(getSemanalRaw().map(r=>r[3]))].sort();
+  const ss = document.getElementById('fq-semana');
+  if (ss) { ss.innerHTML='<option value="">Todas (Mês)</option>'; semanas.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent='Sem '+s.slice(5).replace('-','/');ss.appendChild(o);}); }
   const sel = document.getElementById('fq-lider');
   const prev = sel.value;
   sel.innerHTML = '<option value="">Todos</option>';
@@ -1308,6 +1362,21 @@ function filterQuartil() {
   const l = document.getElementById('fq-lider').value;
   const q = document.getElementById('fq-quartil').value;
   const s = document.getElementById('fq-sen').value;
+  const sem = document.getElementById('fq-semana') ? document.getElementById('fq-semana').value : '';
+  // If week selected, use semanalRaw instead of quartilData
+  if (sem) {
+    const semData = getSemanalRaw().filter(r=>r[3]===sem);
+    const tb = document.getElementById('tbody-quartil');
+    document.getElementById('fq-count').textContent = (semData.length)+' representante(s)';
+    if (!semData.length) { tb.innerHTML = emptyRow(8); return; }
+    const _m = FILAS_META[currentFila].chat;
+    tb.innerHTML = semData.filter(r=>(!c||r[2]===c)&&(!l||r[1]===l)).sort((a,b)=>a[4]-b[4]).map(r=>`<tr>
+      <td>—</td><td>${r[0]}</td>
+      <td>${senBadge(r[0])}</td><td>${r[1]}</td><td>${canalBadge(r[2])}</td>
+      <td>—</td><td><strong>${r[4].toFixed(2)}</strong></td>
+      <td>${devFmt(+(r[4]-_m).toFixed(2))}</td></tr>`).join('');
+    return;
+  }
   let rows = getQuartilData().filter(r =>
     (!c || r.canal===c) && (!l || r.lider===l) &&
     (!q || r.q===q) && (!s || (r.seniority?r.seniority:getSeniority(r.rep))===s)
@@ -3705,10 +3774,11 @@ function filterEstiloCasos() {
 
 function filterEstilo() {
   const c = document.getElementById('fest-canal').value;
+  const l = document.getElementById('fest-lider').value;
   const s = document.getElementById('fest-sen').value;
   const sort = document.getElementById('fest-sort').value;
   let rows = getEstiloData().filter(r =>
-    (!c || r.canal===c) && (!s || r.sen===s)
+    (!c || r.canal===c) && (!s || r.sen===s) && (!l || r.lider===l)
   );
   if (sort==='tmo') rows.sort((a,b)=>b.tmo-a.tmo);
   else if (sort==='estilo') rows.sort((a,b)=>a.estilo-b.estilo);
@@ -3751,11 +3821,14 @@ function populateCorrelacaoFilters() {
   const src   = getDetratoresData(currentMonth);
   const reps  = [...new Set(src.map(r=>r.rep))].sort();
   const procs = [...new Set(src.map(r=>r.proc))].sort();
+  const lids  = [...new Set(src.map(r=>r.lider||'').filter(Boolean))].sort();
   const sr = document.getElementById('fnps-rep');
   const sp = document.getElementById('fnps-proc');
+  const sl2 = document.getElementById('fnps-lider');
   if (!sr || !sp) return;
   sr.innerHTML = '<option value="">Todos</option>';
   sp.innerHTML = '<option value="">Todos</option>';
+  if (sl2) { sl2.innerHTML='<option value="">Todos</option>'; lids.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;sl2.appendChild(o);}); }
   reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sr.appendChild(o); });
   procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sp.appendChild(o); });
 }
@@ -3780,12 +3853,14 @@ function updateNpsKpis(m) {
 
 function filterCorrelacao() {
   const c  = document.getElementById('fnps-canal').value;
+  const lf2 = document.getElementById('fnps-lider') ? document.getElementById('fnps-lider').value : '';
   const r  = document.getElementById('fnps-rep').value;
   const p  = document.getElementById('fnps-proc').value;
   const n  = document.getElementById('fnps-nota').value;
   const src = getDetratoresData(currentMonth);
   let rows = src.filter(x => {
     if (c && x.canal !== c) return false;
+    if (lf2 && x.lider !== lf2) return false;
     if (r && x.rep !== r)   return false;
     if (p && x.proc !== p)  return false;
     if (n === '0'   && x.nota !== 0) return false;
@@ -4016,8 +4091,9 @@ function normCanal(c) {
 }
 
 function buildDispersaoData() {
-  const pd = getProcessoData();   // processo × canal × tmo × meta × vol
-  const q4 = getQ4Data();         // processo × canal (abrev) × rep × tmo
+  const _ldFilter = document.getElementById('fd-lider') ? document.getElementById('fd-lider').value : '';
+  const pd = getProcessoData();
+  const q4 = (_ldFilter ? getQ4Data().filter(r=>getLiderJS(r.rep)===_ldFilter) : getQ4Data());
 
   // Mapear q4Data por processo+canal normalizado
   const q4map = {};
@@ -4048,6 +4124,14 @@ function buildDispersaoData() {
   }).filter(r => r.tmoQ4 !== null).sort((a,b) => b.tmoQ4 - a.tmoQ4);
 }
 
+function populateDispersaoFilters() {
+  const data = getQuartilData();
+  const liders = [...new Set(data.map(r=>r.lider).filter(l=>l&&l!=='—'))].sort();
+  const sl = document.getElementById('fd-lider');
+  if (!sl) return;
+  sl.innerHTML = '<option value="">Todos</option>';
+  liders.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;sl.appendChild(o);});
+}
 function renderDispersao() {
   const canal = document.getElementById('fd-canal').value;
   const m = currentMonth;
@@ -4438,10 +4522,13 @@ const ME_solucoesQ4Data = [
 
 // ---- SOLUÇÕES OFENSORAS Q4 ----
 function populateSolucoesFilters() {
-  const reps  = [...new Set(getSolucoesQ4Data().map(r=>r.rep))].sort();
-  const procs = [...new Set(getSolucoesQ4Data().map(r=>r.proc))].sort();
+  const reps   = [...new Set(getSolucoesQ4Data().map(r=>r.rep))].sort();
+  const procs  = [...new Set(getSolucoesQ4Data().map(r=>r.proc))].sort();
+  const liders = [...new Set(getSolucoesQ4Data().map(r=>getLiderJS(r.rep)).filter(l=>l&&l!=='—'))].sort();
   const sr = document.getElementById('fd-sol-rep');
   const sp = document.getElementById('fd-sol-proc');
+  const sl = document.getElementById('fd-sol-lider');
+  if (sl) { sl.innerHTML='<option value="">Todos</option>'; liders.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;sl.appendChild(o);}); }
   if (!sr || !sp) return;
   sr.innerHTML = '<option value="">Todos</option>';
   sp.innerHTML = '<option value="">Todos</option>';
@@ -4453,12 +4540,13 @@ function renderSolucoesQ4() {
   const c = document.getElementById('fd-sol-canal').value;
   const r = document.getElementById('fd-sol-rep').value;
   const p = document.getElementById('fd-sol-proc').value;
+  const lf = document.getElementById('fd-sol-lider') ? document.getElementById('fd-sol-lider').value : '';
 
   const pdMap = {};
   getProcessoData().forEach(pd => { pdMap[pd.proc+'|'+pd.canal] = pd.meta || 0; });
 
   let rows = getSolucoesQ4Data().filter(x =>
-    (!c || x.canal === c) && (!r || x.rep === r) && (!p || x.proc === p)
+    (!c || x.canal === c) && (!r || x.rep === r) && (!p || x.proc === p) && (!lf || getLiderJS(x.rep) === lf)
   ).map(x => {
     const meta = pdMap[x.proc+'|'+x.canal] || 0;
     const dev = meta > 0 ? Math.round((x.tmo - meta)*100)/100 : null;
@@ -4608,6 +4696,48 @@ function filterProdu() {
 }
 
 // ---- TOQUE FUNCTIONS ----
+let cDailyChart = null;
+function renderDailyChart() {
+  const fila = currentFila;
+  const canal = document.getElementById('fd-daily-canal') ? document.getElementById('fd-daily-canal').value : 'chat';
+  const mes   = document.getElementById('fd-daily-mes') ? document.getElementById('fd-daily-mes').value : currentMonth;
+  const sec = document.getElementById('daily-chart-card');
+  if (!sec) return;
+  const d = DAILY_TMO[fila];
+  if (!d || !d[mes] || !d[mes][canal]) { sec.style.display='none'; return; }
+  sec.style.display='block';
+  const days = d[mes][canal];
+  const labels = days.map(r=>r.d.slice(5).replace('-','/'));
+  const tmos   = days.map(r=>r.t);
+  const vols   = days.map(r=>r.v);
+  const meta   = canal==='chat' ? FILAS_META[fila].chat : FILAS_META[fila].c2c;
+  const lbl = mes==='2026-05' ? 'Maio 2026 ⚡' : 'Abril 2026';
+  const sub = document.getElementById('daily-chart-sub');
+  if (sub) sub.textContent = (canal==='chat'?'CHAT':'C2C')+' · '+lbl+' · Meta: '+meta+' min';
+  const canvas = document.getElementById('cDailyTMO');
+  if (!canvas) return;
+  if (cDailyChart) cDailyChart.destroy();
+  cDailyChart = new Chart(canvas, {
+    type:'line',
+    data:{
+      labels,
+      datasets:[
+        {label:'TMO (min)',data:tmos,borderColor:'#457b9d',backgroundColor:'rgba(69,123,157,.15)',borderWidth:2,pointRadius:3,tension:0.3,fill:true,yAxisID:'y'},
+        {label:'Meta',data:Array(tmos.length).fill(meta),borderColor:'#e63946',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false,yAxisID:'y'},
+        {label:'Volume',data:vols,borderColor:'#adb5bd',borderWidth:1,pointRadius:2,tension:0.3,fill:false,yAxisID:'y2',type:'bar',backgroundColor:'rgba(173,181,189,.35)'}
+      ]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{legend:{position:'bottom',labels:{font:{size:10}}}},
+      scales:{
+        y:{position:'left',title:{display:true,text:'TMO (min)',font:{size:10}},min:0,grid:{color:'#f0f2f5'}},
+        y2:{position:'right',title:{display:true,text:'Volume',font:{size:10}},min:0,grid:{display:false}}
+      }
+    }
+  });
+}
+
 function getToqueData()  {
   if (currentFila==='ventas') return VENTAS_toqueRepData;
   if (currentFila==='me')     return ME_toqueRepData;
@@ -5812,6 +5942,58 @@ const ME_semanalRaw = [
   ['yldamasceno','dsouzaolivei','MULTICANAL CHAT','2026-05-04',18.33],
 ];
 
+// ---- DADOS DIÁRIOS TMO ----
+const DAILY_TMO = {
+  me: {
+    '2026-04': {
+      c2c: [{d:'2026-04-01',t:11.99,v:717},{d:'2026-04-02',t:12.66,v:598},{d:'2026-04-06',t:12.06,v:605},{d:'2026-04-07',t:11.42,v:680},{d:'2026-04-08',t:12.39,v:648},{d:'2026-04-09',t:12.21,v:740},{d:'2026-04-10',t:11.27,v:698},{d:'2026-04-13',t:11.66,v:610},{d:'2026-04-14',t:11.75,v:646},{d:'2026-04-15',t:10.76,v:738},{d:'2026-04-16',t:10.80,v:783},{d:'2026-04-17',t:10.97,v:882},{d:'2026-04-20',t:10.71,v:815},{d:'2026-04-22',t:12.41,v:582},{d:'2026-04-23',t:11.35,v:790},{d:'2026-04-24',t:10.66,v:871},{d:'2026-04-27',t:9.68,v:822},{d:'2026-04-28',t:10.58,v:737},{d:'2026-04-29',t:12.27,v:832},{d:'2026-04-30',t:12.65,v:659}],
+      chat: [{d:'2026-04-01',t:24.05,v:1622},{d:'2026-04-02',t:25.59,v:1650},{d:'2026-04-06',t:25.45,v:1504},{d:'2026-04-07',t:24.60,v:1765},{d:'2026-04-08',t:22.79,v:1965},{d:'2026-04-09',t:23.83,v:1966},{d:'2026-04-10',t:24.48,v:1566},{d:'2026-04-13',t:23.02,v:1646},{d:'2026-04-14',t:24.37,v:1795},{d:'2026-04-15',t:18.74,v:1579},{d:'2026-04-16',t:22.84,v:1718},{d:'2026-04-17',t:23.66,v:1639},{d:'2026-04-20',t:23.31,v:1774},{d:'2026-04-22',t:21.89,v:1564},{d:'2026-04-23',t:23.43,v:1900},{d:'2026-04-24',t:24.29,v:1965},{d:'2026-04-27',t:23.86,v:2006},{d:'2026-04-28',t:23.18,v:2131},{d:'2026-04-29',t:23.58,v:2055},{d:'2026-04-30',t:24.61,v:1805}],
+    },
+    '2026-05': {
+      c2c: [{d:'2026-05-04',t:11.63,v:744},{d:'2026-05-05',t:11.58,v:751},{d:'2026-05-06',t:9.80,v:1012},{d:'2026-05-07',t:11.46,v:922},{d:'2026-05-08',t:11.71,v:711},{d:'2026-05-11',t:10.57,v:820}],
+      chat: [{d:'2026-05-04',t:22.25,v:1530},{d:'2026-05-05',t:20.69,v:1904},{d:'2026-05-06',t:18.82,v:2171},{d:'2026-05-07',t:22.14,v:2134},{d:'2026-05-08',t:21.95,v:1674},{d:'2026-05-11',t:22.30,v:1733}],
+    },
+  },
+  melipro: {
+    '2026-04': {
+      c2c: [{d:'2026-04-01',t:9.16,v:124},{d:'2026-04-02',t:12.47,v:86},{d:'2026-04-06',t:9.93,v:137},{d:'2026-04-07',t:9.81,v:162},{d:'2026-04-08',t:13.30,v:170},{d:'2026-04-09',t:11.67,v:166},{d:'2026-04-10',t:12.12,v:190},{d:'2026-04-13',t:11.15,v:173},{d:'2026-04-14',t:8.40,v:198},{d:'2026-04-15',t:11.86,v:214},{d:'2026-04-16',t:10.61,v:236},{d:'2026-04-17',t:10.92,v:188},{d:'2026-04-20',t:11.30,v:168},{d:'2026-04-22',t:13.31,v:211},{d:'2026-04-23',t:13.89,v:211},{d:'2026-04-24',t:13.89,v:189},{d:'2026-04-27',t:12.61,v:166},{d:'2026-04-28',t:11.82,v:189},{d:'2026-04-29',t:12.84,v:179},{d:'2026-04-30',t:13.30,v:180}],
+      chat: [{d:'2026-04-01',t:21.45,v:667},{d:'2026-04-02',t:22.12,v:567},{d:'2026-04-06',t:19.69,v:765},{d:'2026-04-07',t:23.34,v:721},{d:'2026-04-08',t:22.16,v:874},{d:'2026-04-09',t:22.82,v:826},{d:'2026-04-10',t:24.51,v:720},{d:'2026-04-13',t:23.46,v:775},{d:'2026-04-14',t:20.69,v:852},{d:'2026-04-15',t:16.87,v:556},{d:'2026-04-16',t:22.14,v:834},{d:'2026-04-17',t:23.65,v:836},{d:'2026-04-20',t:20.04,v:676},{d:'2026-04-22',t:25.58,v:812},{d:'2026-04-23',t:24.39,v:848},{d:'2026-04-24',t:24.06,v:775},{d:'2026-04-27',t:23.15,v:991},{d:'2026-04-28',t:21.75,v:916},{d:'2026-04-29',t:22.62,v:927},{d:'2026-04-30',t:22.67,v:988}],
+    },
+    '2026-05': {
+      c2c: [{d:'2026-05-04',t:14.70,v:195},{d:'2026-05-05',t:12.11,v:230},{d:'2026-05-06',t:12.11,v:217},{d:'2026-05-07',t:12.34,v:210},{d:'2026-05-08',t:12.74,v:200},{d:'2026-05-11',t:10.10,v:217}],
+      chat: [{d:'2026-05-04',t:21.97,v:913},{d:'2026-05-05',t:22.20,v:877},{d:'2026-05-06',t:23.52,v:969},{d:'2026-05-07',t:23.22,v:910},{d:'2026-05-08',t:22.54,v:851},{d:'2026-05-11',t:20.82,v:982}],
+    },
+  },
+  publi: {
+    '2026-04': {
+      c2c: [{d:'2026-04-01',t:20.30,v:142},{d:'2026-04-02',t:23.34,v:121},{d:'2026-04-06',t:18.98,v:93},{d:'2026-04-07',t:19.92,v:84},{d:'2026-04-08',t:20.30,v:157},{d:'2026-04-09',t:23.31,v:103},{d:'2026-04-10',t:24.99,v:128},{d:'2026-04-13',t:26.10,v:329},{d:'2026-04-14',t:30.04,v:291},{d:'2026-04-15',t:26.21,v:290},{d:'2026-04-16',t:29.90,v:277},{d:'2026-04-17',t:27.87,v:317},{d:'2026-04-20',t:28.88,v:269},{d:'2026-04-22',t:34.53,v:211},{d:'2026-04-23',t:25.98,v:246},{d:'2026-04-24',t:27.79,v:266},{d:'2026-04-27',t:24.97,v:268},{d:'2026-04-28',t:34.84,v:191},{d:'2026-04-29',t:25.65,v:294},{d:'2026-04-30',t:28.04,v:268}],
+      chat: [{d:'2026-04-01',t:30.19,v:886},{d:'2026-04-02',t:28.39,v:930},{d:'2026-04-06',t:30.87,v:735},{d:'2026-04-07',t:31.16,v:706},{d:'2026-04-08',t:29.72,v:1010},{d:'2026-04-09',t:28.20,v:1036},{d:'2026-04-10',t:29.99,v:934},{d:'2026-04-13',t:29.62,v:835},{d:'2026-04-14',t:30.05,v:948},{d:'2026-04-15',t:27.01,v:761},{d:'2026-04-16',t:28.55,v:834},{d:'2026-04-17',t:30.10,v:680},{d:'2026-04-20',t:28.94,v:798},{d:'2026-04-22',t:28.30,v:722},{d:'2026-04-23',t:30.03,v:968},{d:'2026-04-24',t:29.03,v:931},{d:'2026-04-27',t:27.07,v:836},{d:'2026-04-28',t:30.39,v:934},{d:'2026-04-29',t:28.21,v:882},{d:'2026-04-30',t:29.14,v:814}],
+    },
+    '2026-05': {
+      c2c: [{d:'2026-05-04',t:26.14,v:271},{d:'2026-05-05',t:27.11,v:276},{d:'2026-05-06',t:24.20,v:302},{d:'2026-05-07',t:22.85,v:354},{d:'2026-05-08',t:28.47,v:280},{d:'2026-05-11',t:25.93,v:243}],
+      chat: [{d:'2026-05-04',t:28.30,v:908},{d:'2026-05-05',t:27.33,v:899},{d:'2026-05-06',t:27.85,v:942},{d:'2026-05-07',t:30.15,v:1013},{d:'2026-05-08',t:28.13,v:900},{d:'2026-05-11',t:27.20,v:947}],
+    },
+  },
+  ventas: {
+    '2026-04': {
+      c2c: [{d:'2026-04-01',t:17.86,v:628},{d:'2026-04-02',t:16.65,v:639},{d:'2026-04-06',t:17.27,v:568},{d:'2026-04-07',t:14.97,v:823},{d:'2026-04-08',t:14.32,v:833},{d:'2026-04-09',t:16.23,v:745},{d:'2026-04-10',t:17.60,v:669},{d:'2026-04-13',t:11.39,v:1182},{d:'2026-04-14',t:17.28,v:910},{d:'2026-04-15',t:16.61,v:886},{d:'2026-04-16',t:15.56,v:859},{d:'2026-04-17',t:18.42,v:654},{d:'2026-04-20',t:18.07,v:673},{d:'2026-04-22',t:19.86,v:677},{d:'2026-04-23',t:18.32,v:805},{d:'2026-04-24',t:20.44,v:646},{d:'2026-04-27',t:17.74,v:699},{d:'2026-04-28',t:20.21,v:700},{d:'2026-04-29',t:20.09,v:699},{d:'2026-04-30',t:20.31,v:640}],
+      chat: [{d:'2026-04-01',t:28.88,v:636},{d:'2026-04-02',t:29.47,v:775},{d:'2026-04-06',t:29.94,v:697},{d:'2026-04-07',t:28.39,v:775},{d:'2026-04-08',t:27.93,v:844},{d:'2026-04-09',t:29.01,v:705},{d:'2026-04-10',t:29.24,v:708},{d:'2026-04-13',t:28.98,v:821},{d:'2026-04-14',t:29.35,v:788},{d:'2026-04-15',t:25.88,v:768},{d:'2026-04-16',t:28.41,v:865},{d:'2026-04-17',t:27.42,v:731},{d:'2026-04-20',t:29.29,v:840},{d:'2026-04-22',t:27.15,v:907},{d:'2026-04-23',t:27.54,v:795},{d:'2026-04-24',t:26.44,v:945},{d:'2026-04-27',t:29.63,v:765},{d:'2026-04-28',t:27.31,v:734},{d:'2026-04-29',t:28.61,v:765},{d:'2026-04-30',t:26.85,v:816}],
+    },
+    '2026-05': {
+      c2c: [{d:'2026-05-04',t:17.48,v:672},{d:'2026-05-05',t:17.19,v:777},{d:'2026-05-06',t:15.38,v:890},{d:'2026-05-07',t:14.46,v:1009},{d:'2026-05-08',t:16.16,v:798},{d:'2026-05-11',t:15.02,v:846}],
+      chat: [{d:'2026-05-04',t:26.90,v:674},{d:'2026-05-05',t:25.01,v:851},{d:'2026-05-06',t:25.52,v:1104},{d:'2026-05-07',t:26.38,v:1158},{d:'2026-05-08',t:25.99,v:960},{d:'2026-05-11',t:27.82,v:1034}],
+    },
+  },
+  vip: {
+    '2026-04': {
+      chat: [{d:'2026-04-01',t:28.54,v:356},{d:'2026-04-02',t:29.61,v:367},{d:'2026-04-06',t:27.22,v:285},{d:'2026-04-07',t:27.94,v:289},{d:'2026-04-08',t:27.80,v:242},{d:'2026-04-09',t:26.10,v:265},{d:'2026-04-10',t:23.74,v:259},{d:'2026-04-13',t:27.67,v:244},{d:'2026-04-14',t:25.68,v:207},{d:'2026-04-15',t:20.09,v:128},{d:'2026-04-16',t:20.92,v:249},{d:'2026-04-17',t:26.81,v:165},{d:'2026-04-20',t:21.38,v:189},{d:'2026-04-22',t:25.84,v:228},{d:'2026-04-23',t:27.85,v:183},{d:'2026-04-24',t:24.73,v:242},{d:'2026-04-27',t:27.66,v:202},{d:'2026-04-28',t:27.00,v:198},{d:'2026-04-29',t:26.66,v:219},{d:'2026-04-30',t:27.14,v:203}],
+    },
+    '2026-05': {
+      chat: [{d:'2026-05-04',t:25.01,v:289},{d:'2026-05-05',t:26.38,v:209},{d:'2026-05-06',t:26.71,v:237},{d:'2026-05-07',t:28.11,v:210},{d:'2026-05-08',t:35.11,v:165},{d:'2026-05-11',t:23.39,v:249}],
+    },
+  },
+};
+
 // ---- OUTGOING + CAPACIDADE DATA ----
 const OUTGOING_DATA = {
   publi: {
@@ -6950,15 +7132,16 @@ function setMonth(m) {
   buildRepsChart(m);
   filterToque();
   renderProdTime(); populateProdTipoReps(); filterProdTipo();
-  filterProdu(); renderProduLider(); renderOutgoing(m);
+  filterProdu(); renderProduLider(); renderOutgoing(m); renderDailyChart();
   filterEvolucao();
   computeEvolucaoKPIs(m);
-  renderDispersao();
+  populateDispersaoFilters(); renderDispersao();
   populateSolucoesFilters(); renderSolucoesQ4();
   renderExecSummary(m);
   renderDiagnostico();
   populateEstiloCasosProc(); filterEstiloCasos();
-  filterEstilo();
+populateEstiloFilters();
+  populateEstiloFilters(); filterEstilo();
   updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
 
 }
@@ -7006,9 +7189,11 @@ function setFila(fila) {
   populateProdTFilters();
   populateMultiFilters();
   populateEvolucaoFilters();
+  populateEstiloFilters();
   populateCasosFilters();
   populateCasosFiltersLider();
   populateEstiloCasosProc();
+  populateDispersaoFilters();
   renderDiagnostico();
   setMonth(currentMonth);
 }
@@ -7022,6 +7207,14 @@ function populateToqueFilters() {
   liders.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sl.appendChild(o); });
 }
 
+function populateEstiloFilters() {
+  const data = getEstiloData();
+  const liders = [...new Set(data.map(r=>r.lider).filter(Boolean))].sort();
+  const sl = document.getElementById('fest-lider');
+  if (!sl) return;
+  sl.innerHTML = '<option value="">Todos</option>';
+  liders.forEach(l=>{const o=document.createElement('option');o.value=l;o.textContent=l;sl.appendChild(o);});
+}
 function populateProduFilters() {
   const data = getProduData();
   const liders = [...new Set(data.map(r=>r.lider).filter(Boolean))].sort();
@@ -7145,13 +7338,14 @@ populateQ4Filters(); filterQ4();
 filterMulti();
 filterEvolucao();
 computeEvolucaoKPIs('2026-04');
-renderDispersao();
+populateDispersaoFilters(); renderDispersao();
 populateSolucoesFilters(); renderSolucoesQ4();
 updateAllKpis('2026-04');
 renderExecSummary('2026-04');
-renderDiagnostico();
+renderDiagnostico(); renderDailyChart();
 filterEstilo();
 populateEstiloCasosProc(); filterEstiloCasos();
+populateEstiloFilters();
 updateNpsKpis('2026-04'); populateCorrelacaoFilters(); filterCorrelacao();
 renderProdTime(); populateProdTipoReps(); filterProdTipo();
 populateProduFilters(); filterProdu(); renderProduLider(); renderOutgoing('2026-04');
