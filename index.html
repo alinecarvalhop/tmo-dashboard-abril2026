@@ -854,7 +854,7 @@ tr:last-child td { border-bottom: none; }
         </select>
       </div>
       <div class="filter-group">
-        <label>Rep</label>
+        <label>Líder</label>
         <select id="fnps-lider" onchange="filterCorrelacao()">
           <option value="">Todos</option>
         </select>
@@ -7485,8 +7485,6 @@ function setMonth(m) {
   populateSolucoesFilters(); renderSolucoesQ4();
   renderExecSummary(m);
   renderDiagnostico();
-  populateEstiloCasosProc(); filterEstiloCasos();
-populateEstiloFilters();
   populateEstiloFilters(); filterEstilo();
   populateEstiloCasosProc(); filterEstiloCasos();
   updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
@@ -7690,9 +7688,8 @@ populateSolucoesFilters(); renderSolucoesQ4();
 updateAllKpis('2026-04');
 renderExecSummary('2026-04');
 renderDiagnostico(); renderDailyChart();
-filterEstilo();
+populateEstiloFilters(); filterEstilo();
 populateEstiloCasosProc(); filterEstiloCasos();
-populateEstiloFilters();
 updateNpsKpis('2026-04'); populateCorrelacaoFilters(); filterCorrelacao();
 renderProdTime(); populateProdTipoReps(); filterProdTipo();
 populateProduFilters(); filterProdu(); renderProduLider(); renderOutgoing('2026-04');
