@@ -159,6 +159,7 @@ tr:last-child td { border-bottom: none; }
       <option value="2026-04">Abril 2026</option>
       <option value="2026-05">Maio 2026 ⚡</option>
     </select>
+    <div id="mes-aviso" style="font-size:10px;color:#e67e22;margin-top:4px;display:none">⚠️ Rep/Processo mostram dados do mês atual</div>
   </div>
   <div class="nav-section">Visão</div>
   <div class="nav-tab active" onclick="showPage('resumo',this)">📈 Visão Geral</div>
@@ -7433,6 +7434,9 @@ let currentMonth = '2026-04';
 function setMonth(m) {
   currentMonth = m;
   document.getElementById('mes-selector').value = m;
+  // Show warning when non-publi fila on April (rep-level data reflects current month)
+  const _av = document.getElementById('mes-aviso');
+  if (_av) _av.style.display = (currentFila!=='publi' && m==='2026-04') ? 'block' : 'none';
   // KPIs
   const _KPIS=currentFila==="ventas"?VENTAS_KPIS:currentFila==="me"?ME_KPIS:currentFila==="melipro"?MELIPRO_KPIS:currentFila==="vip"?VIP_KPIS:KPIS;
   const k = _KPIS[m] || _KPIS["2026-04"];
@@ -7484,7 +7488,9 @@ function setMonth(m) {
   populateEstiloCasosProc(); filterEstiloCasos();
 populateEstiloFilters();
   populateEstiloFilters(); filterEstilo();
+  populateEstiloCasosProc(); filterEstiloCasos();
   updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
+  filterCasos();
 
 }
 
@@ -7655,9 +7661,8 @@ function buildRepsChart(m) {
   const meta = FILAS_META[currentFila].chat;
   const allReps = getQuartilData().filter(r=>r.canal==='MULTICANAL CHAT'||r.canal==='CHAT');
   const top = allReps.sort((a,b)=>b.tmo-a.tmo).slice(0,15);
-  const src = top.length ? top : (m==='2026-04'
-    ? [{rep:'adysantos',tmo:59.90},{rep:'maybalazshaz',tmo:53.51},{rep:'raisacsantos',tmo:49.66},{rep:'kavalle',tmo:49.09},{rep:'linessousa',tmo:45.89},{rep:'vitnasciment',tmo:44.37},{rep:'cccsousa',tmo:41.67},{rep:'gabrielaaiol',tmo:41.55},{rep:'amcandido',tmo:38.16},{rep:'lecandido',tmo:35.95}]
-    : [{rep:'adysantos',tmo:53.63},{rep:'gabrielaaiol',tmo:49.66},{rep:'albarbosa',tmo:44.63},{rep:'raisacsantos',tmo:44.46},{rep:'kavalle',tmo:42.61},{rep:'maybalazshaz',tmo:42.64},{rep:'linessousa',tmo:41.71},{rep:'lecandido',tmo:39.62},{rep:'vitnasciment',tmo:36.66},{rep:'cccsousa',tmo:37.84}]);
+  // Use dynamic data only — no hardcoded fallback
+  const src = top;
   if (cRepsChart) { cRepsChart.destroy(); }
   cRepsChart = new Chart(document.getElementById('cReps'),{
     type:'bar',
