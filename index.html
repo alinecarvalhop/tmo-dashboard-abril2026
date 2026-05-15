@@ -217,12 +217,12 @@ tr:last-child td { border-bottom: none; }
       <div class="kpi-val" id="kpi-tmo">28,78</div>
       <div class="kpi-sub" id="kpi-tmo-sub" style="color:#e63946;font-weight:700">+6,6% vs meta</div>
     </div>
-    <div class="kpi yellow">
+    <div class="kpi yellow" id="kpi-card-chat">
       <div class="kpi-lbl">TMO — MULTICANAL CHAT</div>
       <div class="kpi-val" id="kpi-tmo-chat">29,24</div>
       <div class="kpi-sub" id="kpi-tmo-chat-sub">min · 17.180 contatos</div>
     </div>
-    <div class="kpi blue">
+    <div class="kpi blue" id="kpi-card-c2c">
       <div class="kpi-lbl">TMO — MULTICANAL C2C</div>
       <div class="kpi-val" id="kpi-tmo-c2c">26,98</div>
       <div class="kpi-sub" id="kpi-tmo-c2c-sub">min · 4.345 contatos</div>
@@ -1387,7 +1387,7 @@ function filterQuartil() {
   }
   const _gl = currentLider || l;
   let rows = getQuartilData().filter(r =>
-    (!c || r.canal===c) && (!_gl || r.lider===_gl) &&
+    (!c || r.canal===c) && liderHasCanal(r.canal) && (!_gl || r.lider===_gl) &&
     (!q || r.q===q) && (!s || (r.seniority?r.seniority:getSeniority(r.rep))===s)
   );
   const tb = document.getElementById('tbody-quartil');
@@ -1483,7 +1483,7 @@ function filterQ4() {
   const s = document.getElementById('f4-sen').value;
   const _gl4 = currentLider || l;
   let rows = getQ4Data().filter(x =>
-    (!c || x.canal===c) && (!_gl4 || x.lider===_gl4) &&
+    (!c || x.canal===c) && liderHasCanal(x.canal) && (!_gl4 || x.lider===_gl4) &&
     (!p || x.proc===p) && (!r || x.rep===r) &&
     (!s || (x.seniority?x.seniority:getSeniority(x.rep))===s)
   );
@@ -2381,6 +2381,12 @@ const VIP_solucoesQ4Data = [
 // ---- DADOS MULTI-FILA ----
 let currentFila = 'publi';
 let currentLider = '';  // Global leader filter
+let currentLiderChannels = new Set(); // Channels managed by current leader
+
+function getLeaderChannels() { return currentLiderChannels; }
+function liderHasCanal(canal) {
+  return !currentLider || currentLiderChannels.size === 0 || currentLiderChannels.has(canal);
+}
 
 // ---- GLOBAL LIDER FILTER ------------------------------------------------
 function populateGlobalLiderFilter() {
@@ -2403,7 +2409,14 @@ function populateGlobalLiderFilter() {
 
 function setGlobalLider(lider) {
   currentLider = lider;
-  // Visual feedback — badge on header
+  // Compute channels for this leader from quartilData
+  if (lider) {
+    const lq = getQuartilData().filter(r=>r.lider===lider);
+    currentLiderChannels = new Set(lq.map(r=>r.canal));
+  } else {
+    currentLiderChannels = new Set();
+  }
+  // Visual feedback
   const sel = document.getElementById('global-lider-filter');
   if (sel) sel.style.background = lider ? 'rgba(255,235,150,0.35)' : 'rgba(255,255,255,0.15)';
   // Sync all per-tab lider dropdowns
@@ -2412,14 +2425,54 @@ function setGlobalLider(lider) {
   liderDropdowns.forEach(id=>{
     const el=document.getElementById(id);
     if (!el) return;
-    // Add option if not already present
     if (lider && ![...el.options].find(o=>o.value===lider)) {
       const o=document.createElement('option'); o.value=lider; o.textContent=lider; el.appendChild(o);
     }
     if (lider) el.value=lider; else el.value='';
   });
+  // Sync all canal dropdowns to leader's channels
+  updateCanalDropdowns();
   // Refresh all tabs
   setMonth(currentMonth);
+}
+
+function updateCanalDropdowns() {
+  const canalDropdowns = ['fq-canal','ft-canal','fp2-canal','fpt-canal','fe-canal',
+                          'fest-canal','fd-canal','fd-daily-canal','fnps-canal','fm-canal'];
+  const allCanals = ['MULTICANAL CHAT','MULTICANAL C2C'];
+  canalDropdowns.forEach(id=>{
+    const el=document.getElementById(id);
+    if (!el) return;
+    // For daily chart, use short keys
+    if (id==='fd-daily-canal') {
+      [...el.options].forEach(o=>{
+        const canalFull = o.value==='chat' ? 'MULTICANAL CHAT' : 'MULTICANAL C2C';
+        o.style.display = (!currentLider || liderHasCanal(canalFull)) ? '' : 'none';
+        o.disabled = !(!currentLider || liderHasCanal(canalFull));
+      });
+      // Auto-select first visible
+      if (currentLider) {
+        const firstVisible=[...el.options].find(o=>!o.disabled);
+        if(firstVisible) el.value=firstVisible.value;
+      }
+      return;
+    }
+    // Remove non-leader channels and re-add "Todos"
+    const prev = el.value;
+    el.innerHTML = '<option value="">Todos</option>';
+    allCanals.forEach(c=>{
+      if (!currentLider || liderHasCanal(c)) {
+        const o=document.createElement('option'); o.value=c; o.textContent=c; el.appendChild(o);
+      }
+    });
+    // For C2C-specific options like short names
+    if (!currentLider || liderHasCanal('MULTICANAL C2C')) {
+      if(id==='ft-canal'){const o=document.createElement('option');o.value='C2C';o.textContent='C2C';el.appendChild(o);}
+    }
+    // Restore previous value if still valid
+    if (prev && [...el.options].find(o=>o.value===prev)) el.value=prev;
+    else el.value='';
+  });
 }
 
 const FILAS_META = {
@@ -3928,7 +3981,7 @@ function filterEstilo() {
   const sort = document.getElementById('fest-sort').value;
   const _gles = currentLider || l;
   let rows = getEstiloData().filter(r =>
-    (!c || r.canal===c) && (!s || r.sen===s) && (!_gles || r.lider===_gles)
+    (!c || r.canal===c) && liderHasCanal(r.canal) && (!s || r.sen===s) && (!_gles || r.lider===_gles)
   );
   if (sort==='tmo') rows.sort((a,b)=>b.tmo-a.tmo);
   else if (sort==='estilo') rows.sort((a,b)=>a.estilo-b.estilo);
@@ -4106,7 +4159,7 @@ function filterProdTipo() {
   const r = document.getElementById('fpt-rep').value;
   const _glpt = currentLider || l;
   const rows = getProdTData().filter(x =>
-    (!c || x.canal===c) && (!_glpt || x.lider===_glpt) && (!r || x.rep===r)
+    (!c || x.canal===c) && liderHasCanal(x.canal) && (!_glpt || x.lider===_glpt) && (!r || x.rep===r)
   ).sort((a,b) => b.tmo - a.tmo);
   const tb = document.getElementById('tbody-prodtipo');
   document.getElementById('fpt-count').textContent = `${rows.length} representante(s)`;
@@ -4739,7 +4792,7 @@ function renderSolucoesQ4() {
 function buildEvolucaoData() {
   const map = {};
   getSemanalRaw().forEach(([rep,lider,canal,sem,tmo]) => {
-    if (currentLider && lider!==currentLider) return;
+    if (currentLider && (lider!==currentLider || !liderHasCanal(canal))) return;
     if (!map[rep]) map[rep] = {rep,lider,canal,semanas:{}};
     map[rep].semanas[sem] = tmo;
   });
@@ -4780,7 +4833,7 @@ function filterEvolucao() {
   const t = document.getElementById('fe-trend').value;
   const _gle = currentLider || l;
   let rows = buildEvolucaoData().filter(r =>
-    (!c || r.canal===c) && (!_gle || r.lider===_gle)
+    (!c || r.canal===c) && liderHasCanal(r.canal) && (!_gle || r.lider===_gle)
   );
   const sems = getSemanasDynamic();
   updateEvolucaoHeader(sems);
@@ -4824,7 +4877,7 @@ function filterProdu() {
   const l = document.getElementById('fp2-lider').value;
   const _glp = currentLider || l;
   const rows = getProduData()
-    .filter(r => (!c || r.canal===c) && (!_glp || r.lider===_glp))
+    .filter(r => (!c || r.canal===c) && liderHasCanal(r.canal) && (!_glp || r.lider===_glp))
     .sort((a,b) => b.produ - a.produ);
   const tb = document.getElementById('tbody-produ');
   document.getElementById('fp2-count').textContent = `${rows.length} representante(s)`;
@@ -4987,7 +5040,7 @@ function filterToque() {
   const c = document.getElementById('ft-canal').value;
   const l = document.getElementById('ft-lider').value;
   const _glt = currentLider || l;
-  const rows = getToqueData().filter(r => (!c || r.canal===c) && (!_glt || r.lider===_glt));
+  const rows = getToqueData().filter(r => (!c || r.canal===c) && liderHasCanal(r.canal) && (!_glt || r.lider===_glt));
   const tb = document.getElementById('tbody-toque');
   document.getElementById('ft-count').textContent = `${rows.length} representante(s)`;
   if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
@@ -5034,7 +5087,7 @@ function filterCasos() {
   }
   const _glc = currentLider || l;
   const rows = casosAltoToque.filter(x =>
-    (!c || x.canal===c) && (!_glc || x.lider===_glc) && (!r || x.rep===r) && (!p || x.proc===p)
+    (!c || x.canal===c) && liderHasCanal(x.canal) && (!_glc || x.lider===_glc) && (!r || x.rep===r) && (!p || x.proc===p)
   );
   const tb = document.getElementById('tbody-casos');
   document.getElementById('fc-count').textContent = `${rows.length} caso(s)`;
@@ -5053,7 +5106,7 @@ function filterCasos() {
 function buildMultiData() {
   const map = {};
   getQ4Data().forEach(r => {
-    if (currentLider && r.lider!==currentLider) return;
+    if (currentLider && (r.lider!==currentLider || !liderHasCanal(r.canal))) return;
     const key = r.rep + '|' + r.canal + '|' + r.lider;
     if (!map[key]) map[key] = {rep:r.rep, canal:r.canal, lider:r.lider, procs:[], tmos:[]};
     if (!map[key].procs.includes(r.proc)) {
@@ -7341,6 +7394,11 @@ function setMonth(m) {
   // Show warning when non-publi fila on April (rep-level data reflects current month)
   const _av = document.getElementById('mes-aviso');
   if (_av) _av.style.display = (currentFila!=='publi' && m==='2026-04') ? 'block' : 'none';
+  // Show/hide canal KPI cards based on leader's channels
+  const _cardChat = document.getElementById('kpi-card-chat');
+  const _cardC2C  = document.getElementById('kpi-card-c2c');
+  if (_cardChat) _cardChat.style.display = liderHasCanal('MULTICANAL CHAT') ? '' : 'none';
+  if (_cardC2C)  _cardC2C.style.display  = liderHasCanal('MULTICANAL C2C')  ? '' : 'none';
   // KPIs — when lider filter active, derive from quartilData
   const _KPIS=currentFila==="ventas"?VENTAS_KPIS:currentFila==="me"?ME_KPIS:currentFila==="melipro"?MELIPRO_KPIS:currentFila==="vip"?VIP_KPIS:KPIS;
   const k = _KPIS[m] || _KPIS["2026-04"];
@@ -7465,7 +7523,7 @@ function setFila(fila) {
   const meta = FILAS_META[fila];
   document.getElementById('header-title').textContent = info.label;
   document.getElementById('meta-badge').textContent = 'META: CHAT '+meta.chat+' min · C2C '+meta.c2c+' min';
-  currentLider = ''; // reset global lider on fila change
+  currentLider = ''; currentLiderChannels = new Set(); // reset on fila change
   const _glSel=document.getElementById('global-lider-filter'); if(_glSel){_glSel.value='';_glSel.style.background='rgba(255,255,255,0.15)';}
   populateGlobalLiderFilter();
   const _lbl = document.getElementById('kpi-tmo-geral-lbl');
