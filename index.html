@@ -147,6 +147,13 @@ tr:last-child td { border-bottom: none; }
     </div>
   </div>
   <div style="display:flex;align-items:center;gap:12px">
+    <div style="display:flex;align-items:center;gap:6px">
+      <span style="font-size:11px;color:rgba(255,255,255,0.7);font-weight:600">👤 Líder:</span>
+      <select id="global-lider-filter" onchange="setGlobalLider(this.value)"
+        style="padding:3px 10px;border-radius:6px;border:1.5px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.15);color:white;font-size:11px;cursor:pointer;min-width:140px">
+        <option value="" style="color:#1a1a2e">Todos os líderes</option>
+      </select>
+    </div>
     <div class="badge" id="meta-badge">META: CHAT 27,54 min · C2C 19,73 min</div>
   </div>
 </header>
@@ -1378,8 +1385,9 @@ function filterQuartil() {
       <td>${devFmt(+(r[4]-_m).toFixed(2))}</td></tr>`).join('');
     return;
   }
+  const _gl = currentLider || l;
   let rows = getQuartilData().filter(r =>
-    (!c || r.canal===c) && (!l || r.lider===l) &&
+    (!c || r.canal===c) && (!_gl || r.lider===_gl) &&
     (!q || r.q===q) && (!s || (r.seniority?r.seniority:getSeniority(r.rep))===s)
   );
   const tb = document.getElementById('tbody-quartil');
@@ -1453,8 +1461,9 @@ function filterQ4() {
   const p = document.getElementById('f4-proc').value;
   const r = document.getElementById('f4-rep').value;
   const s = document.getElementById('f4-sen').value;
+  const _gl4 = currentLider || l;
   let rows = getQ4Data().filter(x =>
-    (!c || x.canal===c) && (!l || x.lider===l) &&
+    (!c || x.canal===c) && (!_gl4 || x.lider===_gl4) &&
     (!p || x.proc===p) && (!r || x.rep===r) &&
     (!s || (x.seniority?x.seniority:getSeniority(x.rep))===s)
   );
@@ -2351,6 +2360,47 @@ const VIP_solucoesQ4Data = [
 
 // ---- DADOS MULTI-FILA ----
 let currentFila = 'publi';
+let currentLider = '';  // Global leader filter
+
+// ---- GLOBAL LIDER FILTER ------------------------------------------------
+function populateGlobalLiderFilter() {
+  const sel = document.getElementById('global-lider-filter');
+  if (!sel) return;
+  const prev = sel.value;
+  // Get all unique liders from current fila quartilData
+  const data = getQuartilData();
+  const liders = [...new Set(data.map(r=>r.lider).filter(l=>l&&l!=='—'))].sort();
+  sel.innerHTML = '<option value="" style="color:#1a1a2e">Todos os líderes</option>';
+  liders.forEach(l=>{
+    const o=document.createElement('option');
+    o.value=l; o.textContent=l; o.style.color='#1a1a2e';
+    sel.appendChild(o);
+  });
+  // Restore previous selection if still valid
+  if (liders.includes(prev)) sel.value = prev;
+  else { sel.value=''; currentLider=''; }
+}
+
+function setGlobalLider(lider) {
+  currentLider = lider;
+  // Visual feedback — badge on header
+  const sel = document.getElementById('global-lider-filter');
+  if (sel) sel.style.background = lider ? 'rgba(255,235,150,0.35)' : 'rgba(255,255,255,0.15)';
+  // Sync all per-tab lider dropdowns
+  const liderDropdowns = ['fq-lider','ft-lider','fp2-lider','fpt-lider','fe-lider',
+                          'fest-lider','fd-lider','fd-sol-lider','fnps-lider','fc-lider','fm-lider'];
+  liderDropdowns.forEach(id=>{
+    const el=document.getElementById(id);
+    if (!el) return;
+    // Add option if not already present
+    if (lider && ![...el.options].find(o=>o.value===lider)) {
+      const o=document.createElement('option'); o.value=lider; o.textContent=lider; el.appendChild(o);
+    }
+    if (lider) el.value=lider; else el.value='';
+  });
+  // Refresh all tabs
+  setMonth(currentMonth);
+}
 
 const FILAS_META = {
   publi: {chat:27.54, c2c:19.73, global:26.0},
@@ -3851,8 +3901,9 @@ function filterEstilo() {
   const l = document.getElementById('fest-lider').value;
   const s = document.getElementById('fest-sen').value;
   const sort = document.getElementById('fest-sort').value;
+  const _gles = currentLider || l;
   let rows = getEstiloData().filter(r =>
-    (!c || r.canal===c) && (!s || r.sen===s) && (!l || r.lider===l)
+    (!c || r.canal===c) && (!s || r.sen===s) && (!_gles || r.lider===_gles)
   );
   if (sort==='tmo') rows.sort((a,b)=>b.tmo-a.tmo);
   else if (sort==='estilo') rows.sort((a,b)=>a.estilo-b.estilo);
@@ -3927,7 +3978,7 @@ function updateNpsKpis(m) {
 
 function filterCorrelacao() {
   const c  = document.getElementById('fnps-canal').value;
-  const lf2 = document.getElementById('fnps-lider') ? document.getElementById('fnps-lider').value : '';
+  const lf2 = currentLider || (document.getElementById('fnps-lider') ? document.getElementById('fnps-lider').value : '');
   const r  = document.getElementById('fnps-rep').value;
   const p  = document.getElementById('fnps-proc').value;
   const n  = document.getElementById('fnps-nota').value;
@@ -3975,7 +4026,7 @@ function pctBar(pct, cor) {
 function renderProduLider() {
   const tb = document.getElementById('tbody-produ-lider');
   if (!tb) return;
-  const data = getProduData();
+  const data = getProduData().filter(r=>!currentLider||r.lider===currentLider);
   const map = {};
   data.forEach(r => {
     const key = r.lider + '|' + r.canal;
@@ -4002,7 +4053,8 @@ function renderProduLider() {
 
 function renderProdTime() {
   const tb = document.getElementById('tbody-prodtime');
-  tb.innerHTML = prodTimeData.map(r => `<tr>
+  const _ptd = currentLider ? prodTimeData.filter(r=>r.lider===currentLider) : prodTimeData;
+  tb.innerHTML = _ptd.map(r => `<tr>
     <td><strong>${r.lider}</strong></td>
     <td>${canalBadge(r.canal)}</td>
     <td>${r.reps}</td>
@@ -4026,8 +4078,9 @@ function filterProdTipo() {
   const c = document.getElementById('fpt-canal').value;
   const l = document.getElementById('fpt-lider').value;
   const r = document.getElementById('fpt-rep').value;
+  const _glpt = currentLider || l;
   const rows = getProdTData().filter(x =>
-    (!c || x.canal===c) && (!l || x.lider===l) && (!r || x.rep===r)
+    (!c || x.canal===c) && (!_glpt || x.lider===_glpt) && (!r || x.rep===r)
   ).sort((a,b) => b.tmo - a.tmo);
   const tb = document.getElementById('tbody-prodtipo');
   document.getElementById('fpt-count').textContent = `${rows.length} representante(s)`;
@@ -4048,11 +4101,11 @@ function filterProdTipo() {
 function computeEvolucaoKPIs(m) {
   // Filtrar semanas do mês selecionado + semana anterior se mês=Maio
   const prefix = m === '2026-04' ? '2026-04' : '2026-05';
-  let rows = getSemanalRaw().filter(r => r[3].startsWith(prefix));
+  let rows = getSemanalRaw().filter(r => r[3].startsWith(prefix) && (!currentLider || r[1]===currentLider));
 
   // Para Maio, adiciona última semana de Abril como "anterior"
   if (m === '2026-05') {
-    const abrilRows = getSemanalRaw().filter(r => r[3] === '2026-04-27');
+    const abrilRows = getSemanalRaw().filter(r => r[3] === '2026-04-27' && (!currentLider || r[1]===currentLider));
     rows = [...abrilRows, ...rows];
   }
 
@@ -4165,7 +4218,7 @@ function normCanal(c) {
 }
 
 function buildDispersaoData() {
-  const _ldFilter = document.getElementById('fd-lider') ? document.getElementById('fd-lider').value : '';
+  const _ldFilter = currentLider || (document.getElementById('fd-lider') ? document.getElementById('fd-lider').value : '');
   const pd = getProcessoData();
   const q4 = (_ldFilter ? getQ4Data().filter(r=>getLiderJS(r.rep)===_ldFilter) : getQ4Data());
 
@@ -4614,7 +4667,7 @@ function renderSolucoesQ4() {
   const c = document.getElementById('fd-sol-canal').value;
   const r = document.getElementById('fd-sol-rep').value;
   const p = document.getElementById('fd-sol-proc').value;
-  const lf = document.getElementById('fd-sol-lider') ? document.getElementById('fd-sol-lider').value : '';
+  const lf = currentLider || (document.getElementById('fd-sol-lider') ? document.getElementById('fd-sol-lider').value : '');
 
   const pdMap = {};
   getProcessoData().forEach(pd => { pdMap[pd.proc+'|'+pd.canal] = pd.meta || 0; });
@@ -4660,6 +4713,7 @@ function renderSolucoesQ4() {
 function buildEvolucaoData() {
   const map = {};
   getSemanalRaw().forEach(([rep,lider,canal,sem,tmo]) => {
+    if (currentLider && lider!==currentLider) return;
     if (!map[rep]) map[rep] = {rep,lider,canal,semanas:{}};
     map[rep].semanas[sem] = tmo;
   });
@@ -4698,8 +4752,9 @@ function filterEvolucao() {
   const c = document.getElementById('fe-canal').value;
   const l = document.getElementById('fe-lider').value;
   const t = document.getElementById('fe-trend').value;
+  const _gle = currentLider || l;
   let rows = buildEvolucaoData().filter(r =>
-    (!c || r.canal===c) && (!l || r.lider===l)
+    (!c || r.canal===c) && (!_gle || r.lider===_gle)
   );
   const sems = getSemanasDynamic();
   updateEvolucaoHeader(sems);
@@ -4741,8 +4796,9 @@ function filterEvolucao() {
 function filterProdu() {
   const c = document.getElementById('fp2-canal').value;
   const l = document.getElementById('fp2-lider').value;
+  const _glp = currentLider || l;
   const rows = getProduData()
-    .filter(r => (!c || r.canal===c) && (!l || r.lider===l))
+    .filter(r => (!c || r.canal===c) && (!_glp || r.lider===_glp))
     .sort((a,b) => b.produ - a.produ);
   const tb = document.getElementById('tbody-produ');
   document.getElementById('fp2-count').textContent = `${rows.length} representante(s)`;
@@ -4877,7 +4933,8 @@ function getDetratoresData(m) {
 function filterToque() {
   const c = document.getElementById('ft-canal').value;
   const l = document.getElementById('ft-lider').value;
-  const rows = getToqueData().filter(r => (!c || r.canal===c) && (!l || r.lider===l));
+  const _glt = currentLider || l;
+  const rows = getToqueData().filter(r => (!c || r.canal===c) && (!_glt || r.lider===_glt));
   const tb = document.getElementById('tbody-toque');
   document.getElementById('ft-count').textContent = `${rows.length} representante(s)`;
   if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
@@ -4922,8 +4979,9 @@ function filterCasos() {
     if(tb) tb.innerHTML='<tr><td colspan="8" style="text-align:center;color:#adb5bd;padding:20px">Casos de alto toque disponíveis apenas para BR_Publicaciones_Sellers_Mature.</td></tr>';
     document.getElementById('fc-count').textContent='0 caso(s)'; return;
   }
+  const _glc = currentLider || l;
   const rows = casosAltoToque.filter(x =>
-    (!c || x.canal===c) && (!l || x.lider===l) && (!r || x.rep===r) && (!p || x.proc===p)
+    (!c || x.canal===c) && (!_glc || x.lider===_glc) && (!r || x.rep===r) && (!p || x.proc===p)
   );
   const tb = document.getElementById('tbody-casos');
   document.getElementById('fc-count').textContent = `${rows.length} caso(s)`;
@@ -4942,6 +5000,7 @@ function filterCasos() {
 function buildMultiData() {
   const map = {};
   getQ4Data().forEach(r => {
+    if (currentLider && r.lider!==currentLider) return;
     const key = r.rep + '|' + r.canal + '|' + r.lider;
     if (!map[key]) map[key] = {rep:r.rep, canal:r.canal, lider:r.lider, procs:[], tmos:[]};
     if (!map[key].procs.includes(r.proc)) {
@@ -4966,9 +5025,10 @@ function filterMulti() {
   const l = document.getElementById('fm-lider').value;
   const min = parseInt(document.getElementById('fm-min').value);
   const all = buildMultiData();
+  const _glm = currentLider || l;
   const rows = all.filter(r =>
     (!c || r.canal === c) &&
-    (!l || r.lider === l) &&
+    (!_glm || r.lider === _glm) &&
     r.procs.length >= min
   );
   const tb = document.getElementById('tbody-multi');
@@ -7209,7 +7269,7 @@ function setMonth(m) {
   cLiderChart.data.datasets[1].data = ld.map(r=>r.l.includes('C2C')?_meta.c2c:_meta.chat);
   cLiderChart.update();
   // atualiza todas as abas
-  populateQuartilFilters(); filterQuartil();
+  populateGlobalLiderFilter(); populateQuartilFilters(); filterQuartil();
   populateProcFilter(); filterProcesso();
   populateQ4Filters(); filterQ4();
   filterMulti();
@@ -7267,6 +7327,9 @@ function setFila(fila) {
   const meta = FILAS_META[fila];
   document.getElementById('header-title').textContent = info.label;
   document.getElementById('meta-badge').textContent = 'META: CHAT '+meta.chat+' min · C2C '+meta.c2c+' min';
+  currentLider = ''; // reset global lider on fila change
+  const _glSel=document.getElementById('global-lider-filter'); if(_glSel){_glSel.value='';_glSel.style.background='rgba(255,255,255,0.15)';}
+  populateGlobalLiderFilter();
   const _lbl = document.getElementById('kpi-tmo-geral-lbl');
   if (_lbl) _lbl.textContent = fila==='publi' ? 'TMO Geral — Publicações' : 'TMO Geral — '+info.short;
   populateQuartilFilters();
@@ -7417,7 +7480,7 @@ function buildRepsChart(m) {
 buildProcessoChart('2026-04');
 buildRepsChart('2026-04');
 
-populateQuartilFilters(); filterQuartil();
+populateGlobalLiderFilter(); populateQuartilFilters(); filterQuartil();
 populateProcFilter(); filterProcesso();
 populateQ4Filters(); filterQ4();
 filterMulti();
