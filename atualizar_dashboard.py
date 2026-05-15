@@ -237,28 +237,26 @@ def get_kpis(queue_name, mes_ini, meta_chat, meta_c2c, meta_global):
     return chat, c2c, tmo_global, total_vol, reps, desvio, pct
 
 def get_lider_data_js(queue_name, mes_ini, lider_map):
+    """Group TMO by lider+canal — only groups with >= 3 reps to avoid outlier reps-as-liders."""
     rows = bq_csv(f"""
-        SELECT USER_TEAM_CHANNEL AS canal, USER_LDAP AS rep,
-            SUM(NUMERATOR_VALUE)/NULLIF(SUM(DENOMINATOR_VALUE),0)/60 AS tmo
-        FROM `meli-bi-data.SBOX_CX_BI_ADS_CORE.CONSOLIDADO_KPI_LDAP`
-        WHERE USER_TEAM_NAME='{queue_name}' AND KPI_NAME='TMO'
-          AND TIME_WINDOW='MONTH_ID' AND CS_CENTER='BR' AND DTTM_ID='{mes_ini}'
-        GROUP BY 1,2
+        SELECT t.USER_TEAM_LEADER_LDAP AS lider, l.USER_TEAM_CHANNEL AS canal,
+            ROUND(AVG(l.NUMERATOR_VALUE/NULLIF(l.DENOMINATOR_VALUE,0))/60,2) AS tmo,
+            COUNT(DISTINCT l.USER_LDAP) AS reps
+        FROM `meli-bi-data.SBOX_CX_BI_ADS_CORE.CONSOLIDADO_KPI_LDAP` l
+        JOIN (SELECT DISTINCT USER_LDAP, USER_TEAM_NAME, USER_TEAM_CHANNEL, USER_TEAM_LEADER_LDAP
+              FROM `meli-bi-data.WHOWNER.DM_CX_TMO`
+              WHERE USER_TEAM_NAME='{queue_name}'
+                AND DATE(ASSIGN_DTTM) BETWEEN '{mes_ini}' AND DATE_ADD(DATE '{mes_ini}', INTERVAL 1 MONTH)
+                AND USER_TEAM_LEADER_LDAP IS NOT NULL) t
+          ON l.USER_LDAP=t.USER_LDAP AND l.USER_TEAM_NAME=t.USER_TEAM_NAME AND l.USER_TEAM_CHANNEL=t.USER_TEAM_CHANNEL
+        WHERE l.KPI_NAME='TMO' AND l.TIME_WINDOW='MONTH_ID' AND l.CS_CENTER='BR' AND l.DTTM_ID='{mes_ini}'
+        GROUP BY 1,2 HAVING COUNT(DISTINCT l.USER_LDAP) >= 3
+        ORDER BY tmo DESC LIMIT 15
     """)
-    lider_sum = {}
-    for r in rows:
-        rep = r["rep"]
-        l = lider_map.get(rep) or publi_lider_of(rep)
-        c = r["canal"]
-        key = f"{l}|{c}"
-        if key not in lider_sum:
-            lider_sum[key] = {"lider": l, "canal": c, "sum": 0, "n": 0}
-        lider_sum[key]["sum"] += fmt(r["tmo"])
-        lider_sum[key]["n"] += 1
     result = sorted(
-        [{"l": v["lider"] + (" C2C" if "C2C" in v["canal"] else ""),
-          "t": round(v["sum"] / v["n"], 2)}
-         for v in lider_sum.values()],
+        [{"l": r["lider"] + (" C2C" if "C2C" in r["canal"] else ""),
+          "t": fmt(r["tmo"])}
+         for r in rows if r.get("lider")],
         key=lambda x: -x["t"]
     )
     return result
@@ -545,10 +543,10 @@ def main():
                      f"desvio:{desvio}, pct:{pct}, label:'{mes_label} {label_fila}', partial:{str(partial).lower()}")
         html = replace_js_month_in_obj(html, q_cfg["js_kpis"], mes_key, kpi_entry)
 
-        # Atualizar CANAL_DATA
-        canal_entry = (f"[{{c:'MULTICANAL CHAT',v:{chat['vol']},t:{chat['tmo']},"
-                       f"d:{round(chat['tmo']-meta_chat,2)}}},{{c:'MULTICANAL C2C',v:{c2c['vol']},"
-                       f"t:{c2c['tmo']},d:{round(c2c['tmo']-meta_c2c,2)}}}]")
+        # Atualizar CANAL_DATA — only include C2C when it has volume
+        chat_entry = f"{{c:'MULTICANAL CHAT',v:{chat['vol']},t:{chat['tmo']},d:{round(chat['tmo']-meta_chat,2)}}}"
+        c2c_entry  = f"{{c:'MULTICANAL C2C',v:{c2c['vol']},t:{c2c['tmo']},d:{round(c2c['tmo']-meta_c2c,2)}}}" if c2c['vol'] > 0 else ""
+        canal_entry = f"[{chat_entry}{','+c2c_entry if c2c_entry else ''}]"
         # Substituir dentro do objeto de canal
         obj_start = html.find(f"const {q_cfg['js_canal']} = {{")
         if obj_start != -1:
