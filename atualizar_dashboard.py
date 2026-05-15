@@ -595,9 +595,10 @@ def main():
             m_arr = re.search(r"const semanalRaw = \[(.*?)\];", html, re.DOTALL)
             if m_arr:
                 old_content = m_arr.group(1)
-                # Remover linhas do mês atual
+                # Remover TODAS as entradas do mês atual — a data está na posição 4 (índice 3)
+                # Formato: ['rep','lider','canal','2026-05-xx',tmo],
                 clean = re.sub(
-                    rf"\s*\['{re.escape(mes_key)}-[^']*'[^\]]*\],?",
+                    rf"\s*\['[^']*','[^']*','[^']*','{re.escape(mes_key)}-[^']*',[^\]]*\],?",
                     "", old_content
                 )
                 new_content = clean.rstrip(",\n") + "\n" + semanal_js
