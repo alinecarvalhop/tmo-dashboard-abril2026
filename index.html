@@ -3897,7 +3897,8 @@ function filterEstiloCasos() {
   const c = document.getElementById('fest2-canal').value;
   const p = document.getElementById('fest2-proc').value;
   const rows = getEstiloCasosData().filter(x =>
-    (!r || x.rep===r) && (!c || x.canal===c) && (!p || x.proc===p)
+    (!r || x.rep===r) && (!c || x.canal===c) && (!p || x.proc===p) &&
+    (!currentLider || getLiderJS(x.rep)===currentLider)
   ).sort((a,b)=>b.tmo-a.tmo);
   const tb = document.getElementById('tbody-estilo-casos');
   document.getElementById('fest2-count').textContent = `${rows.length} caso(s)`;
@@ -3985,7 +3986,7 @@ function populateCorrelacaoFilters() {
 function updateNpsKpis(m) {
   const _nps_src = getNpsKpis();
   const k = _nps_src[m] || _nps_src['2026-04'];
-  const lbl = m==='2026-04' ? 'Abril 2026' : 'Maio 2026 ⚡';
+  const lbl = (m==='2026-04' ? 'Abril 2026' : 'Maio 2026 ⚡') + (currentLider ? ' · '+currentLider : '');
   document.getElementById('nps-chat-lbl').textContent = 'NPS CHAT — '+lbl;
   document.getElementById('nps-chat-val').textContent = k.chat_nps.toFixed(1)+'%';
   document.getElementById('nps-chat-sub').textContent = 'Meta '+k.chat_meta+'% '+(k.chat_nps>=k.chat_meta?'🟢':'🔴')+' · '+k.chat_surveys+' surveys · TMO '+k.chat_tmo+' min';
@@ -4091,7 +4092,8 @@ function renderProdTime() {
 }
 
 function populateProdTipoReps() {
-  const reps = [...new Set(getProdTData().map(r=>r.rep))].sort();
+  const data = currentLider ? getProdTData().filter(r=>r.lider===currentLider) : getProdTData();
+  const reps = [...new Set(data.map(r=>r.rep))].sort();
   const sel = document.getElementById('fpt-rep');
   if (!sel) return;
   sel.innerHTML = '<option value="">Todos</option>';
@@ -4857,6 +4859,33 @@ function renderDailyChart() {
   const mes   = document.getElementById('fd-daily-mes') ? document.getElementById('fd-daily-mes').value : currentMonth;
   const sec = document.getElementById('daily-chart-card');
   if (!sec) return;
+  // When lider active, derive daily trend from semanalRaw (weekly granularity)
+  if (currentLider) {
+    const semData = getSemanalRaw().filter(r=>r[1]===currentLider);
+    if (!semData.length) { sec.style.display='none'; return; }
+    const canalKey = canal==='chat' ? 'MULTICANAL CHAT' : 'MULTICANAL C2C';
+    const bySem = {};
+    semData.filter(r=>r[2]===canalKey).forEach(r=>{
+      if(!bySem[r[3]]) bySem[r[3]]={sum:0,n:0};
+      bySem[r[3]].sum+=r[4]; bySem[r[3]].n++;
+    });
+    const sems = Object.keys(bySem).sort();
+    if (!sems.length) { sec.style.display='none'; return; }
+    sec.style.display='block';
+    const _meta = canal==='chat' ? FILAS_META[currentFila].chat : FILAS_META[currentFila].c2c;
+    const sub = document.getElementById('daily-chart-sub');
+    if (sub) sub.textContent = (canal==='chat'?'CHAT':'C2C')+' · Semanal · '+currentLider+' · Meta: '+_meta+' min';
+    const labels = sems.map(s=>s.slice(5).replace('-','/'));
+    const tmos   = sems.map(s=>+(bySem[s].sum/bySem[s].n).toFixed(2));
+    const canvas = document.getElementById('cDailyTMO');
+    if (!canvas) return;
+    if (cDailyChart) cDailyChart.destroy();
+    cDailyChart = new Chart(canvas,{type:'line',data:{labels,datasets:[
+      {label:'TMO médio (sem.)',data:tmos,borderColor:'#457b9d',backgroundColor:'rgba(69,123,157,.15)',borderWidth:2,pointRadius:4,tension:0.3,fill:true},
+      {label:'Meta',data:Array(tmos.length).fill(_meta),borderColor:'#e63946',borderDash:[6,4],borderWidth:1.5,pointRadius:0,fill:false}
+    ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:10}}}},scales:{y:{min:0,grid:{color:'#f0f2f5'}}}}});
+    return;
+  }
   const d = DAILY_TMO[fila];
   if (!d || !d[mes] || !d[mes][canal]) { sec.style.display='none'; return; }
   sec.style.display='block';
@@ -6173,6 +6202,27 @@ const OUTGOING_DATA = {
 function renderOutgoing(m) {
   const sec = document.getElementById('outgoing-section');
   if (!sec) return;
+  // When lider active, compute outgoing from toque rep data
+  if (currentLider) {
+    const _tq = getToqueData().filter(r=>r.lider===currentLider);
+    if (!_tq.length) { sec.innerHTML=''; return; }
+    const tqChat = _tq.filter(r=>r.canal.includes('CHAT'));
+    const tqC2C  = _tq.filter(r=>r.canal.includes('C2C'));
+    const _meta = FILAS_META[currentFila];
+    const chatOut = tqChat.reduce((a,r)=>a+(r.assigns||0),0);
+    const c2cOut  = tqC2C.reduce((a,r)=>a+(r.assigns||0),0);
+    const chatTmo = tqChat.length ? (tqChat.reduce((a,r)=>a+r.tmo,0)/tqChat.length).toFixed(2) : 0;
+    const c2cTmo  = tqC2C.length  ? (tqC2C.reduce((a,r)=>a+r.tmo,0)/tqC2C.length).toFixed(2) : 0;
+    const row = (l,out,tm,meta) => out>0 ? `<div style="flex:1;background:#f8f9fa;border-radius:8px;padding:14px 16px">
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#6c757d;margin-bottom:10px">${l}</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <div><div style="font-size:10px;color:#6c757d">Contatos Entregues</div><div style="font-size:20px;font-weight:800;color:#1a1a2e">${out.toLocaleString('pt-BR')}</div></div>
+        <div><div style="font-size:10px;color:#6c757d">TMO Médio</div><div style="font-size:20px;font-weight:800;color:${tm>meta?'#e63946':'#2dc653'}">${tm} min</div></div>
+      </div></div>` : '';
+    sec.innerHTML = '<div class="card" style="margin-bottom:0"><div class="card-title">📊 Outgoing & Capacidade — Equipe '+currentLider+'</div>'
+      +'<div style="display:flex;gap:16px">'+row('CHAT',chatOut,chatTmo,_meta.chat)+row('C2C',c2cOut,c2cTmo,_meta.c2c)+'</div></div>';
+    return;
+  }
   const d = OUTGOING_DATA[currentFila];
   if (!d) { sec.innerHTML=''; return; }
   const cur = d[m] || d['2026-04'];
@@ -7078,7 +7128,37 @@ const ME_STATS = {
 
 function updateAllKpis(m) {
   const stats_obj = currentFila==='ventas' ? VENTAS_STATS : currentFila==='me' ? ME_STATS : currentFila==='melipro' ? MELIPRO_STATS : currentFila==='vip' ? VIP_STATS : STATS;
-  const s = stats_obj[m] || stats_obj['2026-04'];
+  let s = stats_obj[m] || stats_obj['2026-04'];
+  // When lider filter active, compute stats from rep-level data
+  if (currentLider) {
+    const _tq = getToqueData().filter(r=>r.lider===currentLider);
+    const _pr = getProdTData().filter(r=>r.lider===currentLider);
+    const _pu = getProduData().filter(r=>r.lider===currentLider);
+    const avg = (arr, f) => arr.length ? +(arr.reduce((a,r)=>a+r[f],0)/arr.length).toFixed(2) : 0;
+    const tqChat = _tq.filter(r=>r.canal.includes('CHAT'));
+    const tqC2C  = _tq.filter(r=>r.canal.includes('C2C'));
+    const puChat = _pu.filter(r=>r.canal.includes('CHAT'));
+    const puC2C  = _pu.filter(r=>r.canal.includes('C2C'));
+    const prChat = _pr.filter(r=>r.canal.includes('CHAT'));
+    const prC2C  = _pr.filter(r=>r.canal.includes('C2C'));
+    const best  = _pu.reduce((a,r)=>r.produ>a.produ?r:a, {produ:0,rep:'—',canal:''});
+    const worst = _pu.reduce((a,r)=>r.produ<a.produ?r:a, {produ:99,rep:'—',canal:''});
+    const maxTq = _tq.reduce((a,r)=>r.toqueMax>a.toqueMax?r:a, {toqueMax:0,rep:'—'});
+    s = { ...s,
+      label: s.label + ' · ' + currentLider,
+      toque_mc2c: avg(tqC2C,'toque'), toque_chat: avg(tqChat,'toque'),
+      toque_casos_alto: _tq.filter(r=>r.toque>15).length,
+      toque_max: Math.round(maxTq.toqueMax), toque_max_rep: maxTq.rep,
+      toque_chat_vol: String(_tq.reduce((a,r)=>a+(r.assigns||0),0)),
+      toque_c2c_vol: String(tqC2C.reduce((a,r)=>a+(r.assigns||0),0)),
+      produ_geral: avg(_pu,'produ'), produ_chat: avg(puChat,'produ'), produ_chat_reps: puChat.length,
+      produ_c2c: avg(puC2C,'produ'), produ_c2c_reps: puC2C.length,
+      produ_best: best.produ, produ_best_sub: best.rep+' · '+(best.canal.includes('C2C')?'C2C':'CHAT'),
+      produ_worst: worst.produ, produ_worst_sub: worst.rep+' · '+(worst.canal.includes('C2C')?'C2C':'CHAT'),
+      pt_chat_prod: avg(prChat,'prod'), pt_c2c_prod: avg(prC2C,'prod'),
+      pt_chat_np: avg(prChat,'np'), pt_c2c_np: avg(prC2C,'np'),
+    };
+  }
   const lbl = s.label;
   // Toque
   document.getElementById('toque-mc2c-val').textContent = s.toque_mc2c.toFixed(2);
