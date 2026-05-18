@@ -190,6 +190,17 @@ tr:last-child td { border-bottom: none; }
 <!-- ===================== PÁGINA 1: VISÃO GERAL ===================== -->
 <div id="page-resumo" class="page active">
 
+  <!-- FILTRO DE CANAL GLOBAL DA VISÃO GERAL -->
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:16px;padding:10px 16px;background:white;border-radius:10px;box-shadow:0 1px 4px rgba(0,0,0,.07)">
+    <span style="font-size:12px;font-weight:600;color:#6c757d;text-transform:uppercase;letter-spacing:.5px">Canal</span>
+    <div style="display:flex;gap:6px">
+      <button id="btn-canal-all"  onclick="setVisaoCanal('')"    style="padding:4px 14px;border-radius:20px;border:1.5px solid #1a1a2e;background:#1a1a2e;color:white;font-size:12px;font-weight:700;cursor:pointer">Todos</button>
+      <button id="btn-canal-chat" onclick="setVisaoCanal('chat')" style="padding:4px 14px;border-radius:20px;border:1.5px solid #dee2e6;background:white;color:#495057;font-size:12px;font-weight:600;cursor:pointer">CHAT</button>
+      <button id="btn-canal-c2c"  onclick="setVisaoCanal('c2c')"  style="padding:4px 14px;border-radius:20px;border:1.5px solid #dee2e6;background:white;color:#495057;font-size:12px;font-weight:600;cursor:pointer">C2C</button>
+    </div>
+    <span id="visao-canal-lbl" style="font-size:11px;color:#6c757d;margin-left:4px"></span>
+  </div>
+
   <!-- TENDÊNCIA DIÁRIA -->
   <div id="daily-chart-card" style="margin-bottom:20px;display:none">
     <div class="card">
@@ -2381,6 +2392,28 @@ const VIP_solucoesQ4Data = [
 // ---- DADOS MULTI-FILA ----
 let currentFila = 'publi';
 let currentLider = '';  // Global leader filter
+let currentVisaoCanal = ''; // Canal filter for Visão Geral ('' | 'chat' | 'c2c')
+
+function setVisaoCanal(canal) {
+  currentVisaoCanal = canal;
+  // Update button styles
+  ['all','chat','c2c'].forEach(k=>{
+    const btn = document.getElementById('btn-canal-'+k);
+    if (!btn) return;
+    const active = (k==='all' && !canal) || k===canal;
+    btn.style.background = active ? '#1a1a2e' : 'white';
+    btn.style.color = active ? 'white' : '#495057';
+    btn.style.border = active ? '1.5px solid #1a1a2e' : '1.5px solid #dee2e6';
+    btn.style.fontWeight = active ? '700' : '600';
+  });
+  const lbl = document.getElementById('visao-canal-lbl');
+  if (lbl) lbl.textContent = canal ? ('Filtrando: MULTICANAL '+(canal==='chat'?'CHAT':'C2C')) : '';
+  // Sync fd-daily-canal
+  const dc = document.getElementById('fd-daily-canal');
+  if (dc && canal) dc.value = canal;
+  // Refresh all Visão Geral sections
+  setMonth(currentMonth);
+}
 let currentLiderChannels = new Set(); // Channels managed by current leader
 
 function getLeaderChannels() { return currentLiderChannels; }
@@ -4908,7 +4941,7 @@ function filterProdu() {
 let cDailyChart = null;
 function renderDailyChart() {
   const fila = currentFila;
-  const canal = document.getElementById('fd-daily-canal') ? document.getElementById('fd-daily-canal').value : 'chat';
+  const canal = currentVisaoCanal || (document.getElementById('fd-daily-canal') ? document.getElementById('fd-daily-canal').value : 'chat');
   const mes   = document.getElementById('fd-daily-mes') ? document.getElementById('fd-daily-mes').value : currentMonth;
   const sec = document.getElementById('daily-chart-card');
   if (!sec) return;
@@ -7402,8 +7435,15 @@ function setMonth(m) {
   // KPIs — when lider filter active, derive from quartilData
   const _KPIS=currentFila==="ventas"?VENTAS_KPIS:currentFila==="me"?ME_KPIS:currentFila==="melipro"?MELIPRO_KPIS:currentFila==="vip"?VIP_KPIS:KPIS;
   const k = _KPIS[m] || _KPIS["2026-04"];
+  // Show/hide canal cards based on visao canal filter
+  const _vcf = currentVisaoCanal;
+  const _cChat = document.getElementById('kpi-card-chat');
+  const _cC2c  = document.getElementById('kpi-card-c2c');
+  if(_cChat) _cChat.style.display=(_vcf==='c2c'||!liderHasCanal('MULTICANAL CHAT'))?'none':'';
+  if(_cC2c)  _cC2c.style.display =(_vcf==='chat'||!liderHasCanal('MULTICANAL C2C'))?'none':'';
   if (currentLider) {
-    const _lq = getQuartilData().filter(r=>r.lider===currentLider);
+    const _lq0 = getQuartilData().filter(r=>r.lider===currentLider);
+    const _lq = _vcf ? _lq0.filter(r=>_vcf==='chat'?r.canal.includes('CHAT'):r.canal.includes('C2C')) : _lq0;
     const _lvol = _lq.reduce((s,r)=>s+(r.vol||0),0);
     const _ltmo = _lvol>0 ? +(_lq.reduce((s,r)=>s+r.tmo*(r.vol||1),0)/_lvol).toFixed(2) : 0;
     const _lmeta = FILAS_META[currentFila].chat;
@@ -7423,17 +7463,29 @@ function setMonth(m) {
     if(avgCh!==null){document.getElementById('kpi-tmo-chat').textContent=avgCh.toFixed(2);document.getElementById('kpi-tmo-chat-sub').textContent='min · '+_lqchat.length+' reps';}
     if(avgC2!==null){document.getElementById('kpi-tmo-c2c').textContent=avgC2.toFixed(2);document.getElementById('kpi-tmo-c2c-sub').textContent='min · '+_lqc2c.length+' reps';}
   } else {
-    document.getElementById('kpi-tmo').textContent = k.tmo.toFixed(2);
-    document.getElementById('kpi-tmo-sub').innerHTML = '<strong style="color:#e63946">'+(k.desvio>0?'+':'')+k.pct+'% vs meta</strong>';
-    document.getElementById('kpi-volume-sub').textContent = k.label;
-    document.getElementById('kpi-reps').textContent = k.reps;
-    document.getElementById('kpi-desvio').textContent = (k.desvio>0?'+':'')+k.desvio.toFixed(2)+' min';
-    document.getElementById('kpi-desvio-sub').textContent = (k.desvio>0?'+':'')+k.pct+'% '+(k.partial?'(parcial)':'fora do objetivo');
-    // KPIs de canal
+    // When canal filter active, show only selected canal TMO on main card
     const _CANAL=currentFila==="ventas"?VENTAS_CANAL:currentFila==="me"?ME_CANAL:currentFila==="melipro"?MELIPRO_CANAL:currentFila==="vip"?VIP_CANAL:CANAL_DATA;
     const cd = _CANAL[m] || _CANAL["2026-04"];
     const chat = cd.find(r=>r.c==='MULTICANAL CHAT');
     const c2c  = cd.find(r=>r.c==='MULTICANAL C2C');
+    if (_vcf==='chat' && chat) {
+      document.getElementById('kpi-tmo').textContent = chat.t.toFixed(2);
+      document.getElementById('kpi-tmo-sub').innerHTML = '<strong style="color:'+(chat.d>0?'#e63946':'#2dc653')+'">'+(chat.d>0?'+':'')+Math.abs(+(chat.d/_meta.chat*100).toFixed(1))+'% vs meta</strong>';
+      document.getElementById('kpi-desvio').textContent = (chat.d>0?'+':'')+chat.d.toFixed(2)+' min';
+      document.getElementById('kpi-desvio-sub').textContent = 'CHAT vs meta '+_meta.chat+' min';
+    } else if (_vcf==='c2c' && c2c) {
+      document.getElementById('kpi-tmo').textContent = c2c.t.toFixed(2);
+      document.getElementById('kpi-tmo-sub').innerHTML = '<strong style="color:'+(c2c.d>0?'#e63946':'#2dc653')+'">'+(c2c.d>0?'+':'')+Math.abs(+(c2c.d/_meta.c2c*100).toFixed(1))+'% vs meta</strong>';
+      document.getElementById('kpi-desvio').textContent = (c2c.d>0?'+':'')+c2c.d.toFixed(2)+' min';
+      document.getElementById('kpi-desvio-sub').textContent = 'C2C vs meta '+_meta.c2c+' min';
+    } else {
+      document.getElementById('kpi-tmo').textContent = k.tmo.toFixed(2);
+      document.getElementById('kpi-tmo-sub').innerHTML = '<strong style="color:#e63946">'+(k.desvio>0?'+':'')+k.pct+'% vs meta</strong>';
+      document.getElementById('kpi-desvio').textContent = (k.desvio>0?'+':'')+k.desvio.toFixed(2)+' min';
+      document.getElementById('kpi-desvio-sub').textContent = (k.desvio>0?'+':'')+k.pct+'% '+(k.partial?'(parcial)':'fora do objetivo');
+    }
+    document.getElementById('kpi-volume-sub').textContent = k.label + (_vcf ? ' · '+(_vcf==='chat'?'CHAT':'C2C') : '');
+    document.getElementById('kpi-reps').textContent = _vcf ? (getQuartilData().filter(r=>_vcf==='chat'?r.canal.includes('CHAT'):r.canal.includes('C2C')).length) : k.reps;
     if (chat) { document.getElementById('kpi-tmo-chat').textContent = chat.t.toFixed(2); document.getElementById('kpi-tmo-chat-sub').textContent = 'min · '+chat.v.toLocaleString('pt-BR')+' contatos'; }
     if (c2c)  { document.getElementById('kpi-tmo-c2c').textContent  = c2c.t.toFixed(2);  document.getElementById('kpi-tmo-c2c-sub').textContent  = 'min · '+c2c.v.toLocaleString('pt-BR')+' contatos'; }
   }
@@ -7451,14 +7503,18 @@ function setMonth(m) {
   } else {
     cdFiltered = cd2.filter(r=>r.v>0);
   }
+  // Apply canal filter from Visão Geral canal selector
+  const _vc = currentVisaoCanal;
+  if (_vc) cdFiltered = cdFiltered.filter(r=>(_vc==='chat'?r.c.includes('CHAT'):r.c.includes('C2C')));
+  const _meta = FILAS_META[currentFila];
   cCanalChart.data.labels = cdFiltered.map(r=>r.c);
   cCanalChart.data.datasets[0].data = cdFiltered.map(r=>r.t);
-  const _meta = FILAS_META[currentFila];
   cCanalChart.data.datasets[1].data = cdFiltered.map(r=>r.c.includes('C2C')?_meta.c2c:_meta.chat);
   cCanalChart.update();
-  // líder chart
+  // líder chart — filter by canal
   const _LIDER=currentFila==="ventas"?VENTAS_LIDER:currentFila==="me"?ME_LIDER:currentFila==="melipro"?MELIPRO_LIDER:currentFila==="vip"?VIP_LIDER:LIDER_DATA;
-  const ld = _LIDER[m] || _LIDER["2026-04"];
+  let ld = _LIDER[m] || _LIDER["2026-04"];
+  if (_vc) ld = ld.filter(r=>(_vc==='chat'?!r.l.includes('C2C'):r.l.includes('C2C')));
   cLiderChart.data.labels = ld.map(r=>r.l);
   cLiderChart.data.datasets[0].data = ld.map(r=>r.t);
   cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>_meta.chat?'#e63946':'#2dc653');
@@ -7639,8 +7695,10 @@ cLiderChart = new Chart(document.getElementById('cLider'),{
 // Charts processo e reps — atualizáveis por mês
 let cProcessoChart, cRepsChart;
 function buildProcessoChart(m) {
-  const tp = getProcessoData().slice(0,12);
-  const procMeta = FILAS_META[currentFila].chat;
+  const _vcp = currentVisaoCanal;
+  const allProc = getProcessoData().filter(r=>!_vcp||(_vcp==='chat'?r.canal.includes('CHAT'):r.canal.includes('C2C')));
+  const tp = allProc.slice(0,12);
+  const procMeta = _vcp==='c2c' ? FILAS_META[currentFila].c2c : FILAS_META[currentFila].chat;
   if (cProcessoChart) { cProcessoChart.destroy(); }
   cProcessoChart = new Chart(document.getElementById('cProcesso'),{
     type:'bar',
@@ -7655,8 +7713,11 @@ function buildProcessoChart(m) {
   });
 }
 function buildRepsChart(m) {
-  const meta = FILAS_META[currentFila].chat;
-  const allReps = getQuartilData().filter(r=>(r.canal==='MULTICANAL CHAT'||r.canal==='CHAT')&&(!currentLider||r.lider===currentLider));
+  // Apply visao canal filter
+  const _vcr = currentVisaoCanal;
+  const canalFilter = _vcr==='c2c' ? (r=>r.canal==='MULTICANAL C2C') : (r=>r.canal==='MULTICANAL CHAT'||r.canal==='CHAT');
+  const meta = _vcr==='c2c' ? FILAS_META[currentFila].c2c : FILAS_META[currentFila].chat;
+  const allReps = getQuartilData().filter(r=>canalFilter(r)&&(!currentLider||r.lider===currentLider));
   const top = allReps.sort((a,b)=>b.tmo-a.tmo).slice(0,15);
   // Use dynamic data only — no hardcoded fallback
   const src = top;
