@@ -3649,11 +3649,54 @@ function getExecSummary() {
   return EXEC_SUMMARY;
 }
 function renderExecSummary(m) {
-  const src = getExecSummary();
-  const items = src[m] || src['2026-04'];
   const _fLabel = FILAS_INFO[currentFila].short;
   const _mLabel = m==='2026-05' ? 'Maio 2026 ⚡ (parcial)' : 'Abril 2026';
   document.getElementById('exec-mes-lbl').textContent = _fLabel + (currentLider?' · '+currentLider:'') + ' · ' + _mLabel;
+
+  if (currentLider) {
+    const lq = getQuartilData().filter(r=>r.lider===currentLider);
+    if (!lq.length) {
+      document.getElementById('exec-body').innerHTML = '<p style="color:#6c757d;font-size:13px;padding:8px 0">Sem dados para o líder selecionado neste mês.</p>';
+      return;
+    }
+    const _meta = FILAS_META[currentFila];
+    const chat = lq.filter(r=>r.canal.includes('CHAT'));
+    const c2c  = lq.filter(r=>r.canal.includes('C2C'));
+    const q4   = lq.filter(r=>r.q==='Q4').sort((a,b)=>b.tmo-a.tmo);
+    const q1   = lq.filter(r=>r.q==='Q1');
+    const avgAll  = +(lq.reduce((a,r)=>a+r.tmo,0)/lq.length).toFixed(2);
+    const avgChat = chat.length ? +(chat.reduce((a,r)=>a+r.tmo,0)/chat.length).toFixed(2) : null;
+    const avgC2c  = c2c.length  ? +(c2c.reduce((a,r)=>a+r.tmo,0)/c2c.length).toFixed(2)  : null;
+    const metaRef = avgChat!==null ? _meta.chat : _meta.c2c;
+    const desvio  = +(avgAll - metaRef).toFixed(2);
+    const pctQ4   = Math.round(q4.length/lq.length*100);
+    const pctQ1   = Math.round(q1.length/lq.length*100);
+    const items = [];
+    const corTmo = desvio>0 ? '#e63946' : '#2dc653';
+    items.push({cor:corTmo, icon:desvio>0?'🔴':'🟢', peso:1,
+      titulo:`TMO médio: ${avgAll} min (${desvio>0?'+':''}${desvio} vs meta)`,
+      texto:[avgChat!==null?`CHAT: ${avgChat} min`:null, avgC2c!==null?`C2C: ${avgC2c} min`:null].filter(Boolean).join(' · ')});
+    if (q4.length) items.push({cor:'#e63946', icon:'⚠️', peso:2,
+      titulo:`${q4.length} rep(s) em Q4 — ${pctQ4}% da equipe acima da meta`,
+      texto:'Maiores desvios: '+q4.slice(0,3).map(r=>`${r.rep} (${r.tmo} min)`).join(', ')});
+    if (q1.length) items.push({cor:'#2dc653', icon:'🌟', peso:3,
+      titulo:`${q1.length} rep(s) em Q1 — referências positivas (${pctQ1}%)`,
+      texto:q1.slice(0,3).map(r=>`${r.rep} (${r.tmo} min)`).join(', ')});
+    items.push({cor:'#1a73e8', icon:'📊', peso:4,
+      titulo:`${lq.length} representantes ativos`,
+      texto:[chat.length?`${chat.length} CHAT`:null, c2c.length?`${c2c.length} C2C`:null].filter(Boolean).join(' · ')});
+    document.getElementById('exec-body').innerHTML = items.map(i=>`
+      <div style="background:#f8f9fa;border-radius:8px;padding:12px 14px;border-left:3px solid ${i.cor}">
+        <div style="font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:4px">
+          ${i.icon} <span style="background:${i.cor};color:white;padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px">#${i.peso}</span>${i.titulo}
+        </div>
+        <div style="font-size:12px;color:#495057;line-height:1.5">${i.texto}</div>
+      </div>`).join('');
+    return;
+  }
+
+  const src = getExecSummary();
+  const items = src[m] || src['2026-04'];
   document.getElementById('exec-body').innerHTML = items.map(i=>`
     <div style="background:#f8f9fa;border-radius:8px;padding:12px 14px;border-left:3px solid ${i.cor}">
       <div style="font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:4px">
@@ -7504,13 +7547,16 @@ function setMonth(m) {
   cCanalChart.data.datasets[0].data = cdFiltered.map(r=>r.t);
   cCanalChart.data.datasets[1].data = cdFiltered.map(r=>r.c.includes('C2C')?_meta.c2c:_meta.chat);
   cCanalChart.update();
-  // líder chart — filter by canal
+  // líder chart — highlight selected leader if active
   const _LIDER=currentFila==="ventas"?VENTAS_LIDER:currentFila==="me"?ME_LIDER:currentFila==="melipro"?MELIPRO_LIDER:currentFila==="vip"?VIP_LIDER:LIDER_DATA;
   let ld = _LIDER[m] || _LIDER["2026-04"];
-  if (_vc) ld = ld.filter(r=>(_vc==='chat'?!r.l.includes('C2C'):r.l.includes('C2C')));
   cLiderChart.data.labels = ld.map(r=>r.l);
   cLiderChart.data.datasets[0].data = ld.map(r=>r.t);
-  cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>(r.l.includes('C2C')?_meta.c2c:_meta.chat)?'#e63946':'#2dc653');
+  cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>{
+    const aboveMeta = r.t>(r.l.includes('C2C')?_meta.c2c:_meta.chat);
+    if (currentLider) return r.l===currentLider ? (aboveMeta?'#e63946':'#2dc653') : 'rgba(180,180,180,0.35)';
+    return aboveMeta ? '#e63946' : '#2dc653';
+  });
   cLiderChart.data.datasets[1].data = ld.map(r=>r.l.includes('C2C')?_meta.c2c:_meta.chat);
   cLiderChart.update();
   // atualiza todas as abas
@@ -7688,18 +7734,33 @@ cLiderChart = new Chart(document.getElementById('cLider'),{
 // Charts processo e reps — atualizáveis por mês
 let cProcessoChart, cRepsChart;
 function buildProcessoChart(m) {
-  const _vcp = currentVisaoCanal;
-  const allProc = getProcessoData().filter(r=>!_vcp||(_vcp==='chat'?r.canal.includes('CHAT'):r.canal.includes('C2C')));
-  const tp = allProc.slice(0,12);
-  const procMeta = _vcp==='c2c' ? FILAS_META[currentFila].c2c : FILAS_META[currentFila].chat;
+  const _meta = FILAS_META[currentFila];
+  let tp;
+  if (currentLider) {
+    // Derive per-process TMO from Q4 data filtered by leader
+    const q4 = getQ4Data().filter(r => r.lider === currentLider);
+    const procMap = {};
+    q4.forEach(r => {
+      const key = r.proc + '|' + (r.canal||'');
+      if (!procMap[key]) procMap[key] = {proc:r.proc, canal:r.canal||'MULTICANAL CHAT', tmos:[]};
+      procMap[key].tmos.push(r.t);
+    });
+    tp = Object.values(procMap)
+      .map(p => ({proc:p.proc, canal:p.canal, tmo:+(p.tmos.reduce((a,b)=>a+b,0)/p.tmos.length).toFixed(2)}))
+      .sort((a,b) => b.tmo - a.tmo)
+      .slice(0, 12);
+  } else {
+    tp = getProcessoData().slice(0, 12);
+  }
+  if (!tp.length) return;
   if (cProcessoChart) { cProcessoChart.destroy(); }
   cProcessoChart = new Chart(document.getElementById('cProcesso'),{
     type:'bar',
     data:{
       labels:tp.map(r=>r.proc+' ('+r.canal.replace('MULTICANAL ','')+')'),
       datasets:[
-        {label:'TMO (min)',data:tp.map(r=>r.tmo),backgroundColor:tp.map(r=>r.tmo>(r.meta||procMeta)?'#e63946':r.tmo>(r.meta||procMeta)*0.9?'#f4a261':'#2dc653'),borderRadius:4},
-        {label:'Meta',data:tp.map(r=>r.meta||procMeta),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+        {label:'TMO (min)',data:tp.map(r=>r.tmo),backgroundColor:tp.map(r=>{const mt=r.canal.includes('C2C')?_meta.c2c:_meta.chat;return r.tmo>mt?'#e63946':r.tmo>mt*0.9?'#f4a261':'#2dc653';}),borderRadius:4},
+        {label:'Meta',data:tp.map(r=>r.canal.includes('C2C')?_meta.c2c:_meta.chat),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
       ]
     },
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{x:{min:0,max:60},y:{ticks:{font:{size:10}}}}}
