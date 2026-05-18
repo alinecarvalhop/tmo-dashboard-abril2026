@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TMO - Mature</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a2e; }
@@ -3653,6 +3654,39 @@ function renderExecSummary(m) {
   const _mLabel = m==='2026-05' ? 'Maio 2026 ⚡ (parcial)' : 'Abril 2026';
   document.getElementById('exec-mes-lbl').textContent = _fLabel + (currentLider?' · '+currentLider:'') + ' · ' + _mLabel;
 
+  const _renderItems = items => items.map(i=>`
+    <div style="background:#f8f9fa;border-radius:8px;padding:12px 14px;border-left:3px solid ${i.cor}">
+      <div style="font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:4px">
+        ${i.icon} <span style="background:${i.cor};color:white;padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px">#${i.peso}</span>${i.titulo}
+      </div>
+      <div style="font-size:12px;color:#495057;line-height:1.5">${i.texto}</div>
+    </div>`).join('');
+
+  // Helper: derive process list from Q4 data filtered by optional leader
+  const _procItems = (extra) => {
+    const pd = extra ? extra : getProcessoData();
+    const hasDevField = !extra;
+    const _mt = FILAS_META[currentFila];
+    const procOfensor = hasDevField
+      ? pd.filter(r=>r.dev>0).sort((a,b)=>b.dev-a.dev)[0]
+      : pd.sort((a,b)=>b.tmo-a.tmo)[0];
+    const procBest = hasDevField
+      ? pd.filter(r=>r.dev<0).sort((a,b)=>a.dev-b.dev)[0]
+      : pd.filter(r=>r.tmo<=(r.canal.includes('C2C')?_mt.c2c:_mt.chat)).sort((a,b)=>a.tmo-b.tmo)[0];
+    const result = [];
+    if (procOfensor) result.push({cor:'#e63946', icon:'⚡', peso:'P+',
+      titulo:`Processo mais ofensor: ${procOfensor.proc} (${(procOfensor.canal||'').replace('MULTICANAL ','')})`,
+      texto: hasDevField
+        ? `TMO ${procOfensor.tmo.toFixed(2)} min · meta ${procOfensor.meta.toFixed(2)} min · desvio +${procOfensor.dev.toFixed(2)} min`
+        : `TMO médio ${procOfensor.tmo.toFixed(2)} min`});
+    if (procBest) result.push({cor:'#2dc653', icon:'✅', peso:'P✓',
+      titulo:`Processo dentro da meta: ${procBest.proc} (${(procBest.canal||'').replace('MULTICANAL ','')})`,
+      texto: hasDevField
+        ? `TMO ${procBest.tmo.toFixed(2)} min · meta ${procBest.meta.toFixed(2)} min · ${Math.abs(procBest.dev).toFixed(2)} min abaixo`
+        : `TMO médio ${procBest.tmo.toFixed(2)} min`});
+    return result;
+  };
+
   if (currentLider) {
     const lq = getQuartilData().filter(r=>r.lider===currentLider);
     if (!lq.length) {
@@ -3685,25 +3719,21 @@ function renderExecSummary(m) {
     items.push({cor:'#1a73e8', icon:'📊', peso:4,
       titulo:`${lq.length} representantes ativos`,
       texto:[chat.length?`${chat.length} CHAT`:null, c2c.length?`${c2c.length} C2C`:null].filter(Boolean).join(' · ')});
-    document.getElementById('exec-body').innerHTML = items.map(i=>`
-      <div style="background:#f8f9fa;border-radius:8px;padding:12px 14px;border-left:3px solid ${i.cor}">
-        <div style="font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:4px">
-          ${i.icon} <span style="background:${i.cor};color:white;padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px">#${i.peso}</span>${i.titulo}
-        </div>
-        <div style="font-size:12px;color:#495057;line-height:1.5">${i.texto}</div>
-      </div>`).join('');
+    // Process items from Q4 data for this leader
+    const normCanal = c => c==='MC2C'?'MULTICANAL C2C':c==='CHAT'?'MULTICANAL CHAT':(c||'MULTICANAL CHAT');
+    const lq4 = getQ4Data().filter(r=>r.lider===currentLider);
+    const procMap = {};
+    lq4.forEach(r=>{ const k=r.proc+'|'+(r.canal||''); if(!procMap[k]) procMap[k]={proc:r.proc,canal:normCanal(r.canal),tmos:[]}; procMap[k].tmos.push(r.tmo); });
+    const lProcs = Object.values(procMap).map(p=>({proc:p.proc,canal:p.canal,tmo:+(p.tmos.reduce((a,b)=>a+b,0)/p.tmos.length).toFixed(2)}));
+    items.push(..._procItems(lProcs));
+    document.getElementById('exec-body').innerHTML = _renderItems(items);
     return;
   }
 
   const src = getExecSummary();
-  const items = src[m] || src['2026-04'];
-  document.getElementById('exec-body').innerHTML = items.map(i=>`
-    <div style="background:#f8f9fa;border-radius:8px;padding:12px 14px;border-left:3px solid ${i.cor}">
-      <div style="font-size:12px;font-weight:700;color:#1a1a2e;margin-bottom:4px">
-        ${i.icon} <span style="background:${i.cor};color:white;padding:1px 6px;border-radius:4px;font-size:10px;margin-right:4px">#${i.peso}</span>${i.titulo}
-      </div>
-      <div style="font-size:12px;color:#495057;line-height:1.5">${i.texto}</div>
-    </div>`).join('');
+  const items = [...(src[m] || src['2026-04'])];
+  items.push(..._procItems(null));
+  document.getElementById('exec-body').innerHTML = _renderItems(items);
 }
 
 // ---- DADOS: CASOS ESTILO BAIXO × TMO ALTO ----
@@ -7707,43 +7737,53 @@ function populateCasosFiltersLider() {
 // ---- INIT ----
 let cCanalChart, cLiderChart;
 cCanalChart = new Chart(document.getElementById('cCanal'),{
+  plugins:[ChartDataLabels],
   type:'bar',
   data:{
     labels:['MULTICANAL CHAT','MULTICANAL C2C'],
     datasets:[
-      {label:'TMO (min)',data:[29.24,26.98],backgroundColor:['#457b9d','#e76f51'],borderRadius:6},
-      {label:'Meta Oficial',data:[27.54,19.73],type:'line',borderColor:'#e63946',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+      {label:'TMO (min)',data:[29.24,26.98],backgroundColor:['#457b9d','#e76f51'],borderRadius:6,
+       datalabels:{display:true,anchor:'end',align:'top',formatter:v=>v.toFixed(2),font:{size:11,weight:'bold'},color:'#1a1a2e'}},
+      {label:'Meta Oficial',data:[27.54,19.73],type:'line',borderColor:'#e63946',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false,
+       datalabels:{display:false}}
     ]
   },
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:35,grid:{color:'#f0f0f0'}}}}
+  options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},
+    plugins:{legend:{position:'bottom',labels:{font:{size:11}}},datalabels:{}},
+    scales:{y:{min:0,max:38,grid:{color:'#f0f0f0'}}}}
 });
 
 const ld0 = LIDER_DATA['2026-04'];
 cLiderChart = new Chart(document.getElementById('cLider'),{
+  plugins:[ChartDataLabels],
   type:'bar',
   data:{
     labels:ld0.map(r=>r.l),
     datasets:[
-      {label:'TMO (min)',data:ld0.map(r=>r.t),backgroundColor:ld0.map(r=>r.t>27?'#e63946':'#2dc653'),borderRadius:6},
-      {label:'Meta',data:Array(ld0.length).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+      {label:'TMO (min)',data:ld0.map(r=>r.t),backgroundColor:ld0.map(r=>r.t>27?'#e63946':'#2dc653'),borderRadius:6,
+       datalabels:{display:true,anchor:'end',align:'top',formatter:v=>v.toFixed(2),font:{size:10,weight:'bold'},color:'#1a1a2e'}},
+      {label:'Meta',data:Array(ld0.length).fill(27),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false,
+       datalabels:{display:false}}
     ]
   },
-  options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:38,grid:{color:'#f0f0f0'}}}}
+  options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},
+    plugins:{legend:{position:'bottom',labels:{font:{size:11}}},datalabels:{}},
+    scales:{y:{min:0,max:42,grid:{color:'#f0f0f0'}}}}
 });
 
 // Charts processo e reps — atualizáveis por mês
 let cProcessoChart, cRepsChart;
 function buildProcessoChart(m) {
   const _meta = FILAS_META[currentFila];
+  const normCanal = c => c==='MC2C'?'MULTICANAL C2C':c==='CHAT'?'MULTICANAL CHAT':(c||'MULTICANAL CHAT');
   let tp;
   if (currentLider) {
-    // Derive per-process TMO from Q4 data filtered by leader
     const q4 = getQ4Data().filter(r => r.lider === currentLider);
     const procMap = {};
     q4.forEach(r => {
       const key = r.proc + '|' + (r.canal||'');
-      if (!procMap[key]) procMap[key] = {proc:r.proc, canal:r.canal||'MULTICANAL CHAT', tmos:[]};
-      procMap[key].tmos.push(r.t);
+      if (!procMap[key]) procMap[key] = {proc:r.proc, canal:normCanal(r.canal), tmos:[]};
+      procMap[key].tmos.push(r.tmo);
     });
     tp = Object.values(procMap)
       .map(p => ({proc:p.proc, canal:p.canal, tmo:+(p.tmos.reduce((a,b)=>a+b,0)/p.tmos.length).toFixed(2)}))
@@ -7754,38 +7794,51 @@ function buildProcessoChart(m) {
   }
   if (!tp.length) return;
   if (cProcessoChart) { cProcessoChart.destroy(); }
+  const xMax = Math.max(60, Math.ceil(Math.max(...tp.map(r=>r.tmo)) * 1.25 / 10) * 10);
   cProcessoChart = new Chart(document.getElementById('cProcesso'),{
+    plugins:[ChartDataLabels],
     type:'bar',
     data:{
       labels:tp.map(r=>r.proc+' ('+r.canal.replace('MULTICANAL ','')+')'),
       datasets:[
-        {label:'TMO (min)',data:tp.map(r=>r.tmo),backgroundColor:tp.map(r=>{const mt=r.canal.includes('C2C')?_meta.c2c:_meta.chat;return r.tmo>mt?'#e63946':r.tmo>mt*0.9?'#f4a261':'#2dc653';}),borderRadius:4},
-        {label:'Meta',data:tp.map(r=>r.canal.includes('C2C')?_meta.c2c:_meta.chat),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+        {label:'TMO (min)',data:tp.map(r=>r.tmo),
+         backgroundColor:tp.map(r=>{const mt=r.canal.includes('C2C')?_meta.c2c:_meta.chat;return r.tmo>mt?'#e63946':r.tmo>mt*0.9?'#f4a261':'#2dc653';}),
+         borderRadius:4,
+         datalabels:{display:true,anchor:'end',align:'right',formatter:v=>v.toFixed(1),font:{size:10,weight:'bold'},color:'#1a1a2e'}},
+        {label:'Meta',data:tp.map(r=>r.canal.includes('C2C')?_meta.c2c:_meta.chat),
+         type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false,
+         datalabels:{display:false}}
       ]
     },
-    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{x:{min:0,max:60},y:{ticks:{font:{size:10}}}}}
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+      layout:{padding:{right:36}},
+      plugins:{legend:{position:'bottom',labels:{font:{size:11}}},datalabels:{}},
+      scales:{x:{min:0,max:xMax},y:{ticks:{font:{size:10}}}}}
   });
 }
 function buildRepsChart(m) {
-  // Apply visao canal filter
-  const _vcr = currentVisaoCanal;
-  const canalFilter = _vcr==='c2c' ? (r=>r.canal==='MULTICANAL C2C') : _vcr==='chat' ? (r=>r.canal==='MULTICANAL CHAT'||r.canal==='CHAT') : (()=>true);
-  const meta = _vcr==='c2c' ? FILAS_META[currentFila].c2c : FILAS_META[currentFila].chat;
-  const allReps = getQuartilData().filter(r=>canalFilter(r)&&(!currentLider||r.lider===currentLider));
+  const allReps = getQuartilData().filter(r=>(!currentLider||r.lider===currentLider));
   const top = allReps.sort((a,b)=>b.tmo-a.tmo).slice(0,15);
-  // Use dynamic data only — no hardcoded fallback
-  const src = top;
+  const meta = FILAS_META[currentFila].chat;
   if (cRepsChart) { cRepsChart.destroy(); }
+  const yMax = Math.max(70, Math.ceil(Math.max(...top.map(r=>r.tmo)) * 1.2 / 10) * 10);
   cRepsChart = new Chart(document.getElementById('cReps'),{
+    plugins:[ChartDataLabels],
     type:'bar',
     data:{
-      labels:src.map(r=>r.rep),
+      labels:top.map(r=>r.rep),
       datasets:[
-        {label:'TMO (min)',data:src.map(r=>r.tmo),backgroundColor:src.map(r=>r.tmo>meta?'#e63946':'#2dc653'),borderRadius:4},
-        {label:'Meta',data:Array(src.length).fill(meta),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false}
+        {label:'TMO (min)',data:top.map(r=>r.tmo),
+         backgroundColor:top.map(r=>r.tmo>(r.canal.includes('C2C')?FILAS_META[currentFila].c2c:FILAS_META[currentFila].chat)?'#e63946':'#2dc653'),
+         borderRadius:4,
+         datalabels:{display:true,anchor:'end',align:'top',formatter:v=>v.toFixed(1),font:{size:9,weight:'bold'},color:'#1a1a2e'}},
+        {label:'Meta',data:Array(top.length).fill(meta),type:'line',borderColor:'#1a1a2e',borderDash:[6,4],borderWidth:2,pointRadius:0,fill:false,
+         datalabels:{display:false}}
       ]
     },
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{font:{size:11}}}},scales:{y:{min:0,max:70,grid:{color:'#f0f0f0'}},x:{ticks:{font:{size:10}}}}}
+    options:{responsive:true,maintainAspectRatio:false,layout:{padding:{top:20}},
+      plugins:{legend:{position:'bottom',labels:{font:{size:11}}},datalabels:{}},
+      scales:{y:{min:0,max:yMax,grid:{color:'#f0f0f0'}},x:{ticks:{font:{size:10}}}}}
   });
 }
 buildProcessoChart('2026-04');
