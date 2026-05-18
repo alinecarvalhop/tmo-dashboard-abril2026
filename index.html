@@ -414,6 +414,11 @@ tr:last-child td { border-bottom: none; }
         </select>
       </div>
       <div class="filter-count" id="f4-count"></div>
+      <button onclick="exportarParaSheets('q4')" id="btn-export-q4"
+        style="margin-left:auto;padding:7px 16px;background:#0f9d58;color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+        Exportar para Sheets
+      </button>
     </div>
     <div class="tbl-wrap">
       <table id="tbl-q4">
@@ -450,6 +455,11 @@ tr:last-child td { border-bottom: none; }
         </select>
       </div>
       <div class="filter-count" id="fm-count"></div>
+      <button onclick="exportarParaSheets('multi')" id="btn-export-multi"
+        style="margin-left:auto;padding:7px 16px;background:#0f9d58;color:white;border:none;border-radius:7px;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;white-space:nowrap">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg>
+        Exportar para Sheets
+      </button>
     </div>
     <div class="tbl-wrap">
       <table id="tbl-multi">
@@ -1498,6 +1508,7 @@ function filterQ4() {
     (!p || x.proc===p) && (!r || x.rep===r) &&
     (!s || (x.seniority?x.seniority:getSeniority(x.rep))===s)
   );
+  _exportQ4Rows = rows;
   const tb = document.getElementById('tbody-q4');
   document.getElementById('f4-count').textContent = `${rows.length} ocorrência(s)`;
   if (!rows.length) { tb.innerHTML = emptyRow(8); return; }
@@ -2393,6 +2404,9 @@ const VIP_solucoesQ4Data = [
 let currentFila = 'publi';
 let currentLider = '';  // Global leader filter
 let currentVisaoCanal = ''; // Canal filter for Visão Geral ('' | 'chat' | 'c2c')
+let _exportQ4Rows = [];
+let _exportMultiRows = [];
+let _pendingExportType = '';
 
 function setVisaoCanal(canal) {
   currentVisaoCanal = canal;
@@ -5170,6 +5184,7 @@ function filterMulti() {
     (!_glm || r.lider === _glm) &&
     r.procs.length >= min
   );
+  _exportMultiRows = rows;
   const tb = document.getElementById('tbody-multi');
   document.getElementById('fm-count').textContent = `${rows.length} representante(s)`;
   if (!rows.length) { tb.innerHTML = emptyRow(7); return; }
@@ -7760,7 +7775,152 @@ populateCasosFilters(); populateCasosFiltersLider(); filterCasos();
 populateMultiFilters();
 populateEvolucaoFilters();
 
+
+// ---- EXPORT TO SHEETS ----
+function exportarParaSheets(tipo) {
+  const url = localStorage.getItem('sheetsExportUrl') || '';
+  if (!url) {
+    _pendingExportType = tipo;
+    document.getElementById('export-url-input').value = url;
+    document.getElementById('export-aba-input').value = localStorage.getItem('sheetsExportAba') || 'Casos Críticos';
+    document.getElementById('modal-export').style.display = 'flex';
+    return;
+  }
+  _pendingExportType = tipo;
+  executarExport(url);
+}
+
+function fecharModalExport() {
+  document.getElementById('modal-export').style.display = 'none';
+  _pendingExportType = '';
+}
+
+function salvarConfigExport() {
+  const url = document.getElementById('export-url-input').value.trim();
+  const aba = document.getElementById('export-aba-input').value.trim() || 'Casos Críticos';
+  if (!url) { mostrarToast('Cole a URL do Apps Script antes de salvar.', false); return; }
+  localStorage.setItem('sheetsExportUrl', url);
+  localStorage.setItem('sheetsExportAba', aba);
+  document.getElementById('modal-export').style.display = 'none';
+  executarExport(url);
+}
+
+function executarExport(url) {
+  const tipo = _pendingExportType;
+  const aba = localStorage.getItem('sheetsExportAba') || 'Casos Críticos';
+  let headers = [];
+  let rows = [];
+
+  if (tipo === 'q4') {
+    headers = ['Representante', 'Líder', 'Canal', 'Processo', 'TMO (min)', 'Seniority', 'Mês', 'Semana'];
+    rows = _exportQ4Rows.map(r => [r.rep, r.lider||'', r.canal||'', r.proc||'', r.t||'', r.seniority||getSeniority(r.rep)||'', r.mes||currentMonth, r.semana||'']);
+  } else {
+    headers = ['#', 'Representante', 'Líder', 'Canal', 'Qtd Processos', 'TMO Médio (min)', 'Processos'];
+    rows = _exportMultiRows.map((r, i) => {
+      const avg = (r.tmos.reduce((a,b)=>a+b,0)/r.tmos.length).toFixed(2);
+      return [i+1, r.rep, r.lider||'', r.canal||'', r.procs.length, avg, r.procs.join(', ')];
+    });
+  }
+
+  const payload = { aba, headers, rows };
+  const btn = document.getElementById('btn-export-' + tipo);
+  if (btn) { btn.disabled = true; btn.textContent = 'Exportando…'; }
+
+  fetch(url, {
+    method: 'POST',
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain' },
+    body: JSON.stringify(payload)
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg> Exportar para Sheets'; }
+    if (data.status === 'ok') {
+      mostrarToast('✅ ' + rows.length + ' linhas exportadas para a aba "' + aba + '"!', true);
+    } else {
+      mostrarToast('Erro: ' + (data.message || 'resposta inesperada.'), false);
+    }
+  })
+  .catch(err => {
+    if (btn) { btn.disabled = false; btn.innerHTML = '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-7 14l-5-5 1.41-1.41L12 14.17l7.59-7.59L21 8l-9 9z"/></svg> Exportar para Sheets'; }
+    mostrarToast('Falha na exportação: ' + err.message, false);
+  });
+}
+
+function mostrarToast(msg, ok) {
+  const t = document.getElementById('export-toast');
+  t.textContent = msg;
+  t.style.background = ok ? '#0f9d58' : '#e63946';
+  t.style.display = 'block';
+  t.style.opacity = '1';
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.style.display = 'none'; }, 400); }, 4000);
+}
+
+function limparConfigExport() {
+  localStorage.removeItem('sheetsExportUrl');
+  localStorage.removeItem('sheetsExportAba');
+  document.getElementById('export-url-input').value = '';
+  mostrarToast('Configuração removida.', true);
+}
 </script>
+
+<!-- Modal configuração exportação -->
+<div id="modal-export" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;align-items:center;justify-content:center">
+  <div style="background:#fff;border-radius:12px;padding:28px 32px;max-width:560px;width:95%;box-shadow:0 8px 32px rgba(0,0,0,0.22);position:relative">
+    <button onclick="fecharModalExport()" style="position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;cursor:pointer;color:#6c757d">✕</button>
+    <h3 style="margin-bottom:4px;font-size:16px">⚙️ Configurar Exportação para Google Sheets</h3>
+    <p style="font-size:12px;color:#6c757d;margin-bottom:16px">Configure uma vez — os dados ficam salvos no navegador.</p>
+
+    <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">URL do Google Apps Script <span style="color:#e63946">*</span></label>
+    <input id="export-url-input" type="url" placeholder="https://script.google.com/macros/s/.../exec"
+      style="width:100%;padding:8px 10px;border:1px solid #ced4da;border-radius:6px;font-size:12px;margin-bottom:12px"
+      value="">
+
+    <label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px">Nome da aba na planilha</label>
+    <input id="export-aba-input" type="text" placeholder="Casos Críticos"
+      style="width:100%;padding:8px 10px;border:1px solid #ced4da;border-radius:6px;font-size:12px;margin-bottom:16px"
+      value="">
+
+    <details style="margin-bottom:16px">
+      <summary style="font-size:12px;font-weight:600;cursor:pointer;color:#1a73e8">📋 Como criar o Apps Script (clique para expandir)</summary>
+      <div style="margin-top:10px;background:#f8f9fa;border-radius:6px;padding:12px;font-size:11px;line-height:1.6">
+        <p style="margin-bottom:6px"><strong>1.</strong> Abra sua planilha → <em>Extensões → Apps Script</em></p>
+        <p style="margin-bottom:6px"><strong>2.</strong> Cole o código abaixo no editor e salve:</p>
+        <pre style="background:#1e1e2e;color:#cdd6f4;padding:10px;border-radius:6px;overflow-x:auto;font-size:10px;line-height:1.5">function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    let sheet = ss.getSheetByName(data.aba);
+    if (!sheet) sheet = ss.insertSheet(data.aba);
+    sheet.clearContents();
+    sheet.appendRow(data.headers);
+    data.rows.forEach(r => sheet.appendRow(r));
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'ok',rows:data.rows.length}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'error',message:err.message}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+function doGet(e) { return doPost(e); }</pre>
+        <p style="margin-top:6px"><strong>3.</strong> Clique em <em>Implantar → Nova implantação → App da Web</em></p>
+        <p><strong>4.</strong> Em "Quem tem acesso", selecione <strong>Qualquer pessoa</strong> → Implantar → copie a URL</p>
+      </div>
+    </details>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end">
+      <button onclick="limparConfigExport()" style="padding:7px 14px;background:#f8f9fa;border:1px solid #ced4da;border-radius:6px;font-size:12px;cursor:pointer;color:#6c757d">Limpar config</button>
+      <button onclick="fecharModalExport()" style="padding:7px 14px;background:#f8f9fa;border:1px solid #ced4da;border-radius:6px;font-size:12px;cursor:pointer">Cancelar</button>
+      <button onclick="salvarConfigExport()" style="padding:7px 16px;background:#0f9d58;color:white;border:none;border-radius:6px;font-size:12px;font-weight:700;cursor:pointer">Salvar e Exportar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast notificação -->
+<div id="export-toast" style="display:none;position:fixed;bottom:28px;right:28px;padding:12px 20px;border-radius:8px;color:white;font-size:13px;font-weight:600;z-index:10000;box-shadow:0 4px 16px rgba(0,0,0,0.2);transition:opacity 0.4s"></div>
+
 </div><!-- /pages-wrap -->
 </div><!-- /body-wrap -->
 </body>
