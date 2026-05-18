@@ -1366,7 +1366,8 @@ function populateQuartilFilters() {
   const data = getQuartilData();
   const lideres = [...new Set(data.map(r=>r.lider).filter(l=>l&&l!=='—'))].sort();
   // Populate semana filter from semanalRaw
-  const semanas = [...new Set(getSemanalRaw().map(r=>r[3]))].sort();
+  const _semPrefix = currentMonth === '2026-04' ? '2026-04' : '2026-05';
+  const semanas = [...new Set(getSemanalRaw().filter(r=>r[3].startsWith(_semPrefix)).map(r=>r[3]))].sort();
   const ss = document.getElementById('fq-semana');
   if (ss) { ss.innerHTML='<option value="">Todas (Mês)</option>'; semanas.forEach(s=>{const o=document.createElement('option');o.value=s;o.textContent='Sem '+s.slice(5).replace('-','/');ss.appendChild(o);}); }
   const sel = document.getElementById('fq-lider');
@@ -6374,7 +6375,8 @@ const SEMANA_LABELS = ['S1 06/04','S2 13/04','S3 20/04','S4 27/04'];
 function getSemanasDynamic() {
   const data = getSemanalRaw();
   if (!data.length) return SEMANAS;
-  const weeks = [...new Set(data.map(r => r[3]))].sort();
+  const prefix = currentMonth === '2026-04' ? '2026-04' : '2026-05';
+  const weeks = [...new Set(data.filter(r => r[3].startsWith(prefix)).map(r => r[3]))].sort();
   return weeks.length ? weeks : SEMANAS;
 }
 function updateEvolucaoHeader(sems) {
@@ -7424,9 +7426,9 @@ let currentMonth = '2026-04';
 function setMonth(m) {
   currentMonth = m;
   document.getElementById('mes-selector').value = m;
-  // Show warning when non-publi fila on April (rep-level data reflects current month)
+  // Show warning when non-publi fila on Maio (those filas don't have month-separated data)
   const _av = document.getElementById('mes-aviso');
-  if (_av) _av.style.display = (currentFila!=='publi' && m==='2026-04') ? 'block' : 'none';
+  if (_av) _av.style.display = (currentFila!=='publi' && m==='2026-05') ? 'block' : 'none';
   // Show/hide canal KPI cards based on leader's channels
   const _cardChat = document.getElementById('kpi-card-chat');
   const _cardC2C  = document.getElementById('kpi-card-c2c');
@@ -7517,7 +7519,7 @@ function setMonth(m) {
   if (_vc) ld = ld.filter(r=>(_vc==='chat'?!r.l.includes('C2C'):r.l.includes('C2C')));
   cLiderChart.data.labels = ld.map(r=>r.l);
   cLiderChart.data.datasets[0].data = ld.map(r=>r.t);
-  cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>_meta.chat?'#e63946':'#2dc653');
+  cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>(r.l.includes('C2C')?_meta.c2c:_meta.chat)?'#e63946':'#2dc653');
   cLiderChart.data.datasets[1].data = ld.map(r=>r.l.includes('C2C')?_meta.c2c:_meta.chat);
   cLiderChart.update();
   // atualiza todas as abas
@@ -7715,7 +7717,7 @@ function buildProcessoChart(m) {
 function buildRepsChart(m) {
   // Apply visao canal filter
   const _vcr = currentVisaoCanal;
-  const canalFilter = _vcr==='c2c' ? (r=>r.canal==='MULTICANAL C2C') : (r=>r.canal==='MULTICANAL CHAT'||r.canal==='CHAT');
+  const canalFilter = _vcr==='c2c' ? (r=>r.canal==='MULTICANAL C2C') : _vcr==='chat' ? (r=>r.canal==='MULTICANAL CHAT'||r.canal==='CHAT') : (()=>true);
   const meta = _vcr==='c2c' ? FILAS_META[currentFila].c2c : FILAS_META[currentFila].chat;
   const allReps = getQuartilData().filter(r=>canalFilter(r)&&(!currentLider||r.lider===currentLider));
   const top = allReps.sort((a,b)=>b.tmo-a.tmo).slice(0,15);
