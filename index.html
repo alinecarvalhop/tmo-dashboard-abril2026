@@ -1483,7 +1483,8 @@ function populateQ4Filters() {
   sl.innerHTML = '<option value="">Todos</option>';
   procs.forEach(p=>{ const o=document.createElement('option'); o.value=p; o.textContent=p; sp.appendChild(o); });
   reps.forEach(r=>{ const o=document.createElement('option'); o.value=r; o.textContent=r; sr.appendChild(o); });
-  canais.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=c; sc.appendChild(o); });
+  const canalLabel = c => c==='MC2C'?'MULTICANAL C2C':c==='CHAT'?'MULTICANAL CHAT':c;
+  canais.forEach(c=>{ const o=document.createElement('option'); o.value=c; o.textContent=canalLabel(c); sc.appendChild(o); });
   liders.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sl.appendChild(o); });
 }
 function filterQ4() {
@@ -2410,7 +2411,10 @@ let currentLiderChannels = new Set(); // Channels managed by current leader
 
 function getLeaderChannels() { return currentLiderChannels; }
 function liderHasCanal(canal) {
-  return !currentLider || currentLiderChannels.size === 0 || currentLiderChannels.has(canal);
+  if (!currentLider || currentLiderChannels.size === 0) return true;
+  // Normalize abbreviated canal names used in q4Data ('MC2C', 'CHAT')
+  const norm = canal==='MC2C'?'MULTICANAL C2C':canal==='CHAT'?'MULTICANAL CHAT':canal;
+  return currentLiderChannels.has(norm) || currentLiderChannels.has(canal);
 }
 
 // ---- GLOBAL LIDER FILTER ------------------------------------------------
