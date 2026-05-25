@@ -130,6 +130,19 @@ tr:last-child td { border-bottom: none; }
 .plano-table { width:100%; border-collapse:collapse; font-size:13px; margin-top:8px; }
 .plano-table th { background:#f8f9fa; padding:9px 12px; font-size:11px; text-transform:uppercase; color:#6c757d; border-bottom:2px solid #e9ecef; }
 .plano-table td { padding:9px 12px; border-bottom:1px solid #f4f4f4; }
+
+/* ---- AÇÕES RÁPIDAS ---- */
+.acoes-section { background:#fffdf7; border:1px solid #e8e0cc; border-left:4px solid #f4a261; border-radius:10px; padding:20px 24px; margin-top:28px; }
+.acoes-titulo { font-size:13px; font-weight:800; color:#1a1a2e; margin-bottom:14px; display:flex; align-items:center; gap:8px; letter-spacing:.2px; }
+.acoes-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:10px; }
+.acao-item { display:flex; align-items:flex-start; gap:10px; background:white; border:1px solid #eee; border-radius:8px; padding:12px 14px; }
+.acao-badge { font-size:10px; font-weight:700; padding:3px 8px; border-radius:4px; white-space:nowrap; flex-shrink:0; margin-top:1px; }
+.acao-badge.urgente { background:#ffe5e7; color:#c0392b; }
+.acao-badge.atencao { background:#fff3e0; color:#d35400; }
+.acao-badge.preventivo { background:#e8f8ed; color:#1e8449; }
+.acao-corpo { flex:1; }
+.acao-texto { font-size:12.5px; color:#1a1a2e; line-height:1.5; }
+.acao-detalhe { font-size:11px; color:#6c757d; margin-top:4px; line-height:1.4; }
 </style>
 </head>
 <body>
@@ -244,6 +257,7 @@ tr:last-child td { border-bottom: none; }
       <div style="height:260px"><canvas id="cReps"></canvas></div>
     </div>
   </div>
+  <div id="acoes-resumo"></div>
 </div>
 
 <!-- ===================== PÁGINA 2: QUARTILIZAÇÃO ===================== -->
@@ -293,6 +307,7 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+  <div id="acoes-quartil"></div>
 </div>
 
 <!-- ===================== PÁGINA 3: TMO POR PROCESSO ===================== -->
@@ -332,6 +347,7 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+  <div id="acoes-processo"></div>
 </div>
 
 <!-- ===================== PÁGINA 4: REPS Q4 ===================== -->
@@ -380,6 +396,7 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+  <div id="acoes-q4reps"></div>
 </div>
 
 <!-- ===================== PÁGINA 6: MULTI-OFENSORES ===================== -->
@@ -426,6 +443,7 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+  <div id="acoes-multiofensores"></div>
 </div>
 
 <!-- ===================== PÁGINA 7: TEMPO DE TOQUE ===================== -->
@@ -522,6 +540,7 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+  <div id="acoes-toque"></div>
 </div>
 
 <!-- ===================== PÁGINA 8: PRODUTIVIDADE ===================== -->
@@ -646,6 +665,7 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+  <div id="acoes-produ"></div>
 </div>
 
 <!-- ===================== PÁGINA 9: EVOLUÇÃO SEMANAL ===================== -->
@@ -696,6 +716,7 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+  <div id="acoes-evolucao"></div>
 </div>
 
 <!-- ===================== PÁGINA 10: TMO PRODUTIVO / NÃO PRODUTIVO ===================== -->
@@ -769,6 +790,7 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+  <div id="acoes-prodtipo"></div>
 </div>
 
 <!-- ===================== PÁGINA 11: TMO × NPS ===================== -->
@@ -857,6 +879,7 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+  <div id="acoes-correlacao"></div>
 </div>
 
 <!-- ===================== PÁGINA 12: TMO × ESTILO MELI ===================== -->
@@ -964,6 +987,7 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+  <div id="acoes-estilo"></div>
 </div>
 
 <!-- ===================== PÁGINA 13: DISPERSÃO Q1→Q4 ===================== -->
@@ -1069,11 +1093,13 @@ tr:last-child td { border-bottom: none; }
       </table>
     </div>
   </div>
+  <div id="acoes-dispersao"></div>
 </div>
 
 <!-- ===================== PÁGINA 5: DIAGNÓSTICO ===================== -->
 <div id="page-diagnostico" class="page">
   <div id="diag-content" class="diag-grid"></div>
+  <div id="acoes-diagnostico"></div>
 </div>
 
 <script>
@@ -7237,6 +7263,7 @@ function setMonth(m) {
   populateEstiloCasosProc(); filterEstiloCasos();
   filterEstilo();
   updateNpsKpis(m); populateCorrelacaoFilters(); filterCorrelacao();
+  renderAllAcoes();
 
 }
 
@@ -7438,6 +7465,186 @@ populateProdTFilters();
 populateCasosFilters(); populateCasosFiltersLider(); filterCasos();
 populateMultiFilters();
 populateEvolucaoFilters();
+renderAllAcoes();
+
+// ---- AÇÕES RÁPIDAS ----
+function renderAllAcoes() {
+  ['resumo','quartil','processo','q4reps','multiofensores','toque','produ','dispersao','evolucao','prodtipo','correlacao','estilo','diagnostico'].forEach(renderAcoes);
+}
+
+function renderAcoes(pageId) {
+  const el = document.getElementById('acoes-' + pageId);
+  if (!el) return;
+  const itens = gerarAcoes(pageId);
+  if (!itens.length) { el.innerHTML = ''; return; }
+  el.innerHTML = `<div class="acoes-section">
+    <div class="acoes-titulo">⚡ Sugestão de Ações Rápidas</div>
+    <div class="acoes-grid">${itens.map(a=>`
+      <div class="acao-item">
+        <div class="acao-badge ${a.nivel}">${a.nivel==='urgente'?'🔴 Urgente':a.nivel==='atencao'?'🟡 Atenção':'🟢 Preventivo'}</div>
+        <div class="acao-corpo">
+          <div class="acao-texto">${a.texto}</div>
+          ${a.detalhe?`<div class="acao-detalhe">${a.detalhe}</div>`:''}
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function gerarAcoes(pageId) {
+  const m = currentMonth;
+  const meta = FILAS_META[currentFila] || FILAS_META.publi;
+  const _KPIS  = currentFila==='ventas'?VENTAS_KPIS:currentFila==='me'?ME_KPIS:currentFila==='melipro'?MELIPRO_KPIS:currentFila==='vip'?VIP_KPIS:currentFila==='fbm'?FBM_KPIS:KPIS;
+  const _LIDER = currentFila==='ventas'?VENTAS_LIDER:currentFila==='me'?ME_LIDER:currentFila==='melipro'?MELIPRO_LIDER:currentFila==='vip'?VIP_LIDER:currentFila==='fbm'?FBM_LIDER:LIDER_DATA;
+  const k  = _KPIS[m]  || _KPIS['2026-04'];
+  const ld = _LIDER[m] || _LIDER['2026-04'];
+  const qd = getQuartilData();
+  const pd = getProcessoData();
+
+  if (pageId === 'resumo') {
+    const acoes = [];
+    const piorL = [...ld].sort((a,b)=>b.t-a.t)[0];
+    if (k.desvio > 3)
+      acoes.push({nivel:'urgente', texto:`TMO ${k.pct}% acima da meta — Priorizar feedback imediato com líder <strong>${piorL?.l}</strong> (${piorL?.t.toFixed(1)} min)`, detalhe:`Meta global: ${meta.global} min · TMO atual: ${k.tmo.toFixed(1)} min · Desvio: +${k.desvio.toFixed(1)} min`});
+    else if (k.desvio > 0)
+      acoes.push({nivel:'atencao', texto:`TMO ${k.pct}% acima da meta — Agendar revisão com líder <strong>${piorL?.l}</strong> (${piorL?.t.toFixed(1)} min)`, detalhe:`Meta global: ${meta.global} min · TMO atual: ${k.tmo.toFixed(1)} min`});
+    else
+      acoes.push({nivel:'preventivo', texto:`TMO dentro da meta — Manter monitoramento semanal e reforçar boas práticas`, detalhe:`TMO atual: ${k.tmo.toFixed(1)} min vs meta ${meta.global} min`});
+    const procAcima = pd.filter(r=>r.tmo>(r.meta||meta.chat) && r.canal==='MULTICANAL CHAT').sort((a,b)=>b.dev-a.dev);
+    if (procAcima[0]) acoes.push({nivel:'atencao', texto:`Processo <strong>${procAcima[0].proc}</strong> (CHAT) com TMO ${procAcima[0].tmo.toFixed(1)} min — +${procAcima[0].dev.toFixed(1)} min acima da meta`, detalhe:`${procAcima[0].vol} contatos no período · Acionar treinamento focado neste processo`});
+    const q4n = qd.filter(r=>r.q==='Q4').length, q4pct = Math.round(q4n/qd.length*100);
+    acoes.push({nivel:q4pct>=25?'urgente':'atencao', texto:`${q4pct}% dos reps em Q4 (${q4n} de ${qd.length}) — ${q4pct>=25?'Ciclo de desenvolvimento prioritário em todas as equipes':'Revisar plano de desenvolvimento individual com cada líder'}`, detalhe:'Reps em Q4 = prioridade de 1:1 e PDI'});
+    const chatQ4 = qd.filter(r=>r.q==='Q4' && r.canal==='MULTICANAL CHAT');
+    if (chatQ4.length>=5) acoes.push({nivel:'atencao', texto:`${chatQ4.length} reps em Q4 no CHAT — Revisar calibração e scripts por processo com cada líder CHAT`, detalhe:'Foco nos líderes com maior concentração Q4 no canal'});
+    return acoes.slice(0,4);
+  }
+
+  if (pageId === 'quartil') {
+    const acoes = [];
+    const byLider = {};
+    qd.filter(r=>r.q==='Q4').forEach(r=>{ byLider[r.lider]=(byLider[r.lider]||0)+1; });
+    const topL = Object.entries(byLider).sort((a,b)=>b[1]-a[1])[0];
+    if (topL) acoes.push({nivel:'urgente', texto:`Líder <strong>${topL[0]}</strong> com maior concentração Q4 — ${topL[1]} reps`, detalhe:'Agendar reunião de alinhamento e plano de ação imediata com essa equipe'});
+    const newbieQ4 = qd.filter(r=>r.q==='Q4' && r.seniority==='NEWBIE');
+    if (newbieQ4.length) acoes.push({nivel:'atencao', texto:`${newbieQ4.length} NEWBIEs em Q4 — Reforçar processo de integração e acompanhamento`, detalhe:'Novatos em Q4 sinalizam gap de onboarding ou excesso de complexidade nas primeiras semanas'});
+    const expertQ4 = qd.filter(r=>r.q==='Q4' && r.seniority==='EXPERT');
+    if (expertQ4.length) acoes.push({nivel:'atencao', texto:`${expertQ4.length} EXPERTs em Q4 — Investigar causa raiz (processo complexo, casos atípicos ou falta de calibração)`, detalhe:'Expert em Q4 sinaliza problema de processo ou gestão, não de capacitação inicial'});
+    const avgQ4 = qd.filter(r=>r.q==='Q4').reduce((s,r)=>s+r.tmo,0)/(qd.filter(r=>r.q==='Q4').length||1);
+    const avgQ1 = qd.filter(r=>r.q==='Q1').reduce((s,r)=>s+r.tmo,0)/(qd.filter(r=>r.q==='Q1').length||1);
+    const gap = (avgQ4-avgQ1).toFixed(1);
+    acoes.push({nivel:gap>15?'urgente':'atencao', texto:`Gap Q1→Q4 de <strong>${gap} min</strong> — ${gap>15?'Desvio crítico: acionar PDI para todos os reps Q4':'Investigar causas de dispersão por canal e processo'}`, detalhe:'Gap alto = oportunidade estrutural de desenvolvimento'});
+    return acoes.slice(0,4);
+  }
+
+  if (pageId === 'processo') {
+    const acoes = [];
+    const acima = pd.filter(r=>r.tmo>(r.meta||meta.chat)).sort((a,b)=>b.dev-a.dev);
+    acima.slice(0,3).forEach((p,i)=>acoes.push({
+      nivel:i===0?'urgente':'atencao',
+      texto:`<strong>${p.proc}</strong> (${p.canal.replace('MULTICANAL ','')}) — TMO ${p.tmo.toFixed(1)} min · +${p.dev.toFixed(1)} min acima da meta`,
+      detalhe:`${p.vol} contatos · Calibrar expectativa e revisar técnica de resolução com os reps deste processo`
+    }));
+    if (acima.length>3) acoes.push({nivel:'preventivo', texto:`Mais ${acima.length-3} processos acima da meta — Criar trilha de capacitação por processo`, detalhe:'Priorizar pela combinação de volume × desvio para maximizar impacto'});
+    return acoes.slice(0,4);
+  }
+
+  if (pageId === 'q4reps') {
+    const acoes = [];
+    const q4 = getQ4Data();
+    const repMap = {};
+    q4.forEach(r=>{
+      if (!repMap[r.rep]) repMap[r.rep]={rep:r.rep,lider:r.lider,canal:r.canal,maxDev:r.dev,proc:r.proc};
+      else if (r.dev>repMap[r.rep].maxDev){repMap[r.rep].maxDev=r.dev;repMap[r.rep].proc=r.proc;}
+    });
+    Object.values(repMap).sort((a,b)=>b.maxDev-a.maxDev).slice(0,3).forEach((r,i)=>acoes.push({
+      nivel:i===0?'urgente':'atencao',
+      texto:`<strong>${r.rep}</strong> (${r.lider}) — Desvio de +${r.maxDev.toFixed(1)} min no processo <em>${r.proc}</em>`,
+      detalhe:'Agendar 1:1 focado em técnica de resolução desse processo'
+    }));
+    const lMap={};
+    Object.values(repMap).forEach(r=>{lMap[r.lider]=(lMap[r.lider]||0)+1;});
+    const topL=Object.entries(lMap).sort((a,b)=>b[1]-a[1])[0];
+    if (topL) acoes.push({nivel:'atencao', texto:`Líder <strong>${topL[0]}</strong> concentra ${topL[1]} reps em Q4 — Reunião de equipe para calibração coletiva`, detalhe:'Ação em grupo é mais eficiente que PDIs isolados quando há cluster por líder'});
+    return acoes.slice(0,4);
+  }
+
+  if (pageId === 'multiofensores') {
+    const acoes = [];
+    const multi = buildMultiData();
+    if (!multi.length) return [{nivel:'preventivo', texto:'Nenhum rep com múltiplos processos em Q4 no período — resultado positivo', detalhe:'Manter monitoramento mensal para detectar acúmulo precoce'}];
+    const top = multi[0];
+    acoes.push({nivel:'urgente', texto:`<strong>${top.rep}</strong> em Q4 em ${top.procs.length} processos — PDI individual imediato com líder <strong>${top.lider}</strong>`, detalhe:`Processos: ${top.procs.slice(0,3).join(' · ')}${top.procs.length>3?' +mais':''}`});
+    multi.slice(1,3).forEach(r=>acoes.push({nivel:'atencao', texto:`<strong>${r.rep}</strong> (${r.lider}) — Q4 em ${r.procs.length} processos`, detalhe:r.procs.slice(0,2).join(' · ')+(r.procs.length>2?` +${r.procs.length-2} mais`:'')}));
+    if (multi.length>3) acoes.push({nivel:'preventivo', texto:`${multi.length} reps multi-ofensores no total — Estruturar programa de desenvolvimento por cluster de processo`, detalhe:'Priorizar reps com 5+ processos em Q4 para acompanhamento intensivo'});
+    return acoes.slice(0,4);
+  }
+
+  if (pageId === 'toque') {
+    const acoes = [];
+    const td = currentFila==='ventas'?VENTAS_toqueRepData:MAY_toqueRepData;
+    if (!td||!td.length) return [{nivel:'preventivo', texto:'Dados de toque disponíveis apenas para o mês de Maio 2026', detalhe:''}];
+    const sorted=[...td].sort((a,b)=>b.toque-a.toque);
+    sorted.slice(0,3).forEach((r,i)=>acoes.push({
+      nivel:i===0?'urgente':'atencao',
+      texto:`<strong>${r.rep}</strong> — Toque médio ${r.toque.toFixed(1)} min (TMO ${r.tmo.toFixed(1)} min)`,
+      detalhe:`Líder: ${r.lider} · ${r.canal.replace('MULTICANAL ','')} · Revisar gestão de tempo dentro do atendimento`
+    }));
+    const alto=sorted.filter(r=>r.tmo>40).length;
+    if (alto>0) acoes.push({nivel:'urgente', texto:`${alto} reps com TMO médio > 40 min — Revisão de casos complexos e capacidade técnica`, detalhe:'Verificar se há acúmulo de casos atípicos concentrados nesses representantes'});
+    return acoes.slice(0,4);
+  }
+
+  if (pageId === 'produ') {
+    return [
+      {nivel:'atencao', texto:'MULTICANAL C2C com produtividade inferior ao CHAT — Investigar tempo entre atendimentos e configuração de filas', detalhe:'Revisar disponibilidade declarada vs tempo real em atendimento no canal C2C'},
+      {nivel:'atencao', texto:'Identificar os 5 reps com menor produtividade para sessão de escuta e coaching individual', detalhe:'Foco em padrão de uso do tempo disponível vs tempo efetivo em atendimento'},
+      {nivel:'preventivo', texto:'Replicar práticas dos 3 reps com maior produtividade via sessão de calibração em equipe', detalhe:'Boas práticas de gestão de tempo e resolução no primeiro contato como benchmark'}
+    ];
+  }
+
+  if (pageId === 'dispersao') {
+    const acoes = [];
+    const disp = buildDispersaoData();
+    disp.slice(0,3).forEach((d,i)=>acoes.push({
+      nivel:i===0?'urgente':'atencao',
+      texto:`Processo <strong>${d.proc}</strong> (${d.canal.replace('MULTICANAL','').trim()}) — Q4 médio ${d.tmoQ4} min vs geral ${d.tmo} min`,
+      detalhe:`${d.q4count} reps Q4 neste processo · Treinamento focado em técnica de resolução`
+    }));
+    const total=disp.reduce((s,r)=>s+r.q4count,0);
+    acoes.push({nivel:'preventivo', texto:`${total} ocorrências Q4 em ${disp.length} processos — Criar matriz de capacitação por processo × senioridade`, detalhe:'Priorizar processos com maior volume × maior gap Q4-Q1 para maximizar impacto'});
+    return acoes.slice(0,4);
+  }
+
+  if (pageId === 'evolucao') return [
+    {nivel:'atencao', texto:'Monitorar TMO semana a semana e acionar líder quando subir 2+ min vs semana anterior', detalhe:'Ação preventiva evita consolidação de desvio no fechamento mensal'},
+    {nivel:'preventivo', texto:'Compartilhar resumo semanal com líderes toda segunda-feira para alinhamento de prioridades', detalhe:'Use o gráfico de evolução como ferramenta de gestão visual nas reuniões de equipe'}
+  ];
+
+  if (pageId === 'prodtipo') return [
+    {nivel:'atencao', texto:'Identificar processos com maior concentração de TMO Não-Produtivo e acionar calibração técnica', detalhe:'TMO NP elevado indica espera, transferências ou burocracia desnecessária no atendimento'},
+    {nivel:'preventivo', texto:'Usar TMO Produtivo como benchmark de eficiência entre equipes e entre canais', detalhe:'Reps com alto TMO total mas baixo NP são candidatos a papel de referência técnica'}
+  ];
+
+  if (pageId === 'correlacao') return [
+    {nivel:'atencao', texto:'Líderes com TMO acima da meta e NPS abaixo do target são prioridade dupla — acionar plano integrado TMO + Experiência', detalhe:'Redução de TMO sem perda de qualidade exige calibração de resolução no primeiro contato'},
+    {nivel:'preventivo', texto:'Compartilhar mapa de correlação nas reuniões de líderes: TMO alto não é produtividade — é sinal de problema de processo', detalhe:'Use os casos de baixo NPS + alto TMO como exemplos de coaching nas calibrações'}
+  ];
+
+  if (pageId === 'estilo') return [
+    {nivel:'atencao', texto:'Reps com baixa aderência ao Estilo Meli e TMO elevado são candidatos prioritários de calibração', detalhe:'Uso inadequado das ferramentas e fluxos impacta diretamente o tempo de resolução'},
+    {nivel:'preventivo', texto:'Usar reps com Estilo Meli alto e TMO dentro da meta como âncoras de calibração nas equipes', detalhe:'Sessão de escuta com casos reais de boas práticas — modelo positivo é mais eficaz que feedback corretivo isolado'}
+  ];
+
+  if (pageId === 'diagnostico') {
+    const q4n=qd.filter(r=>r.q==='Q4').length, q4pct=Math.round(q4n/qd.length*100);
+    return [
+      {nivel:q4pct>=25?'urgente':'atencao', texto:`${q4pct}% dos reps em Q4 — Diagnóstico prioritário com cada líder antes do fechamento do mês`, detalhe:'Usar o mapa de causalidade do diagnóstico para estruturar as ações por equipe'},
+      {nivel:'preventivo', texto:'Cruzar diagnóstico com evolução semanal para distinguir tendência estrutural de variação pontual', detalhe:'Desvio crescente por 3+ semanas = ação sistêmica necessária · variação isolada = acompanhamento'}
+    ];
+  }
+
+  return [];
+}
 
 </script>
 </div><!-- /pages-wrap -->
