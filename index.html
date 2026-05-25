@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TMO - Mature</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', sans-serif; background: #f0f2f5; color: #1a1a2e; }
@@ -1076,6 +1077,19 @@ tr:last-child td { border-bottom: none; }
 </div>
 
 <script>
+// ---- DATALABELS GLOBAL CONFIG ----
+Chart.register(ChartDataLabels);
+Chart.defaults.set('plugins.datalabels', {
+  display: (ctx) => ctx.dataset.type !== 'line',
+  anchor: 'end',
+  align: (ctx) => ctx.chart.options.indexAxis === 'y' ? 'end' : 'top',
+  formatter: (v) => (typeof v === 'number' && !isNaN(v)) ? v.toFixed(1) : '',
+  font: { size: 9, weight: '600' },
+  color: '#444',
+  clamp: true,
+  offset: 2,
+});
+
 // ---- DATA ----
 // Quartilização validada contra pipeline HALO — NTILE(4) por canal
 const quartilData = [
