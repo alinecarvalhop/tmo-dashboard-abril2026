@@ -1,0 +1,111 @@
+{
+  "name": "Refresh Dashboard TMO - Publi Mature BR",
+  "_comment": "ANTES DE IMPORTAR: substitua os 3 placeholders abaixo",
+  "_placeholders": {
+    "DOC_ID":            "ID do seu documento Grid  (URL: https://grid.adminml.com/d/<DOC_ID>/view)",
+    "GRID_SK_TOKEN":     "Token gerado via POST /api/v1/tokens (grid_sk_*)",
+    "ID_CREDENCIAL_GCP": "ID da credencial GCP no VerdiFlow (ex: 'Abc123XyZ')",
+    "NOME_CREDENCIAL_GCP": "Nome da credencial GCP no VerdiFlow (ex: 'GCP - bidata')"
+  },
+  "nodes": [
+    {
+      "id": "trigger-001",
+      "name": "Schedule Trigger",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "parameters": {
+        "rule": {
+          "interval": [{
+            "field": "cronExpression",
+            "expression": "0 10,13,16 * * 1-5"
+          }]
+        }
+      }
+    },
+    {
+      "id": "bq-001",
+      "name": "BQ publi_current_month",
+      "type": "n8n-nodes-base.googleBigQuery",
+      "typeVersion": 2,
+      "position": [260, 0],
+      "parameters": {
+        "authentication": "serviceAccount",
+        "projectId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "bidata-cross-sa-batch"
+        },
+        "sqlQuery": "WITH base AS (\n  SELECT\n    USER_LDAP                   AS rep,\n    USER_TEAM_LEADER_LDAP       AS lider,\n    USER_SENIORITY              AS seniority,\n    USER_TEAM_CHANNEL           AS canal,\n    SUM(DENOMINATOR_TMO)        AS vol,\n    ROUND(\n      SUM(NUMERATOR_TMO) / SUM(DENOMINATOR_TMO)\n    , 2)                        AS tmo_min\n  FROM `pdme000131-zk9vntjdxcq-furyid.TBL.BT_CX_REP_METRICS_CS`\n  WHERE DATE_ID BETWEEN\n          DATE_TRUNC(CURRENT_DATE('America/Sao_Paulo'), MONTH)\n      AND DATE_SUB(CURRENT_DATE('America/Sao_Paulo'), INTERVAL 1 DAY)\n    AND USER_TEAM_NAME IN (\n          'BR_Publicaciones_Sellers_Mature',\n          'HSP_Publicaciones_Sellers_Mature'\n        )\n    AND USER_TEAM_CHANNEL IN ('MULTICANAL CHAT', 'MULTICANAL C2C')\n    AND USER_TEAM_LEADER_LDAP IN (\n          'alicarvalho', 'bkaroline', 'isabmot',\n          'thaidossanto', 'lrossetto'\n        )\n  GROUP BY 1, 2, 3, 4\n  HAVING SUM(DENOMINATOR_TMO) >= 30\n),\ndeduped AS (\n  SELECT\n    *,\n    ROW_NUMBER() OVER (\n      PARTITION BY rep\n      ORDER BY vol DESC\n    ) AS rn\n  FROM base\n)\nSELECT\n  rep,\n  lider,\n  seniority,\n  canal,\n  CAST(vol AS INT64)                                     AS vol,\n  tmo_min,\n  FORMAT_DATE('%Y-%m', CURRENT_DATE('America/Sao_Paulo')) AS month_key\nFROM deduped\nWHERE rn = 1\nORDER BY canal, tmo_min",
+        "options": {
+          "useLegacySql": false
+        }
+      },
+      "credentials": {
+        "googleApi": {
+          "id": "<ID_CREDENCIAL_GCP>",
+          "name": "<NOME_CREDENCIAL_GCP>"
+        }
+      }
+    },
+    {
+      "id": "agg-001",
+      "name": "Aggregate publi_current_month",
+      "type": "n8n-nodes-base.aggregate",
+      "typeVersion": 1,
+      "position": [520, 0],
+      "parameters": {
+        "aggregate": "aggregateAllItemData",
+        "destinationFieldName": "rows",
+        "options": {}
+      }
+    },
+    {
+      "id": "put-001",
+      "name": "PUT publi_current_month",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [780, 0],
+      "parameters": {
+        "method": "PUT",
+        "url": "http://grid.melisystems.com/api/v1/documents/<DOC_ID>/data/publi_current_month",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json }}",
+        "authentication": "none",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "Bearer <GRID_SK_TOKEN>"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 30000,
+          "response": {
+            "response": {
+              "fullResponse": true
+            }
+          }
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Schedule Trigger": {
+      "main": [[{ "node": "BQ publi_current_month", "type": "main", "index": 0 }]]
+    },
+    "BQ publi_current_month": {
+      "main": [[{ "node": "Aggregate publi_current_month", "type": "main", "index": 0 }]]
+    },
+    "Aggregate publi_current_month": {
+      "main": [[{ "node": "PUT publi_current_month", "type": "main", "index": 0 }]]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

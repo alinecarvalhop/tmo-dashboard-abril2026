@@ -7375,6 +7375,114 @@ function populateCasosFiltersLider() {
   liders.forEach(l=>{ const o=document.createElement('option'); o.value=l; o.textContent=l; sl.appendChild(o); });
 }
 
+// ---- GRID AUTO-UPDATE ----
+// Carrega dataset 'publi_current_month' do Grid (VerdiFlow atualiza diariamente)
+// Quando o HTML está hospedado no Grid, window.Grid é injetado automaticamente.
+// Se não estiver no Grid (ex: GitHub Pages), usa os dados embutidos como fallback.
+(async function loadFromGrid() {
+  if (typeof Grid === 'undefined' || typeof Grid.dataset !== 'function') {
+    console.log('[Grid] SDK não disponível — usando dados embutidos');
+    return;
+  }
+  try {
+    const ds = await Grid.dataset('publi_current_month').load();
+    const raw = (ds && ds.rows) ? ds.rows : [];
+    if (!raw.length) { console.warn('[Grid] Dataset vazio — mantendo dados embutidos'); return; }
+
+    // Converter strings para números (BQ serializa INT64/NUMERIC como string)
+    const rows = raw.map(r => ({
+      rep:      String(r.rep),
+      lider:    String(r.lider),
+      seniority:String(r.seniority || 'EXPERT'),
+      canal:    String(r.canal),
+      vol:      +r.vol,
+      tmo_min:  +r.tmo_min,
+      month_key:String(r.month_key)
+    }));
+
+    const monthKey = rows[0].month_key; // ex: '2026-05'
+    const meta = FILAS_META['publi'];   // {chat:27.54, c2c:19.73, global:26.0}
+
+    // NTILE(4) por canal — mesmo comportamento do BQ
+    function ntile4(arr) {
+      const sorted = [...arr].sort((a, b) => a.tmo_min - b.tmo_min);
+      const n = sorted.length;
+      return sorted.map((r, i) => ({ ...r, q: 'Q' + Math.min(4, Math.ceil((i + 1) * 4 / n)) }));
+    }
+
+    const chatReps = rows.filter(r => r.canal === 'MULTICANAL CHAT');
+    const c2cReps  = rows.filter(r => r.canal === 'MULTICANAL C2C');
+
+    // Atualiza MAY_quartilData no lugar (const → modifica array in-place)
+    MAY_quartilData.length = 0;
+    MAY_quartilData.push(
+      ...ntile4(c2cReps).map(r => ({
+        q: r.q, rep: r.rep, lider: r.lider, seniority: r.seniority,
+        canal: r.canal, vol: r.vol, tmo: r.tmo_min,
+        dev: +((r.tmo_min - meta.c2c).toFixed(2))
+      })),
+      ...ntile4(chatReps).map(r => ({
+        q: r.q, rep: r.rep, lider: r.lider, seniority: r.seniority,
+        canal: r.canal, vol: r.vol, tmo: r.tmo_min,
+        dev: +((r.tmo_min - meta.chat).toFixed(2))
+      }))
+    );
+
+    // Calcula KPIs globais
+    const totalVol = rows.reduce((s, r) => s + r.vol, 0);
+    const wTmo     = rows.reduce((s, r) => s + r.vol * r.tmo_min, 0) / totalVol;
+    const desvio   = +(wTmo - meta.global).toFixed(2);
+    const pct      = +(desvio / meta.global * 100).toFixed(1);
+    const monthLabel = new Date().toLocaleString('pt-BR', { month: 'long', year: 'numeric' })
+                         .replace(/^\w/, c => c.toUpperCase()) + ' ⚡';
+    KPIS[monthKey] = {
+      tmo: +wTmo.toFixed(2), tmoCaso: null, volume: totalVol,
+      reps: rows.length, desvio, pct, label: monthLabel, partial: true
+    };
+
+    // Calcula CANAL_DATA
+    const cMap = {};
+    for (const r of rows) {
+      if (!cMap[r.canal]) cMap[r.canal] = { vol: 0, ws: 0 };
+      cMap[r.canal].vol += r.vol;
+      cMap[r.canal].ws  += r.vol * r.tmo_min;
+    }
+    CANAL_DATA[monthKey] = Object.entries(cMap).map(([c, g]) => {
+      const t = +(g.ws / g.vol).toFixed(2);
+      const d = +(t - (c.includes('C2C') ? meta.c2c : meta.chat)).toFixed(2);
+      return { c, v: g.vol, t, d };
+    });
+
+    // Calcula LIDER_DATA
+    const lMap = {};
+    for (const r of rows) {
+      const key = r.canal.includes('C2C') ? r.lider + ' C2C' : r.lider;
+      if (!lMap[key]) lMap[key] = { vol: 0, ws: 0 };
+      lMap[key].vol += r.vol;
+      lMap[key].ws  += r.vol * r.tmo_min;
+    }
+    LIDER_DATA[monthKey] = Object.entries(lMap)
+      .map(([l, g]) => ({ l, t: +(g.ws / g.vol).toFixed(2) }))
+      .sort((a, b) => b.t - a.t)
+      .slice(0, 5);
+
+    // Adiciona opção no seletor de mês se for um mês novo
+    const sel = document.getElementById('mes-selector');
+    if (sel && !sel.querySelector(`option[value="${monthKey}"]`)) {
+      const opt = document.createElement('option');
+      opt.value = monthKey;
+      opt.textContent = KPIS[monthKey].label;
+      sel.appendChild(opt);
+    }
+
+    // Atualiza todos os gráficos e KPIs com os dados frescos
+    setMonth(monthKey);
+    console.log(`[Grid] ✅ ${rows.length} reps · ${monthKey} · TMO ${wTmo.toFixed(2)} min`);
+  } catch (err) {
+    console.warn('[Grid] Erro ao carregar dataset — fallback para dados embutidos:', err.message || err);
+  }
+})();
+
 // ---- INIT ----
 let cCanalChart, cLiderChart;
 cCanalChart = new Chart(document.getElementById('cCanal'),{
