@@ -1,8 +1,8 @@
-{
+﻿{
   "name": "Refresh Dashboard TMO - Publi Mature BR",
   "_comment": "ANTES DE IMPORTAR: substitua os 3 placeholders abaixo",
   "_placeholders": {
-    "DOC_ID":            "ID do seu documento Grid  (URL: https://grid.adminml.com/d/<DOC_ID>/view)",
+    "DOC_ID":            "ID do seu documento Grid  (URL: https://grid.adminml.com/d/01KTQ64Z0E53DKDK3TDMRNE3JY/view)",
     "GRID_SK_TOKEN":     "Token gerado via POST /api/v1/tokens (grid_sk_*)",
     "ID_CREDENCIAL_GCP": "ID da credencial GCP no VerdiFlow (ex: 'Abc123XyZ')",
     "NOME_CREDENCIAL_GCP": "Nome da credencial GCP no VerdiFlow (ex: 'GCP - bidata')"
@@ -68,7 +68,7 @@
       "position": [780, 0],
       "parameters": {
         "method": "PUT",
-        "url": "http://grid.melisystems.com/api/v1/documents/<DOC_ID>/data/publi_current_month",
+        "url": "http://grid.melisystems.com/api/v1/documents/01KTQ64Z0E53DKDK3TDMRNE3JY/data/publi_current_month",
         "sendBody": true,
         "specifyBody": "json",
         "jsonBody": "={{ $json }}",
