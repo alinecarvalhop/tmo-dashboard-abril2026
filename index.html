@@ -171,8 +171,8 @@ tr:last-child td { border-bottom: none; }
   <div class="nav-mes" style="border-top:none;border-bottom:1px solid #e9ecef;margin-bottom:4px">
     <span>Mês</span>
     <select id="mes-selector" onchange="setMonth(this.value)">
-      <option value="2026-04">Abril 2026</option>
-      <option value="2026-05">Maio 2026 ⚡</option>
+      <option value="2026-05" selected>Maio 2026</option>
+      <option value="2026-06">Junho 2026 ⚡</option>
     </select>
   </div>
   <div class="nav-section">Visão</div>
@@ -2765,15 +2765,18 @@ const ME_processoData = [
 const META_CHAT = 27.54, META_C2C = 19.73, META_GLOBAL = 26.0;
 const KPIS = {
   '2026-04': {tmo:28.78, tmoCaso:null, volume:21525, reps:60, desvio:2.78, pct:10.7, label:'Abril 2026', partial:false},
-  '2026-05': {tmo:28.33, tmoCaso:null, volume:19132, reps:57, desvio:2.33, pct:9.0, label:'Maio 2026', partial:true}
+  '2026-05': {tmo:28.33, tmoCaso:null, volume:19132, reps:57, desvio:2.33, pct:9.0, label:'Maio 2026', partial:false},
+  '2026-06': {tmo:25.74, tmoCaso:null, volume:9476,  reps:46, desvio:-0.26, pct:-1.0, label:'Junho 2026', partial:true}
 };
 const CANAL_DATA = {
   '2026-04': [{c:'MULTICANAL CHAT',v:17180,t:29.24,d:2.24},{c:'MULTICANAL C2C',v:4345,t:26.98,d:-0.02}],
-  '2026-05': [{c:'MULTICANAL CHAT',v:15063,t:28.93,d:1.39},{c:'MULTICANAL C2C',v:4069,t:26.13,d:6.40}]
+  '2026-05': [{c:'MULTICANAL CHAT',v:15063,t:28.93,d:1.39},{c:'MULTICANAL C2C',v:4069,t:26.13,d:6.40}],
+  '2026-06': [{c:'MULTICANAL CHAT',v:8075,t:26.69,d:-0.85},{c:'MULTICANAL C2C',v:1401,t:20.27,d:0.54}]
 };
 const LIDER_DATA = {
   '2026-04': [{l:'isabmot',t:33.35},{l:'bkaroline',t:29.17},{l:'alicarvalho',t:28.33},{l:'lrossetto C2C',t:26.98},{l:'thaidossanto',t:26.60}],
-  '2026-05': [{l:'bkaroline',t:30.18},{l:'isabmot',t:30.12},{l:'alicarvalho',t:28.90},{l:'lrossetto C2C',t:26.13},{l:'thaidossanto',t:25.80}]
+  '2026-05': [{l:'bkaroline',t:30.18},{l:'isabmot',t:30.12},{l:'alicarvalho',t:28.90},{l:'lrossetto C2C',t:26.13},{l:'thaidossanto',t:25.80}],
+  '2026-06': [{l:'isabmot',t:29.01},{l:'alicarvalho',t:27.01},{l:'bkaroline',t:26.56},{l:'thaidossanto',t:24.65},{l:'lrossetto C2C',t:20.27}]
 };
 
 // MAY quartilização — dados completos BQ 2026-05-01 a 2026-05-27, BR Publicaciones Mature, vol>=30, NTILE(4) por canal
@@ -2837,6 +2840,58 @@ const MAY_quartilData = [
   {q:'Q4',rep:'lecandido',lider:'bkaroline',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:404,tmo:37.8,dev:10.26},
   {q:'Q4',rep:'cccsousa',lider:'isabmot',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:387,tmo:39.0,dev:11.46},
   {q:'Q4',rep:'maybalazshaz',lider:'bkaroline',seniority:'NEWBIE',canal:'MULTICANAL CHAT',vol:349,tmo:40.8,dev:13.26},
+];
+
+// JUN quartilização — BQ 2026-06-01 a 2026-06-09, BR Publicaciones Mature, vol>=30, NTILE(4) por canal
+const JUN_quartilData = [
+  // C2C — 10 reps — meta 19.73
+  {q:'Q1',rep:'csnunes',lider:'lrossetto',seniority:'EXPERT',canal:'MULTICANAL C2C',vol:246,tmo:13.28,dev:-6.45},
+  {q:'Q1',rep:'cdoliveira',lider:'lrossetto',seniority:'EXPERT',canal:'MULTICANAL C2C',vol:91,tmo:14.49,dev:-5.24},
+  {q:'Q1',rep:'marcovenicio',lider:'lrossetto',seniority:'EXPERT',canal:'MULTICANAL C2C',vol:201,tmo:16.78,dev:-2.95},
+  {q:'Q2',rep:'giselesosant',lider:'lrossetto',seniority:'NEWBIE',canal:'MULTICANAL C2C',vol:181,tmo:17.83,dev:-1.90},
+  {q:'Q2',rep:'luciagarcia',lider:'lrossetto',seniority:'EXPERT',canal:'MULTICANAL C2C',vol:172,tmo:19.48,dev:-0.25},
+  {q:'Q2',rep:'albarbosa',lider:'lrossetto',seniority:'NEWBIE',canal:'MULTICANAL C2C',vol:66,tmo:20.39,dev:0.66},
+  {q:'Q3',rep:'amarquini',lider:'lrossetto',seniority:'NEWBIE',canal:'MULTICANAL C2C',vol:138,tmo:21.71,dev:1.98},
+  {q:'Q3',rep:'lteixeira',lider:'lrossetto',seniority:'NEWBIE',canal:'MULTICANAL C2C',vol:75,tmo:23.04,dev:3.31},
+  {q:'Q4',rep:'raisacsantos',lider:'lrossetto',seniority:'NEWBIE',canal:'MULTICANAL C2C',vol:128,tmo:31.64,dev:11.91},
+  {q:'Q4',rep:'adysantos',lider:'lrossetto',seniority:'NEWBIE',canal:'MULTICANAL C2C',vol:103,tmo:36.32,dev:16.59},
+  // CHAT — 36 reps — meta 27.54
+  {q:'Q1',rep:'juslima',lider:'thaidossanto',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:220,tmo:19.66,dev:-7.88},
+  {q:'Q1',rep:'amcaldeira',lider:'thaidossanto',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:189,tmo:19.68,dev:-7.86},
+  {q:'Q1',rep:'wgomdsouza',lider:'lrossetto',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:271,tmo:21.00,dev:-6.54},
+  {q:'Q1',rep:'acruz',lider:'thaidossanto',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:275,tmo:21.10,dev:-6.44},
+  {q:'Q1',rep:'aldmelo',lider:'bkaroline',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:293,tmo:21.58,dev:-5.96},
+  {q:'Q1',rep:'marfreitas',lider:'thaidossanto',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:221,tmo:21.63,dev:-5.91},
+  {q:'Q1',rep:'stdiniz',lider:'alicarvalho',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:225,tmo:21.68,dev:-5.86},
+  {q:'Q1',rep:'gbmontilha',lider:'bkaroline',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:354,tmo:22.63,dev:-4.91},
+  {q:'Q1',rep:'mrmarques',lider:'isabmot',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:246,tmo:24.05,dev:-3.49},
+  {q:'Q2',rep:'mandoliveira',lider:'isabmot',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:255,tmo:24.16,dev:-3.38},
+  {q:'Q2',rep:'losouza',lider:'alicarvalho',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:249,tmo:24.74,dev:-2.80},
+  {q:'Q2',rep:'blvicente',lider:'bkaroline',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:300,tmo:24.82,dev:-2.72},
+  {q:'Q2',rep:'polivdaraujo',lider:'bkaroline',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:296,tmo:25.00,dev:-2.54},
+  {q:'Q2',rep:'cafarias',lider:'alicarvalho',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:205,tmo:25.97,dev:-1.57},
+  {q:'Q2',rep:'aaugustinho',lider:'alicarvalho',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:204,tmo:26.04,dev:-1.50},
+  {q:'Q2',rep:'vdpiedade',lider:'bkaroline',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:242,tmo:26.14,dev:-1.40},
+  {q:'Q2',rep:'ulissouza',lider:'thaidossanto',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:216,tmo:26.34,dev:-1.20},
+  {q:'Q2',rep:'camcsilva',lider:'bkaroline',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:303,tmo:26.50,dev:-1.04},
+  {q:'Q3',rep:'lyalves',lider:'alicarvalho',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:180,tmo:26.90,dev:-0.64},
+  {q:'Q3',rep:'lianadsilva',lider:'alicarvalho',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:162,tmo:27.03,dev:-0.51},
+  {q:'Q3',rep:'casbarreiros',lider:'thaidossanto',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:198,tmo:27.26,dev:-0.28},
+  {q:'Q3',rep:'elaoliveira',lider:'isabmot',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:216,tmo:27.31,dev:-0.23},
+  {q:'Q3',rep:'mariasilva',lider:'isabmot',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:221,tmo:27.65,dev:0.11},
+  {q:'Q3',rep:'renataperei',lider:'isabmot',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:285,tmo:28.14,dev:0.60},
+  {q:'Q3',rep:'uizfsilva',lider:'alicarvalho',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:213,tmo:28.87,dev:1.33},
+  {q:'Q3',rep:'vfonorio',lider:'isabmot',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:237,tmo:29.80,dev:2.26},
+  {q:'Q3',rep:'marlaraujo',lider:'alicarvalho',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:170,tmo:30.03,dev:2.49},
+  {q:'Q4',rep:'fenunes',lider:'bkaroline',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:237,tmo:30.52,dev:2.98},
+  {q:'Q4',rep:'lecandido',lider:'bkaroline',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:210,tmo:31.00,dev:3.46},
+  {q:'Q4',rep:'phegoncalves',lider:'alicarvalho',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:97,tmo:31.26,dev:3.72},
+  {q:'Q4',rep:'vfarias',lider:'alicarvalho',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:165,tmo:32.33,dev:4.79},
+  {q:'Q4',rep:'amcandido',lider:'isabmot',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:253,tmo:33.61,dev:6.07},
+  {q:'Q4',rep:'bemarques',lider:'thaidossanto',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:181,tmo:34.99,dev:7.45},
+  {q:'Q4',rep:'maybalazshaz',lider:'bkaroline',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:208,tmo:36.57,dev:9.03},
+  {q:'Q4',rep:'eduejesus',lider:'thaidossanto',seniority:'NEWBIE',canal:'MULTICANAL CHAT',vol:68,tmo:38.43,dev:10.89},
+  {q:'Q4',rep:'cccsousa',lider:'isabmot',seniority:'EXPERT',canal:'MULTICANAL CHAT',vol:210,tmo:38.62,dev:11.08},
 ];
 
 const MAY_processoData = [
@@ -3713,9 +3768,9 @@ function getExecSummary() {
 }
 function renderExecSummary(m) {
   const src = getExecSummary();
-  const items = src[m] || src['2026-04'];
+  const items = src[m] || src['2026-05'];
   const _fLabel = FILAS_INFO[currentFila].short;
-  const _mLabel = m==='2026-05' ? 'Maio 2026 ⚡ (parcial)' : 'Abril 2026';
+  const _mLabel = m==='2026-06' ? 'Junho 2026 ⚡ (parcial)' : m==='2026-05' ? 'Maio 2026' : 'Abril 2026';
   document.getElementById('exec-mes-lbl').textContent = _fLabel + ' · ' + _mLabel;
   document.getElementById('exec-body').innerHTML = items.map(i=>`
     <div style="background:#f8f9fa;border-radius:8px;padding:12px 14px;border-left:3px solid ${i.cor}">
@@ -4033,8 +4088,8 @@ function populateCorrelacaoFilters() {
 
 function updateNpsKpis(m) {
   const _nps_src = getNpsKpis();
-  const k = _nps_src[m] || _nps_src['2026-04'];
-  const lbl = m==='2026-04' ? 'Abril 2026' : 'Maio 2026 ⚡';
+  const k = _nps_src[m] || _nps_src['2026-05'];
+  const lbl = m==='2026-06' ? 'Junho 2026 ⚡' : 'Maio 2026';
   document.getElementById('nps-chat-lbl').textContent = 'NPS CHAT — '+lbl;
   document.getElementById('nps-chat-val').textContent = k.chat_nps.toFixed(1)+'%';
   document.getElementById('nps-chat-sub').textContent = 'Meta '+k.chat_meta+'% '+(k.chat_nps>=k.chat_meta?'🟢':'🔴')+' · '+k.chat_surveys+' surveys · TMO '+k.chat_tmo+' min';
@@ -4169,13 +4224,13 @@ function filterProdTipo() {
 // ---- RECORTE SEMANAL: atual vs anterior ----
 function computeEvolucaoKPIs(m) {
   // Filtrar semanas do mês selecionado + semana anterior se mês=Maio
-  const prefix = m === '2026-04' ? '2026-04' : '2026-05';
+  const prefix = m === '2026-06' ? '2026-06' : '2026-05';
   let rows = getSemanalRaw().filter(r => r[3].startsWith(prefix));
 
-  // Para Maio, adiciona última semana de Abril como "anterior"
-  if (m === '2026-05') {
-    const abrilRows = getSemanalRaw().filter(r => r[3] === '2026-04-27');
-    rows = [...abrilRows, ...rows];
+  // Para Junho, adiciona última semana de Maio como "anterior"
+  if (m === '2026-06') {
+    const maioRows = getSemanalRaw().filter(r => r[3] === '2026-05-25');
+    rows = [...maioRows, ...rows];
   }
 
   // Semanas únicas ordenadas
@@ -4322,7 +4377,7 @@ function buildDispersaoData() {
 function renderDispersao() {
   const canal = document.getElementById('fd-canal').value;
   const m = currentMonth;
-  const mes = m === '2026-04' ? 'Abril 2026' : 'Maio 2026 ⚡';
+  const mes = m === '2026-06' ? 'Junho 2026 ⚡' : 'Maio 2026';
   const allData = buildDispersaoData();
   const data = allData.filter(r => !canal || r.canal === canal);
 
@@ -4884,7 +4939,7 @@ function getToqueData()  {
   if (currentFila==='melipro') return MELIPRO_toqueRepData;
   if (currentFila==='vip')     return VIP_toqueRepData;
   if (currentFila==='fbm')     return FBM_toqueRepData;
-  return currentMonth==='2026-04' ? toqueRepData  : MAY_toqueRepData;
+  return MAY_toqueRepData;
 }
 function getProduData()  {
   if (currentFila==='ventas') return VENTAS_produRepData;
@@ -4892,7 +4947,7 @@ function getProduData()  {
   if (currentFila==='melipro') return MELIPRO_produRepData;
   if (currentFila==='vip')     return VIP_produRepData;
   if (currentFila==='fbm')     return FBM_produRepData;
-  return currentMonth==='2026-04' ? produRepData  : MAY_produRepData;
+  return MAY_produRepData;
 }
 function getProdTData()  {
   if (currentFila==='ventas') return VENTAS_prodRepData;
@@ -4900,7 +4955,7 @@ function getProdTData()  {
   if (currentFila==='melipro') return MELIPRO_prodRepData;
   if (currentFila==='vip')     return VIP_prodRepData;
   if (currentFila==='fbm')     return FBM_prodRepData;
-  return currentMonth==='2026-04' ? prodRepData   : MAY_prodRepData;
+  return MAY_prodRepData;
 }
 function getSemanalRaw() {
   if (currentFila==='ventas') return VENTAS_semanalRaw;
@@ -4940,7 +4995,7 @@ function getDetratoresData(m) {
   if (currentFila==='melipro') return MELIPRO_detratoresData;
   if (currentFila==='vip')     return VIP_detratoresData;
   if (currentFila==='fbm')     return FBM_detratoresData;
-  return m==='2026-04' ? detratoresData : MAY_detratoresData;
+  return MAY_detratoresData;
 }
 
 function filterToque() {
@@ -7206,19 +7261,19 @@ const estiloData = [
 ];
 
 // ---- MÊS ATIVO ----
-let currentMonth = '2026-04';
+let currentMonth = '2026-05';
 
 function setMonth(m) {
   currentMonth = m;
   document.getElementById('mes-selector').value = m;
   // KPIs
   const _KPIS=currentFila==="ventas"?VENTAS_KPIS:currentFila==="me"?ME_KPIS:currentFila==="melipro"?MELIPRO_KPIS:currentFila==="vip"?VIP_KPIS:currentFila==="fbm"?FBM_KPIS:KPIS;
-  const k = _KPIS[m] || _KPIS["2026-04"];
+  const k = _KPIS[m] || _KPIS["2026-05"];
   document.getElementById('kpi-tmo').textContent = k.tmo.toFixed(2);
   document.getElementById('kpi-tmo-sub').innerHTML = '<strong style="color:#e63946">'+(k.desvio>0?'+':'')+k.pct+'% vs meta</strong>';
   // KPIs de canal
   const _CANAL=currentFila==="ventas"?VENTAS_CANAL:currentFila==="me"?ME_CANAL:currentFila==="melipro"?MELIPRO_CANAL:currentFila==="vip"?VIP_CANAL:currentFila==="fbm"?FBM_CANAL:CANAL_DATA;
-  const cd = _CANAL[m] || _CANAL["2026-04"];
+  const cd = _CANAL[m] || _CANAL["2026-05"];
   const chat = cd.find(r=>r.c==='MULTICANAL CHAT');
   const c2c  = cd.find(r=>r.c==='MULTICANAL C2C');
   if (chat) { document.getElementById('kpi-tmo-chat').textContent = chat.t.toFixed(2); document.getElementById('kpi-tmo-chat-sub').textContent = 'min · '+chat.v.toLocaleString('pt-BR')+' contatos'; }
@@ -7232,13 +7287,13 @@ function setMonth(m) {
   cCanalChart.update();
   // líder chart
   const _LIDER=currentFila==="ventas"?VENTAS_LIDER:currentFila==="me"?ME_LIDER:currentFila==="melipro"?MELIPRO_LIDER:currentFila==="vip"?VIP_LIDER:currentFila==="fbm"?FBM_LIDER:LIDER_DATA;
-  const ld = _LIDER[m] || _LIDER["2026-04"];
+  const ld = _LIDER[m] || _LIDER["2026-05"];
   cLiderChart.data.labels = ld.map(r=>r.l);
   cLiderChart.data.datasets[0].data = ld.map(r=>r.t);
   const _meta = FILAS_META[currentFila];
   cLiderChart.data.datasets[0].backgroundColor = ld.map(r=>r.t>_meta.chat?'#e63946':'#2dc653');
   cLiderChart.data.datasets[1].data = ld.map(r=>r.l.includes('C2C')?_meta.c2c:_meta.chat);
-  cCanalChart.data.labels = (_CANAL[m]||_CANAL['2026-04']).map(r=>r.c);
+  cCanalChart.data.labels = (_CANAL[m]||_CANAL['2026-05']).map(r=>r.c);
   cCanalChart.data.datasets[1].data = [_meta.chat, _meta.c2c];
   cLiderChart.update();
   cCanalChart.update();
@@ -7272,7 +7327,7 @@ function getQuartilData() {
   if (currentFila==='melipro') return MELIPRO_quartilData;
   if (currentFila==='vip')     return VIP_quartilData;
   if (currentFila==='fbm')     return FBM_quartilData;
-  return currentMonth==='2026-04' ? quartilData : MAY_quartilData;
+  return currentMonth==='2026-06' ? JUN_quartilData : MAY_quartilData;
 }
 function getProcessoData() {
   if (currentFila==='ventas') return VENTAS_processoData;
@@ -7280,7 +7335,7 @@ function getProcessoData() {
   if (currentFila==='melipro') return MELIPRO_processoData;
   if (currentFila==='vip')     return VIP_processoData;
   if (currentFila==='fbm')     return FBM_processoData;
-  return currentMonth==='2026-04' ? processoData : MAY_processoData;
+  return MAY_processoData;
 }
 function getQ4Data() {
   if (currentFila==='ventas') return VENTAS_q4Data;
@@ -7288,7 +7343,7 @@ function getQ4Data() {
   if (currentFila==='melipro') return MELIPRO_q4Data;
   if (currentFila==='vip')     return VIP_q4Data;
   if (currentFila==='fbm')     return FBM_q4Data;
-  return currentMonth==='2026-04' ? q4Data : MAY_q4Data;
+  return MAY_q4Data;
 }
 function setFila(fila) {
   currentFila = fila;
@@ -7532,9 +7587,7 @@ function buildRepsChart(m) {
   const meta = FILAS_META[currentFila].chat;
   const allReps = getQuartilData().filter(r=>r.canal==='MULTICANAL CHAT'||r.canal==='CHAT');
   const top = allReps.sort((a,b)=>b.tmo-a.tmo).slice(0,15);
-  const src = top.length ? top : (m==='2026-04'
-    ? [{rep:'adysantos',tmo:59.90},{rep:'maybalazshaz',tmo:53.51},{rep:'raisacsantos',tmo:49.66},{rep:'kavalle',tmo:49.09},{rep:'linessousa',tmo:45.89},{rep:'vitnasciment',tmo:44.37},{rep:'cccsousa',tmo:41.67},{rep:'gabrielaaiol',tmo:41.55},{rep:'amcandido',tmo:38.16},{rep:'lecandido',tmo:35.95}]
-    : [{rep:'adysantos',tmo:53.63},{rep:'gabrielaaiol',tmo:49.66},{rep:'albarbosa',tmo:44.63},{rep:'raisacsantos',tmo:44.46},{rep:'kavalle',tmo:42.61},{rep:'maybalazshaz',tmo:42.64},{rep:'linessousa',tmo:41.71},{rep:'lecandido',tmo:39.62},{rep:'vitnasciment',tmo:36.66},{rep:'cccsousa',tmo:37.84}]);
+  const src = top.length ? top : [{rep:'adysantos',tmo:45.0},{rep:'raisacsantos',tmo:45.6},{rep:'kavalle',tmo:42.0},{rep:'maybalazshaz',tmo:40.8},{rep:'cccsousa',tmo:39.0},{rep:'lecandido',tmo:37.8},{rep:'vitnasciment',tmo:39.6},{rep:'albarbosa',tmo:36.0},{rep:'linessousa',tmo:37.8},{rep:'gabrielaaiol',tmo:37.8}];
   if (cRepsChart) { cRepsChart.destroy(); }
   cRepsChart = new Chart(document.getElementById('cReps'),{
     type:'bar',
@@ -7603,8 +7656,8 @@ function gerarAcoes(pageId) {
   const meta = FILAS_META[currentFila] || FILAS_META.publi;
   const _KPIS  = currentFila==='ventas'?VENTAS_KPIS:currentFila==='me'?ME_KPIS:currentFila==='melipro'?MELIPRO_KPIS:currentFila==='vip'?VIP_KPIS:currentFila==='fbm'?FBM_KPIS:KPIS;
   const _LIDER = currentFila==='ventas'?VENTAS_LIDER:currentFila==='me'?ME_LIDER:currentFila==='melipro'?MELIPRO_LIDER:currentFila==='vip'?VIP_LIDER:currentFila==='fbm'?FBM_LIDER:LIDER_DATA;
-  const k  = _KPIS[m]  || _KPIS['2026-04'];
-  const ld = _LIDER[m] || _LIDER['2026-04'];
+  const k  = _KPIS[m]  || _KPIS['2026-05'];
+  const ld = _LIDER[m] || _LIDER['2026-05'];
   const qd = getQuartilData();
   const pd = getProcessoData();
 
