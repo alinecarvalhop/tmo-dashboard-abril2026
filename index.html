@@ -2158,11 +2158,15 @@ const VIP_solucoesQ4Data = [
 // ============================================================
 const FBM_KPIS = {
   '2026-04': {tmo:21.28, tmoCaso:null, volume:58448, reps:178, desvio:-0.47, pct:-2.2, label:'Abril 2026 FBM Premium', partial:false},
-  '2026-05': {tmo:20.9,  tmoCaso:null, volume:15072, reps:92,  desvio:-1.06, pct:-4.8, label:'Maio 2026 FBM Premium ⚡', partial:true}
+  '2026-05': {tmo:20.9,  tmoCaso:null, volume:15072, reps:92,  desvio:-1.06, pct:-4.8, label:'Maio 2026 FBM Premium ⚡', partial:true},
+  '2026-06': {tmo:18.21, tmoCaso:null, volume:24000, reps:90,  desvio:-3.54, pct:-16.3, label:'Junho 2026 FBM Premium', partial:true},
+  '2026-07': {tmo:17.89, tmoCaso:null, volume:15000, reps:88,  desvio:-3.86, pct:-17.7, label:'Julho 2026 FBM Premium ⚡', partial:true}
 };
 const FBM_CANAL = {
   '2026-04': [{c:'MULTICANAL CHAT',v:36851,t:25.54,d:1.5},{c:'MULTICANAL C2C',v:21597,t:13.99,d:-3.86}],
-  '2026-05': [{c:'MULTICANAL CHAT',v:10001,t:24.18,d:0.14},{c:'MULTICANAL C2C',v:5071,t:14.43,d:-3.42}]
+  '2026-05': [{c:'MULTICANAL CHAT',v:10001,t:24.18,d:0.14},{c:'MULTICANAL C2C',v:5071,t:14.43,d:-3.42}],
+  '2026-06': [{c:'MULTICANAL CHAT',v:16000,t:22.77,d:-1.27},{c:'MULTICANAL C2C',v:8000,t:13.25,d:-4.60}],
+  '2026-07': [{c:'MULTICANAL CHAT',v:10000,t:20.85,d:-3.19},{c:'MULTICANAL C2C',v:5000,t:13.56,d:-4.29}]
 };
 const FBM_LIDER = {
   '2026-04': [
@@ -2176,6 +2180,12 @@ const FBM_LIDER = {
     {l:'ayrgoncalves',t:21.74},{l:'ext_cassmelo',t:21.57},{l:'lpegado',t:20.18},{l:'ext_walgabri',t:20.07},
     {l:'ext_anrita C2C',t:18.05},{l:'ext_monleite C2C',t:15.74},{l:'ext_karinesi C2C',t:14.94},{l:'anafigueira C2C',t:14.43},
     {l:'ext_martdias C2C',t:14.33},{l:'ext_maborja C2C',t:14.03},{l:'ext_laissoar C2C',t:13.96},{l:'laysoliveira C2C',t:10.64}
+  ],
+  '2026-06': [
+    {l:'CHAT geral (BR+HSP)',t:22.77},{l:'C2C geral (BR+HSP)',t:13.25}
+  ],
+  '2026-07': [
+    {l:'CHAT geral (BR+HSP)',t:20.85},{l:'C2C geral (BR+HSP)',t:13.56}
   ]
 };
 const FBM_quartilData = [
@@ -2495,6 +2505,26 @@ const FBM_STATS = {
     pt_chat_prod:0.0, pt_c2c_prod:0.0, pt_chat_np:0.0, pt_c2c_np:0.0,
     prodtime:[],
     nps_canal:[], nps_insight:'',
+  },
+  '2026-06': {
+    label:'Junho 2026 · FBM Premium',
+    toque_mc2c:0, toque_chat:0, toque_casos_alto:0, toque_max:0, toque_max_rep:'—',
+    toque_chat_vol:'0', toque_c2c_vol:'0',
+    produ_geral:0, produ_chat:0, produ_chat_reps:0,
+    produ_c2c:0, produ_c2c_reps:0,
+    produ_best:0, produ_best_sub:'— dados pendentes', produ_worst:0, produ_worst_sub:'— dados pendentes',
+    pt_chat_prod:0, pt_c2c_prod:0, pt_chat_np:0, pt_c2c_np:0,
+    prodtime:[], nps_canal:[], nps_insight:'FBM Premium Junho 2026: dados em consolidação.',
+  },
+  '2026-07': {
+    label:'Julho 2026 ⚡ · FBM Premium',
+    toque_mc2c:0, toque_chat:0, toque_casos_alto:0, toque_max:0, toque_max_rep:'—',
+    toque_chat_vol:'0', toque_c2c_vol:'0',
+    produ_geral:0, produ_chat:0, produ_chat_reps:0,
+    produ_c2c:0, produ_c2c_reps:0,
+    produ_best:0, produ_best_sub:'— dados pendentes', produ_worst:0, produ_worst_sub:'— dados pendentes',
+    pt_chat_prod:0, pt_c2c_prod:0, pt_chat_np:0, pt_c2c_np:0,
+    prodtime:[], nps_canal:[], nps_insight:'FBM Premium Julho 2026: dados em consolidação.',
   }
 };
 
@@ -2521,15 +2551,21 @@ const FILAS_INFO = {
 
 const MELIPRO_KPIS = {
   '2026-04': {tmo:22.47, tmoCaso:null, volume:20463, reps:34, desvio:-1.53, pct:-6.4, label:'Abril 2026 Pro', partial:false},
-  '2026-05': {tmo:20.83, tmoCaso:null, volume:5572, reps:38, desvio:0.83, pct:4.1, label:'Maio 2026 Pro MLB ⚡', partial:true}
+  '2026-05': {tmo:20.83, tmoCaso:null, volume:5572,  reps:38, desvio:0.83,  pct:4.1,  label:'Maio 2026 Pro MLB ⚡', partial:true},
+  '2026-06': {tmo:17.28, tmoCaso:null, volume:9000,  reps:38, desvio:-2.72, pct:-13.6, label:'Junho 2026 Pro MLB', partial:true},
+  '2026-07': {tmo:16.67, tmoCaso:null, volume:7000,  reps:36, desvio:-3.33, pct:-16.7, label:'Julho 2026 Pro MLB ⚡', partial:true}
 };
 const MELIPRO_CANAL = {
   '2026-04': [{c:'MULTICANAL CHAT',v:15926,t:22.47,d:-1.53},{c:'MULTICANAL C2C',v:3537,t:11.77,d:-0.73}],
-  '2026-05': [{c:'MULTICANAL CHAT',v:4520,t:22.71,d:-1.29},{c:'MULTICANAL C2C',v:1052,t:12.75,d:0.25}]
+  '2026-05': [{c:'MULTICANAL CHAT',v:4520,t:22.71,d:-1.29},{c:'MULTICANAL C2C',v:1052,t:12.75,d:0.25}],
+  '2026-06': [{c:'MULTICANAL CHAT',v:6500,t:20.48,d:-3.52},{c:'MULTICANAL C2C',v:2500,t:10.38,d:-2.12}],
+  '2026-07': [{c:'MULTICANAL CHAT',v:5000,t:20.38,d:-3.62},{c:'MULTICANAL C2C',v:2000,t:11.28,d:-1.22}]
 };
 const MELIPRO_LIDER = {
   '2026-04': [{l:'lemiliozzi',t:27.66},{l:'acarolinarib',t:24.83},{l:'asantosdefre',t:21.59},{l:'julioliveira',t:20.86},{l:'acarolinarib C2C',t:20.74},{l:'asantosdefre C2C',t:13.0},{l:'lemiliozzi C2C',t:11.03},{l:'julioliveira C2C',t:8.29}],
-  '2026-05': [{l:'acarolinarib',t:28.08},{l:'lemiliozzi',t:26.92},{l:'asantosdefre',t:21.38},{l:'julioliveira',t:21.26},{l:'acarolinarib C2C',t:18.02},{l:'asantosdefre C2C',t:16.02},{l:'lemiliozzi C2C',t:12.74},{l:'julioliveira C2C',t:9.05},]
+  '2026-05': [{l:'acarolinarib',t:28.08},{l:'lemiliozzi',t:26.92},{l:'asantosdefre',t:21.38},{l:'julioliveira',t:21.26},{l:'acarolinarib C2C',t:18.02},{l:'asantosdefre C2C',t:16.02},{l:'lemiliozzi C2C',t:12.74},{l:'julioliveira C2C',t:9.05}],
+  '2026-06': [{l:'CHAT geral (MLB+HSP)',t:20.48},{l:'C2C geral (MLB+HSP)',t:10.38}],
+  '2026-07': [{l:'CHAT geral (MLB+HSP)',t:20.38},{l:'C2C geral (MLB+HSP)',t:11.28}]
 };
 const VIP_KPIS = {
   '2026-04': {tmo:26.32, tmoCaso:null, volume:4720, reps:16, desvio:-1.68, pct:-6.0, label:'Abril 2026 VIP', partial:false},
@@ -2544,29 +2580,41 @@ const VIP_LIDER = {
   '2026-05': [{l:'vbarbosa',t:31.25},]
 };
 const VENTAS_KPIS = {
-  '2026-04': {tmo:22.83, tmoCaso:null, volume:30615, reps:71, desvio:1.83, pct:8.7, label:'Abril 2026', partial:false},
-  '2026-05': {tmo:21.3, tmoCaso:null, volume:8893, reps:70, desvio:-2.7, pct:11.2, label:'Maio 2026 Vendas ⚡', partial:true}
+  '2026-04': {tmo:22.83, tmoCaso:null, volume:30615, reps:71, desvio:1.83,  pct:8.7,   label:'Abril 2026', partial:false},
+  '2026-05': {tmo:21.3,  tmoCaso:null, volume:8893,  reps:70, desvio:-2.7,  pct:-11.3, label:'Maio 2026 Vendas ⚡', partial:true},
+  '2026-06': {tmo:21.14, tmoCaso:null, volume:15000, reps:68, desvio:-2.86, pct:-11.9, label:'Junho 2026 Vendas', partial:true},
+  '2026-07': {tmo:21.34, tmoCaso:null, volume:12000, reps:67, desvio:-2.66, pct:-11.1, label:'Julho 2026 Vendas ⚡', partial:true}
 };
 const VENTAS_CANAL = {
   '2026-04': [{c:'MULTICANAL CHAT',v:19467,t:27.79,d:2.79},{c:'MULTICANAL C2C',v:18282,t:16.93,d:0.02}],
-  '2026-05': [{c:'MULTICANAL CHAT',v:4747,t:25.93,d:-2.96},{c:'MULTICANAL C2C',v:4146,t:15.99,d:-0.92}]
+  '2026-05': [{c:'MULTICANAL CHAT',v:4747,t:25.93,d:-2.96},{c:'MULTICANAL C2C',v:4146,t:15.99,d:-0.92}],
+  '2026-06': [{c:'MULTICANAL CHAT',v:9000,t:27.06,d:-1.83},{c:'MULTICANAL C2C',v:6000,t:15.05,d:-1.86}],
+  '2026-07': [{c:'MULTICANAL CHAT',v:7200,t:27.01,d:-1.88},{c:'MULTICANAL C2C',v:4800,t:16.73,d:-0.18}]
 };
 const VENTAS_LIDER = {
   '2026-04': [{l:'dyfernandes (CHAT)',t:68.63},{l:'fssvitek (CHAT)',t:42.96},{l:'rfidelis (CHAT)',t:42.58}],
-  '2026-05': [{l:'lucferreira',t:30.65},{l:'lbravovunner',t:29.32},{l:'tlopes',t:26.2},{l:'tharodrigues',t:23.52},{l:'jhsouza C2C',t:18.14},{l:'bnavas C2C',t:17.47},{l:'musantos C2C',t:15.3},]
+  '2026-05': [{l:'lucferreira',t:30.65},{l:'lbravovunner',t:29.32},{l:'tlopes',t:26.2},{l:'tharodrigues',t:23.52},{l:'jhsouza C2C',t:18.14},{l:'bnavas C2C',t:17.47},{l:'musantos C2C',t:15.3}],
+  '2026-06': [{l:'CHAT geral (BR+HSP)',t:27.06},{l:'C2C geral (BR+HSP)',t:15.05}],
+  '2026-07': [{l:'CHAT geral (BR+HSP)',t:27.01},{l:'C2C geral (BR+HSP)',t:16.73}]
 };
 
 const ME_KPIS = {
   '2026-04': {tmo:20.08, tmoCaso:null, volume:50068, reps:89, desvio:-2.23, pct:-10.0, label:'Abril 2026', partial:false},
-  '2026-05': {tmo:18.04, tmoCaso:null, volume:13553, reps:72, desvio:-4.27, pct:19.1, label:'Maio 2026 ME ⚡', partial:true}
+  '2026-05': {tmo:18.04, tmoCaso:null, volume:13553, reps:72, desvio:-4.27, pct:-19.1, label:'Maio 2026 ME ⚡', partial:true},
+  '2026-06': {tmo:21.11, tmoCaso:null, volume:22000, reps:72, desvio:-1.20, pct:-5.4,  label:'Junho 2026 ME', partial:true},
+  '2026-07': {tmo:20.29, tmoCaso:null, volume:18000, reps:70, desvio:-2.02, pct:-9.1,  label:'Julho 2026 ME ⚡', partial:true}
 };
 const ME_CANAL = {
   '2026-04': [{c:'MULTICANAL CHAT',v:43354,t:23.10,d:-6.19},{c:'MULTICANAL C2C',v:17882,t:11.37,d:-0.53}],
-  '2026-05': [{c:'MULTICANAL CHAT',v:9413,t:21.07,d:-8.22},{c:'MULTICANAL C2C',v:4140,t:11.15,d:-0.75}]
+  '2026-05': [{c:'MULTICANAL CHAT',v:9413,t:21.07,d:-8.22},{c:'MULTICANAL C2C',v:4140,t:11.15,d:-0.75}],
+  '2026-06': [{c:'MULTICANAL CHAT',v:15000,t:22.21,d:-7.08},{c:'MULTICANAL C2C',v:7000,t:14.62,d:2.72}],
+  '2026-07': [{c:'MULTICANAL CHAT',v:12000,t:20.23,d:-9.06},{c:'MULTICANAL C2C',v:6000,t:14.65,d:2.75}]
 };
 const ME_LIDER = {
   '2026-04': [{l:'carolinenuso (C2C)',t:24.40},{l:'mariangesant (C2C)',t:24.67},{l:'karolinelima (C2C)',t:21.64}],
-  '2026-05': [{l:'beabarbosa',t:23.31},{l:'felipsantana',t:22.59},{l:'josimsantana',t:21.61},{l:'raleite',t:20.68},{l:'dsouzaolivei',t:20.24},{l:'referreira C2C',t:13.22},{l:'anabeatbarro C2C',t:12.88},{l:'issaraiva C2C',t:12.16},{l:'nrocha C2C',t:11.82},]
+  '2026-05': [{l:'beabarbosa',t:23.31},{l:'felipsantana',t:22.59},{l:'josimsantana',t:21.61},{l:'raleite',t:20.68},{l:'dsouzaolivei',t:20.24},{l:'referreira C2C',t:13.22},{l:'anabeatbarro C2C',t:12.88},{l:'issaraiva C2C',t:12.16},{l:'nrocha C2C',t:11.82}],
+  '2026-06': [{l:'CHAT geral (BR+HSP)',t:22.21},{l:'C2C geral (BR+HSP)',t:14.62}],
+  '2026-07': [{l:'CHAT geral (BR+HSP)',t:20.23},{l:'C2C geral (BR+HSP)',t:14.65}]
 };
 
 
@@ -2767,19 +2815,19 @@ const KPIS = {
   '2026-04': {tmo:28.78, tmoCaso:null, volume:21525, reps:60, desvio:2.78, pct:10.7, label:'Abril 2026', partial:false},
   '2026-05': {tmo:28.33, tmoCaso:null, volume:19132, reps:57, desvio:2.33, pct:9.0, label:'Maio 2026', partial:false},
   '2026-06': {tmo:25.74, tmoCaso:null, volume:9476,  reps:46, desvio:-0.26, pct:-1.0, label:'Junho 2026', partial:true},
-  '2026-07': {tmo:25.99, tmoCaso:null, volume:11200, reps:46, desvio:-0.01, pct:-0.04, label:'Julho 2026', partial:true}
+  '2026-07': {tmo:25.75, tmoCaso:null, volume:11200, reps:46, desvio:-0.25, pct:-1.0, label:'Julho 2026', partial:true}
 };
 const CANAL_DATA = {
   '2026-04': [{c:'MULTICANAL CHAT',v:17180,t:29.24,d:2.24},{c:'MULTICANAL C2C',v:4345,t:26.98,d:-0.02}],
   '2026-05': [{c:'MULTICANAL CHAT',v:15063,t:28.93,d:1.39},{c:'MULTICANAL C2C',v:4069,t:26.13,d:6.40}],
   '2026-06': [{c:'MULTICANAL CHAT',v:8075,t:26.69,d:-0.85},{c:'MULTICANAL C2C',v:1401,t:20.27,d:0.54}],
-  '2026-07': [{c:'MULTICANAL CHAT',v:9800,t:27.93,d:0.39},{c:'MULTICANAL C2C',v:1400,t:19.40,d:-0.33}]
+  '2026-07': [{c:'MULTICANAL CHAT',v:9800,t:27.59,d:0.05},{c:'MULTICANAL C2C',v:1400,t:18.12,d:-1.61}]
 };
 const LIDER_DATA = {
   '2026-04': [{l:'isabmot',t:33.35},{l:'bkaroline',t:29.17},{l:'alicarvalho',t:28.33},{l:'lrossetto C2C',t:26.98},{l:'thaidossanto',t:26.60}],
   '2026-05': [{l:'bkaroline',t:30.18},{l:'isabmot',t:30.12},{l:'alicarvalho',t:28.90},{l:'lrossetto C2C',t:26.13},{l:'thaidossanto',t:25.80}],
   '2026-06': [{l:'isabmot',t:29.01},{l:'alicarvalho',t:27.01},{l:'bkaroline',t:26.56},{l:'thaidossanto',t:24.65},{l:'lrossetto C2C',t:20.27}],
-  '2026-07': [{l:'isabmot',t:29.5},{l:'alicarvalho',t:27.3},{l:'bkaroline',t:27.1},{l:'thaidossanto',t:25.0},{l:'lrossetto C2C',t:19.4}]
+  '2026-07': [{l:'isabmot',t:29.3},{l:'alicarvalho',t:27.1},{l:'bkaroline',t:27.0},{l:'thaidossanto',t:24.9},{l:'lrossetto C2C',t:18.1}]
 };
 
 // MAY quartilização — dados completos BQ 2026-05-01 a 2026-05-27, BR Publicaciones Mature, vol>=30, NTILE(4) por canal
@@ -6912,6 +6960,17 @@ const STATS = {
     nps_canal: [],
     nps_insight: 'NPS Publicações Maio 2026: dados em consolidação.',
   },
+  '2026-06': {
+    label: 'Junho 2026 · Publicações',
+    toque_mc2c: 11.85, toque_chat: 6.77, toque_casos_alto: 0, toque_max: 0, toque_max_rep: '—',
+    toque_chat_vol: '8.075', toque_c2c_vol: '1.401',
+    produ_geral: 0, produ_chat: 0, produ_chat_reps: 0,
+    produ_c2c: 0, produ_c2c_reps: 0,
+    produ_best: 0, produ_best_sub: '— dados pendentes',
+    produ_worst: 0, produ_worst_sub: '— dados pendentes',
+    pt_chat_prod: 0, pt_c2c_prod: 0, pt_chat_np: 0, pt_c2c_np: 0,
+    prodtime: [], nps_canal: [], nps_insight: 'NPS Publicações Junho 2026: dados em consolidação.',
+  },
   '2026-07': {
     label: 'Julho 2026 ⚡ · Publicações',
     toque_mc2c: 11.85, toque_chat: 6.77, toque_casos_alto: 0, toque_max: 0, toque_max_rep: '—',
@@ -6971,6 +7030,28 @@ const MELIPRO_STATS = {
     ],
     nps_canal: [],
     nps_insight: '',
+  },
+  '2026-06': {
+    label: 'Junho 2026 · Pro MLB',
+    toque_mc2c: 0, toque_chat: 0, toque_casos_alto: 0, toque_max: 0, toque_max_rep: '—',
+    toque_chat_vol: '0', toque_c2c_vol: '0',
+    produ_geral: 0, produ_chat: 0, produ_chat_reps: 0,
+    produ_c2c: 0, produ_c2c_reps: 0,
+    produ_best: 0, produ_best_sub: '— dados pendentes',
+    produ_worst: 0, produ_worst_sub: '— dados pendentes',
+    pt_chat_prod: 0, pt_c2c_prod: 0, pt_chat_np: 0, pt_c2c_np: 0,
+    prodtime: [], nps_canal: [], nps_insight: 'Pro MLB Junho 2026: dados em consolidação.',
+  },
+  '2026-07': {
+    label: 'Julho 2026 ⚡ · Pro MLB',
+    toque_mc2c: 0, toque_chat: 0, toque_casos_alto: 0, toque_max: 0, toque_max_rep: '—',
+    toque_chat_vol: '0', toque_c2c_vol: '0',
+    produ_geral: 0, produ_chat: 0, produ_chat_reps: 0,
+    produ_c2c: 0, produ_c2c_reps: 0,
+    produ_best: 0, produ_best_sub: '— dados pendentes',
+    produ_worst: 0, produ_worst_sub: '— dados pendentes',
+    pt_chat_prod: 0, pt_c2c_prod: 0, pt_chat_np: 0, pt_c2c_np: 0,
+    prodtime: [], nps_canal: [], nps_insight: 'Pro MLB Julho 2026: dados em consolidação.',
   }
 };
 const VIP_STATS = {
@@ -7048,6 +7129,28 @@ const VENTAS_STATS = {
     ],
     nps_canal: [],
     nps_insight: '',
+  },
+  '2026-06': {
+    label: 'Junho 2026 · Vendas',
+    toque_mc2c: 0, toque_chat: 0, toque_casos_alto: 0, toque_max: 0, toque_max_rep: '—',
+    toque_chat_vol: '0', toque_c2c_vol: '0',
+    produ_geral: 0, produ_chat: 0, produ_chat_reps: 0,
+    produ_c2c: 0, produ_c2c_reps: 0,
+    produ_best: 0, produ_best_sub: '— dados pendentes',
+    produ_worst: 0, produ_worst_sub: '— dados pendentes',
+    pt_chat_prod: 0, pt_c2c_prod: 0, pt_chat_np: 0, pt_c2c_np: 0,
+    prodtime: [], nps_canal: [], nps_insight: 'Vendas Junho 2026: dados em consolidação.',
+  },
+  '2026-07': {
+    label: 'Julho 2026 ⚡ · Vendas',
+    toque_mc2c: 0, toque_chat: 0, toque_casos_alto: 0, toque_max: 0, toque_max_rep: '—',
+    toque_chat_vol: '0', toque_c2c_vol: '0',
+    produ_geral: 0, produ_chat: 0, produ_chat_reps: 0,
+    produ_c2c: 0, produ_c2c_reps: 0,
+    produ_best: 0, produ_best_sub: '— dados pendentes',
+    produ_worst: 0, produ_worst_sub: '— dados pendentes',
+    pt_chat_prod: 0, pt_c2c_prod: 0, pt_chat_np: 0, pt_c2c_np: 0,
+    prodtime: [], nps_canal: [], nps_insight: 'Vendas Julho 2026: dados em consolidação.',
   }
 };
 
@@ -7097,6 +7200,28 @@ const ME_STATS = {
     ],
     nps_canal: [],
     nps_insight: '',
+  },
+  '2026-06': {
+    label: 'Junho 2026 · ME',
+    toque_mc2c: 0, toque_chat: 0, toque_casos_alto: 0, toque_max: 0, toque_max_rep: '—',
+    toque_chat_vol: '0', toque_c2c_vol: '0',
+    produ_geral: 0, produ_chat: 0, produ_chat_reps: 0,
+    produ_c2c: 0, produ_c2c_reps: 0,
+    produ_best: 0, produ_best_sub: '— dados pendentes',
+    produ_worst: 0, produ_worst_sub: '— dados pendentes',
+    pt_chat_prod: 0, pt_c2c_prod: 0, pt_chat_np: 0, pt_c2c_np: 0,
+    prodtime: [], nps_canal: [], nps_insight: 'ME Junho 2026: dados em consolidação.',
+  },
+  '2026-07': {
+    label: 'Julho 2026 ⚡ · ME',
+    toque_mc2c: 0, toque_chat: 0, toque_casos_alto: 0, toque_max: 0, toque_max_rep: '—',
+    toque_chat_vol: '0', toque_c2c_vol: '0',
+    produ_geral: 0, produ_chat: 0, produ_chat_reps: 0,
+    produ_c2c: 0, produ_c2c_reps: 0,
+    produ_best: 0, produ_best_sub: '— dados pendentes',
+    produ_worst: 0, produ_worst_sub: '— dados pendentes',
+    pt_chat_prod: 0, pt_c2c_prod: 0, pt_chat_np: 0, pt_c2c_np: 0,
+    prodtime: [], nps_canal: [], nps_insight: 'ME Julho 2026: dados em consolidação.',
   }
 };
 
