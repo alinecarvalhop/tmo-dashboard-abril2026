@@ -184,7 +184,6 @@ tr:last-child td { border-bottom: none; }
   <div class="nav-tab" onclick="showPage('q4reps',this)">🔴 Reps Q4</div>
   <div class="nav-tab" onclick="showPage('dispersao',this)">📊 Dispersão Q1→Q4</div>
   <div class="nav-tab" onclick="showPage('multiofensores',this)">🔥 Multi-Ofensores</div>
-  <div class="nav-tab" onclick="showPage('toque',this)">⏱️ Tempo de Toque</div>
   <div class="nav-tab" onclick="showPage('evolucao',this)">📅 Evolução Semanal</div>
   <div class="nav-tab" onclick="showPage('prodtipo',this)">⚡ TMO Produtivo/NP</div>
   <div class="nav-tab" onclick="showPage('correlacao',this)">🔗 TMO × NPS</div>
@@ -446,102 +445,6 @@ tr:last-child td { border-bottom: none; }
   <div id="acoes-multiofensores"></div>
 </div>
 
-<!-- ===================== PÁGINA 7: TEMPO DE TOQUE ===================== -->
-<div id="page-toque" class="page">
-
-  <!-- KPIs toque -->
-  <div class="kpi-row" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px">
-    <div class="kpi red">
-      <div class="kpi-lbl">Toque Médio — MC2C</div>
-      <div class="kpi-val" id="toque-mc2c-val">14,23</div>
-      <div class="kpi-sub" id="toque-mc2c-sub">min · maior canal ofensor</div>
-    </div>
-    <div class="kpi yellow">
-      <div class="kpi-lbl">Toque Médio — CHAT</div>
-      <div class="kpi-val" id="toque-chat-val">7,45</div>
-      <div class="kpi-sub" id="toque-chat-sub">min</div>
-    </div>
-    <div class="kpi gray">
-      <div class="kpi-lbl">Casos com TMO &gt; 40 min</div>
-      <div class="kpi-val" id="toque-casos-val">50</div>
-      <div class="kpi-sub" id="toque-casos-sub">Julho 2026 ⚡</div>
-    </div>
-    <div class="kpi red">
-      <div class="kpi-lbl">Maior Toque Registrado</div>
-      <div class="kpi-val" id="toque-max-val">358 min</div>
-      <div class="kpi-sub" id="toque-max-sub">gabrielaaiol · 30/04</div>
-    </div>
-  </div>
-
-  <!-- Toque por rep -->
-  <div class="card" style="margin-bottom:20px">
-    <div class="card-title" id="toque-card-title">Tempo de Toque Médio por Representante — Julho 2026 ⚡</div>
-    <div class="filters">
-      <div class="filter-group">
-        <label>Canal</label>
-        <select id="ft-canal" onchange="filterToque()">
-          <option value="">Todos</option>
-          <option>MULTICANAL CHAT</option>
-          <option>MULTICANAL C2C</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>Líder</label>
-        <select id="ft-lider" onchange="filterToque()">
-          <option value="">Todos</option>
-        </select>
-      </div>
-      <div class="filter-count" id="ft-count"></div>
-    </div>
-    <div class="tbl-wrap">
-      <table id="tbl-toque">
-        <thead><tr><th>Rep</th><th>Líder</th><th>Canal</th><th>Assigns</th><th>Toque Médio</th><th>Toque Máx</th><th>TMO Médio</th><th>% Toque/TMO</th></tr></thead>
-        <tbody id="tbody-toque"></tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Casos exemplo -->
-  <div class="card">
-    <div class="card-title">🔍 Casos de Exemplo — Toque Alto (≥ 40 min) · Julho 2026 ⚡</div>
-    <div class="filters">
-      <div class="filter-group">
-        <label>Canal</label>
-        <select id="fc-canal" onchange="filterCasos()">
-          <option value="">Todos</option>
-          <option>MULTICANAL CHAT</option>
-          <option>MULTICANAL C2C</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>Líder</label>
-        <select id="fc-lider" onchange="filterCasos()">
-          <option value="">Todos</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>Rep</label>
-        <select id="fc-rep" onchange="filterCasos()">
-          <option value="">Todos</option>
-        </select>
-      </div>
-      <div class="filter-group">
-        <label>Processo</label>
-        <select id="fc-proc" onchange="filterCasos()">
-          <option value="">Todos</option>
-        </select>
-      </div>
-      <div class="filter-count" id="fc-count"></div>
-    </div>
-    <div class="tbl-wrap">
-      <table id="tbl-casos">
-        <thead><tr><th>Caso</th><th>Data</th><th>Rep</th><th>Líder</th><th>Canal</th><th>Processo</th><th>Toque (min)</th><th>TMO (min)</th></tr></thead>
-        <tbody id="tbody-casos"></tbody>
-      </table>
-    </div>
-  </div>
-  <div id="acoes-toque"></div>
-</div>
 
 <!-- ===================== PÁGINA 8: PRODUTIVIDADE ===================== -->
 <div id="page-produ" class="page">
